@@ -115,31 +115,89 @@
                             <div class="card border w-100 mb-2">
                                 <div
                                     class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <p>Jawaban Benar</p>
+                                    <p>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#28a745"
+                                            viewBox="0 0 24 24">
+                                            <path d="M9 16.2l-3.5-3.5-1.4 1.4 4.9 4.9 12-12-1.4-1.4z"></path>
+                                        </svg>
+                                        Jawaban Benar
+                                    </p>
                                     <p class="fw-medium">120/150</p>
                                 </div>
                             </div>
                             <div class="card border w-100 mb-2">
                                 <div
                                     class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <p>Jawaban Ragu-ragu</p>
+                                    <p>
+                                        <svg width="20px" height="64px" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path opacity="0.5"
+                                                    d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+                                                    fill="#1C274C"></path>
+                                                <path
+                                                    d="M15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H9C8.58579 12.75 8.25 12.4142 8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H15C15.4142 11.25 15.75 11.5858 15.75 12Z"
+                                                    fill="#1C274C"></path>
+                                            </g>
+                                        </svg>
+                                        Jawaban Ragu-ragu
+                                    </p>
                                     <p class="fw-medium">8</p>
                                 </div>
                             </div>
                             <div class="card border w-100 mb-2">
                                 <div
                                     class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <p>Tidak Dijawab</p>
+                                    <p>
+                                        <svg width="20px" height="64px" viewBox="0 0 32 32" version="1.1"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#ff7575"
+                                            stroke="#ff7575">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <title>cross-circle</title>
+                                                <desc>Created with Sketch Beta.</desc>
+                                                <defs> </defs>
+                                                <g id="Page-1" stroke="none" stroke-width="1" fill="none"
+                                                    fill-rule="evenodd" sketch:type="MSPage">
+                                                    <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
+                                                        transform="translate(-570.000000, -1089.000000)" fill="#ff7a7a">
+                                                        <path
+                                                            d="M591.657,1109.24 C592.048,1109.63 592.048,1110.27 591.657,1110.66 C591.267,1111.05 590.633,1111.05 590.242,1110.66 L586.006,1106.42 L581.74,1110.69 C581.346,1111.08 580.708,1111.08 580.314,1110.69 C579.921,1110.29 579.921,1109.65 580.314,1109.26 L584.58,1104.99 L580.344,1100.76 C579.953,1100.37 579.953,1099.73 580.344,1099.34 C580.733,1098.95 581.367,1098.95 581.758,1099.34 L585.994,1103.58 L590.292,1099.28 C590.686,1098.89 591.323,1098.89 591.717,1099.28 C592.11,1099.68 592.11,1100.31 591.717,1100.71 L587.42,1105.01 L591.657,1109.24 L591.657,1109.24 Z M586,1089 C577.163,1089 570,1096.16 570,1105 C570,1113.84 577.163,1121 586,1121 C594.837,1121 602,1113.84 602,1105 C602,1096.16 594.837,1089 586,1089 L586,1089 Z"
+                                                            id="cross-circle" sketch:type="MSShapeGroup"> </path>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                        Tidak Dijawab
+                                    </p>
                                     <p class="fw-medium">12</p>
                                 </div>
                             </div>
                             <div class="card border w-100 mb-2">
                                 <div
                                     class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <p>Total Waktu</p>
+                                    <p>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#17a2b8"
+                                            viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11-11-4.925-11-11 4.925-11 11-11zm0 2c-4.962 0-9 4.038-9 9s4.038 9 9 9 9-4.038 9-9-4.038-9-9-9zm-.5 4h1v6.793l4.146 4.147-.707.707-4.439-4.439v-7.208z">
+                                            </path>
+                                        </svg>
+                                        Total Waktu
+                                    </p>
                                     <p class="fw-medium">3 Jam 2 menit</p>
                                 </div>
                             </div>
+                            <button class="btn primary-button btn-sm"
+                                onclick="window.location.href='{{route('tryouts.hasil.pembahasan', ['id' => $userTryout->tryout_id])}}'">Lihat
+                                Pembahasan</button>
                         </div>
                     </div>
                 </div>
@@ -148,7 +206,7 @@
         <div class="row mx-0">
             <div class="col-12">
                 <div class="card mb-3 overflow-y-auto" style="max-height: 500px;">
-                    <div class="card-header bg-white border-0">
+                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
                         <p class="fw-medium d-flex align-items-end mb-0">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" class="me-1">
@@ -158,6 +216,9 @@
                             </svg>
                             Leaderboard
                         </p>
+                        <a href="{{ route('tryouts.hasil.perangkinan', $userTryout->tryout_id) }}"
+                            class="btn primary-button btn-sm">Lihat
+                            Selengkapnya</a>
                     </div>
                     <div class="card-body table-responsive">
                         <table class="table table-bordered w-100 table-striped table-hover">
@@ -244,28 +305,85 @@
                     <div class="d-flex flex-column justify-content-between align-items-start">
                         <div class="card border w-100 mb-2">
                             <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                <p>Jawaban Benar</p>
+                                <p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#28a745"
+                                        viewBox="0 0 24 24">
+                                        <path d="M9 16.2l-3.5-3.5-1.4 1.4 4.9 4.9 12-12-1.4-1.4z"></path>
+                                    </svg>
+                                    Jawaban Benar
+                                </p>
                                 <p class="fw-medium">120/150</p>
                             </div>
                         </div>
                         <div class="card border w-100 mb-2">
                             <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                <p>Jawaban Ragu-ragu</p>
+                                <p>
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path opacity="0.5"
+                                                d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+                                                fill="#1C274C"></path>
+                                            <path
+                                                d="M15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H9C8.58579 12.75 8.25 12.4142 8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H15C15.4142 11.25 15.75 11.5858 15.75 12Z"
+                                                fill="#1C274C"></path>
+                                        </g>
+                                    </svg>
+                                    Jawaban Ragu-ragu
+                                </p>
                                 <p class="fw-medium">8</p>
                             </div>
                         </div>
                         <div class="card border w-100 mb-2">
                             <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                <p>Tidak Dijawab</p>
+                                <p>
+                                    <svg width="20px" height="20px" viewBox="0 0 32 32" version="1.1"
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#ff7575"
+                                        stroke="#ff7575">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <title>cross-circle</title>
+                                            <desc>Created with Sketch Beta.</desc>
+                                            <defs> </defs>
+                                            <g id="Page-1" stroke="none" stroke-width="1" fill="none"
+                                                fill-rule="evenodd" sketch:type="MSPage">
+                                                <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
+                                                    transform="translate(-570.000000, -1089.000000)" fill="#ff7a7a">
+                                                    <path
+                                                        d="M591.657,1109.24 C592.048,1109.63 592.048,1110.27 591.657,1110.66 C591.267,1111.05 590.633,1111.05 590.242,1110.66 L586.006,1106.42 L581.74,1110.69 C581.346,1111.08 580.708,1111.08 580.314,1110.69 C579.921,1110.29 579.921,1109.65 580.314,1109.26 L584.58,1104.99 L580.344,1100.76 C579.953,1100.37 579.953,1099.73 580.344,1099.34 C580.733,1098.95 581.367,1098.95 581.758,1099.34 L585.994,1103.58 L590.292,1099.28 C590.686,1098.89 591.323,1098.89 591.717,1099.28 C592.11,1099.68 592.11,1100.31 591.717,1100.71 L587.42,1105.01 L591.657,1109.24 L591.657,1109.24 Z M586,1089 C577.163,1089 570,1096.16 570,1105 C570,1113.84 577.163,1121 586,1121 C594.837,1121 602,1113.84 602,1105 C602,1096.16 594.837,1089 586,1089 L586,1089 Z"
+                                                        id="cross-circle" sketch:type="MSShapeGroup"> </path>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    Tidak Dijawab
+                                </p>
                                 <p class="fw-medium">12</p>
                             </div>
                         </div>
                         <div class="card border w-100 mb-2">
                             <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                <p>Total Waktu</p>
+                                <p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#17a2b8"
+                                        viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11-11-4.925-11-11 4.925-11 11-11zm0 2c-4.962 0-9 4.038-9 9s4.038 9 9 9 9-4.038 9-9-4.038-9-9-9zm-.5 4h1v6.793l4.146 4.147-.707.707-4.439-4.439v-7.208z">
+                                        </path>
+                                    </svg>
+                                    Total Waktu
+                                </p>
                                 <p class="fw-medium">3 Jam 2 menit</p>
                             </div>
                         </div>
+                        <button class="btn primary-button btn-sm"
+                            onclick="window.location.href='{{route('tryouts.hasil.pembahasan', ['id' => $userTryout->tryout_id])}}'">Lihat
+                            Pembahasan</button>
                     </div>
                 </div>
             </div>
@@ -291,7 +409,7 @@
                                         type="radio" name="rating" value="2" id="2"><label for="2">☆</label> <input
                                         type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Kirim Testimoni</button>
+                                <button type="submit" class="btn primary-button btn-sm">Kirim Testimoni</button>
                             </div>
                         </div>
                     </form>

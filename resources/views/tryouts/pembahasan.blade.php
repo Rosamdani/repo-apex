@@ -118,11 +118,11 @@
                         <div id="status_soal-${index}" class="alert ${
                             question.status_jawaban  === 'benar'
                                 ? 'alert-info'
-                                : 'alert-danger'
+                                : ( question.status_jawaban === 'ragu' ? 'alert-warning' : (question.status_jawaban === 'salah' ? 'alert-danger' : (question.status_jawaban === 'tidak dijawab' ? 'alert-secondary' : '')))
                         } py-1 px-2 my-2" role="alert">
                             ${question.status_jawaban === 'benar'
                                 ? 'Benar'
-                                : 'Salah'}
+                                : ( question.status_jawaban === 'ragu' ? 'Ragu-ragu' : (question.status_jawaban === 'salah' ? 'Salah' : (question.status_jawaban === 'tidak dijawab' ? 'Tidak dijawab' : '')))}
                         </div>
 
 
@@ -234,7 +234,7 @@
                     $('.card-grid').addClass('d-none');
                     containerSoal.empty();
                     let html = ``;
-                    $.each(questions, function (index, question) { 
+                    $.each(questions, function (index, question) {
                         html += `
                             <div class="card mb-3" style="overflow: hidden;">
                                 <div class="card-header p-2 bg-white d-flex justify-content-between align-items-center">
