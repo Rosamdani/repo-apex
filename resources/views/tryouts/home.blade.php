@@ -218,13 +218,21 @@
         startCountdown(endDate);
         const container = $('.tryout-container');
         container.empty();
+        data = data[0];
+        console.log(data);
         if (data.length > 0) {
-            data.forEach(item => {
-                container.append(getContainerTryouts(item));
+            Object.values(data).forEach(item => {
+                container.append(
+                    getContainerTryouts(item) // Kirim seluruh `item` sebagai objek
+                );
             });
         } else {
             container.html(`
-            <div class="card border bg-white w-100"><div class="card-body d-flex justify-content-center align-items-center">Anda belum mengerjakan tryout!</div></div>
+                <div class="card border bg-white w-100">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        Anda belum mengerjakan tryout!
+                    </div>
+                </div>
             `);
         }
     }
