@@ -238,7 +238,7 @@ class TryoutController extends Controller
 
     public function getPembahasan(Request $request)
     {
-        $userTryout = UserTryouts::where('user_id', Auth::user()->id)->first();
+        $userTryout = UserTryouts::where('user_id', Auth::user()->id)->where('tryout_id', $request->id_tryout)->where('status', 'finished')->first();
         if ($userTryout && $userTryout->status == 'finished') {
             try {
                 $soal = SoalTryout::with(['userAnswer' => function ($query) {
@@ -250,19 +250,20 @@ class TryoutController extends Controller
                     ->get();
 
                 $soal->each(function ($s) {
-                    $userAnswer = $s->userAnswer ? $s->userAnswer->first() : null; // Cek apakah relasi ada
+                    $userAnswer = $s->userAnswer ? $s->userAnswer->where('soal_id', $s->id)->first() : null;
 
-                    // Tentukan status_jawaban berdasarkan kondisi
+
                     if ($userAnswer) {
-                        if ($userAnswer->status === 'ragu-ragu') {
+                        if ($userAnswer->status === 'ragu') {
                             $s->status_jawaban = 'ragu-ragu';
-                        } else {
-                            $s->status_jawaban = ($s->jawaban === $userAnswer->jawaban) ? 'benar' : 'salah';
+                        } else if ($userAnswer->status === 'dijawab') {
+                            $s->status_jawaban = ($s->jawaban !== $userAnswer->jawaban) ? 'salah' : 'benar';
                         }
                     } else {
                         $s->status_jawaban = 'tidak dijawab';
                     }
                 });
+
 
                 return response()->json(['status' => 'success', 'message' => 'Data berhasil diambil', 'data' => $soal]);
             } catch (\Exception $e) {
@@ -272,7 +273,6 @@ class TryoutController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Tryout belum selesai']);
         }
     }
-
 
 
     public function saveAnswer(Request $request)

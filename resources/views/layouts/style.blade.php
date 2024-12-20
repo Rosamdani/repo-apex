@@ -120,7 +120,8 @@
         box-shadow: none !important;
     }
 
-    .form-control {
+    .form-control,
+    .form-search {
         background-color: rgb(245, 245, 245) !important;
     }
 
