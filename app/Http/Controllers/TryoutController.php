@@ -241,13 +241,27 @@ class TryoutController extends Controller
         $userTryout = UserTryouts::where('user_id', Auth::user()->id)->first();
         if ($userTryout && $userTryout->status == 'finished') {
             try {
-                $soal = SoalTryout::with('userAnswer')->select(['id', 'nomor', 'soal', 'pilihan_a', 'pilihan_b', 'pilihan_c', 'pilihan_d', 'pilihan_e', 'jawaban'])->where('tryout_id', $request->id_tryout)
+                $soal = SoalTryout::with(['userAnswer' => function ($query) {
+                    $query->where('user_id', Auth::id());
+                }])
+                    ->select(['id', 'nomor', 'soal', 'pilihan_a', 'pilihan_b', 'pilihan_c', 'pilihan_d', 'pilihan_e', 'jawaban'])
+                    ->where('tryout_id', $request->id_tryout)
                     ->orderBy('nomor', 'asc')
                     ->get();
 
                 $soal->each(function ($s) {
-                    $userAnswer = $s->userAnswer;
-                    $s->status_jawaban = ($userAnswer && $s->jawaban === $userAnswer->jawaban) ? 'benar' : 'salah';
+                    $userAnswer = $s->userAnswer ? $s->userAnswer->first() : null; // Cek apakah relasi ada
+
+                    // Tentukan status_jawaban berdasarkan kondisi
+                    if ($userAnswer) {
+                        if ($userAnswer->status === 'ragu-ragu') {
+                            $s->status_jawaban = 'ragu-ragu';
+                        } else {
+                            $s->status_jawaban = ($s->jawaban === $userAnswer->jawaban) ? 'benar' : 'salah';
+                        }
+                    } else {
+                        $s->status_jawaban = 'tidak dijawab';
+                    }
                 });
 
                 return response()->json(['status' => 'success', 'message' => 'Data berhasil diambil', 'data' => $soal]);
@@ -258,6 +272,8 @@ class TryoutController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Tryout belum selesai']);
         }
     }
+
+
 
     public function saveAnswer(Request $request)
     {
