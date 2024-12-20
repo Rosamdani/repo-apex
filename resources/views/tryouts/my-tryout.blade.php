@@ -366,8 +366,8 @@
                             <h6 class="fw-bold">${nama}</h6>
                             <div class="d-flex gap-2 flex-wrap justify-content-between align-items-center mt-2">
                                 <div class="d-block w-75">
-                                    <p class="fs-12 text-secondary">Progress: <span class="text-black">${progress}%</span></p>
-                                    <div class="progress" style="height: 5px;">
+                                    <p class="fs-12 text-secondary">Progress: <span class="text-black">${status_pengerjaan === 'finished' ? 'Selesai' : (progress + '%')}</span></p>
+                                    <div class="progress ${status_pengerjaan === 'finished' ? 'd-none' : ''}" style="height: 5px;">
                                         <div class="progress-bar bg-success" role="progressbar" style="width: ${progress}%"
                                             aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>

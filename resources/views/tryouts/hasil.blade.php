@@ -122,14 +122,14 @@
                                         </svg>
                                         Jawaban Benar
                                     </p>
-                                    <p class="fw-medium">120/150</p>
+                                    <p class="fw-medium"><span class="jml_benar">0</span>/150</p>
                                 </div>
                             </div>
                             <div class="card border w-100 mb-2">
                                 <div
                                     class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
                                     <p>
-                                        <svg width="20px" height="64px" viewBox="0 0 24 24" fill="none"
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
@@ -145,14 +145,14 @@
                                         </svg>
                                         Jawaban Ragu-ragu
                                     </p>
-                                    <p class="fw-medium">8</p>
+                                    <p class="fw-medium jml_ragu">0</p>
                                 </div>
                             </div>
                             <div class="card border w-100 mb-2">
                                 <div
                                     class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
                                     <p>
-                                        <svg width="20px" height="64px" viewBox="0 0 32 32" version="1.1"
+                                        <svg width="20" height="20" viewBox="0 0 32 32" version="1.1"
                                             xmlns="http://www.w3.org/2000/svg"
                                             xmlns:xlink="http://www.w3.org/1999/xlink"
                                             xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#ff7575"
@@ -177,14 +177,14 @@
                                         </svg>
                                         Tidak Dijawab
                                     </p>
-                                    <p class="fw-medium">12</p>
+                                    <p class="fw-medium jml_tidak_dikerjakan">0</p>
                                 </div>
                             </div>
                             <div class="card border w-100 mb-2">
                                 <div
                                     class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
                                     <p>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#17a2b8"
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#17a2b8"
                                             viewBox="0 0 24 24">
                                             <path
                                                 d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11-11-4.925-11-11 4.925-11 11-11zm0 2c-4.962 0-9 4.038-9 9s4.038 9 9 9 9-4.038 9-9-4.038-9-9-9zm-.5 4h1v6.793l4.146 4.147-.707.707-4.439-4.439v-7.208z">
@@ -312,7 +312,7 @@
                                     </svg>
                                     Jawaban Benar
                                 </p>
-                                <p class="fw-medium">120/150</p>
+                                <p class="fw-medium"><span class="jml_benar">0</span>/150</p>
                             </div>
                         </div>
                         <div class="card border w-100 mb-2">
@@ -334,7 +334,7 @@
                                     </svg>
                                     Jawaban Ragu-ragu
                                 </p>
-                                <p class="fw-medium">8</p>
+                                <p class="fw-medium jml_ragu">0</p>
                             </div>
                         </div>
                         <div class="card border w-100 mb-2">
@@ -364,7 +364,7 @@
                                     </svg>
                                     Tidak Dijawab
                                 </p>
-                                <p class="fw-medium">12</p>
+                                <p class="fw-medium jml_tidak_dikerjakan">0</p>
                             </div>
                         </div>
                         <div class="card border w-100 mb-2">
@@ -443,7 +443,7 @@
 <script>
     $(document).ready(function() {
             showLoading();
-
+            getJawabanSummary();
             // Ambil data dari server melalui AJAX
             $.ajax({
                 url: "{{ route('tryout.getResult')}}",
@@ -488,6 +488,26 @@
                 </tr>
             `;
                     $('#bidang_container').append(row);
+                });
+            }
+
+            function getJawabanSummary(){
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('tryouts.hasil.getJawabanSummary') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        tryout_id: "{{ $userTryout->tryout_id }}"
+                    },
+                    success: function (response) {
+                        if(response.status === 'success'){
+                            const data = response.data;
+                            console.log(data)
+                            $('.jml_benar').html(data.benar);
+                            $('.jml_ragu').html(data.ragu);
+                            $('.jml_tidak_dikerjakan').html(data.tidak_dikerjakan);
+                        }
+                    }
                 });
             }
 

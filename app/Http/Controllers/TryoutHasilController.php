@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SoalTryout;
 use App\Models\UserTryouts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -63,7 +64,7 @@ class TryoutHasilController extends Controller
     public function pembahasan($id)
     {
         $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::id())->first();
-        if ($userTryout->status != 'finished') {
+        if (!$userTryout || $userTryout->status != 'finished') {
             abort(404);
         }
 
@@ -160,6 +161,50 @@ class TryoutHasilController extends Controller
             ]);
         }
     }
+
+    public function getJawabanSummary(Request $request)
+    {
+        $userTryout = UserTryouts::where('tryout_id', $request->tryout_id)->where('user_id', Auth::user()->id)->first();
+
+        if ($userTryout && $userTryout->status == 'finished') {
+            try {
+                $soal = SoalTryout::with(['userAnswer' => function ($query) {
+                    $query->where('user_id', Auth::id());
+                }])
+                    ->select(['id', 'nomor', 'jawaban'])
+                    ->where('tryout_id', $request->tryout_id)
+                    ->orderBy('nomor', 'asc')
+                    ->get();
+
+                $summary = [
+                    'benar' => 0,
+                    'ragu-ragu' => 0,
+                    'tidak_dikerjakan' => 0
+                ];
+
+                $soal->each(function ($s) use (&$summary) {
+                    $userAnswer = $s->userAnswer ? $s->userAnswer->where('soal_id', $s->id)->first() : null;
+
+                    if ($userAnswer) {
+                        if ($userAnswer->status === 'ragu') {
+                            $summary['ragu-ragu']++;
+                        } else if ($userAnswer->status === 'dijawab' && $s->jawaban === $userAnswer->jawaban) {
+                            $summary['benar']++;
+                        }
+                    } else {
+                        $summary['tidak_dikerjakan']++;
+                    }
+                });
+
+                return response()->json(['status' => 'success', 'message' => 'Data summary berhasil diambil', 'data' => $summary]);
+            } catch (\Exception $e) {
+                return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan ' . $e->getMessage()]);
+            }
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Tryout belum selesai']);
+        }
+    }
+
 
     public function persentaseBidang(Request $request)
     {

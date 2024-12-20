@@ -99,6 +99,7 @@
                         success: function(response) {
                             if (response.status == 'success') {
                                 questions = response.data;
+                                console.log(questions)
                             }
                         },
                         complete: function() {

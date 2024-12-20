@@ -8,7 +8,7 @@
                     style="height: 40px;">
 
                 <!-- Input Search -->
-                <div class="rounded-pill border d-flex align-items-center"
+                <div class="rounded-pill border form-search d-flex align-items-center"
                     style="background-color: transparent; border-color: transparent; overflow: hidden;">
                     <input type="text" class="form-control border-0 shadow-none" placeholder="Search"
                         style="box-shadow: none;">
@@ -51,10 +51,10 @@
         {{-- Navbar --}}
         <ul class="d-flex gap-4 mb-0 px-0 mt-2">
             <li class="list-unstyled"><a href="{{ route('tryout.index') }}"
-                    class="link-primary {{ request()->routeIs('tryout.index') ? 'active' : '' }} text-muted px-0 text-decoration-none">Home</a>
+                    class="link-secondary {{ request()->routeIs('tryout.index') ? 'active' : '' }} text-muted px-0 text-decoration-none">Home</a>
             </li>
             <li class="list-unstyled"><a href="{{ route('tryouts.mytryout')}}"
-                    class="link-primary {{ request()->routeIs('tryouts.mytryout') ? 'active' : '' }} text-muted px-0 text-decoration-none">My
+                    class="link-secondary {{ request()->routeIs('tryouts.mytryout') ? 'active' : '' }} text-muted px-0 text-decoration-none">My
                     Tryouts</a>
             </li>
         </ul>

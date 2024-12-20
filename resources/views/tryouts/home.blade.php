@@ -293,7 +293,7 @@
                 <div class="col text-truncate">
                     <p class="mb-1 fs-10 text-muted">Progress</p>
                     <div class="d-flex align-items-center">
-                        <span class="fs-14 fw-medium">${progress}%</span>
+                        <span class="fs-14 fw-medium">${status_pengerjaan === 'finished' ? 'Selesai'  : (progress + '%')}</span>
                     </div>
                 </div>
                 <div class="col-auto d-none d-md-block">
