@@ -44,10 +44,10 @@ class AdminDashboardPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->plugins([
-                \Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin::make()
-                    ->pages([
-                        \App\Filament\Pages\Settings\Settings::class,
-                    ]),
+                // \Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin::make()
+                //     ->pages([
+                //         \App\Filament\Pages\Settings\Settings::class,
+                //     ]),
             ])
             ->middleware([
                 EncryptCookies::class,
