@@ -28,6 +28,11 @@ class TryoutController extends Controller
         return view('index', compact('batches', 'total_tryout', 'total_user_tryout', 'tryout_baru_minggu_ini'));
     }
 
+    public function katalog()
+    {
+        return view('tryouts.katalog');
+    }
+
 
     public function show($id)
     {

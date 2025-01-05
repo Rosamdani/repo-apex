@@ -6,14 +6,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([AuthMiddleware::class])->get('/', [App\Http\Controllers\TryoutController::class, 'index'])->name('index');
+Route::middleware([AuthMiddleware::class])->get('/katalog', [App\Http\Controllers\TryoutController::class, 'katalog'])->name('katalog');
 
-Route::middleware([AuthMiddleware::class])->prefix('/tryout')->group(function () {
-    Route::get('/show/{id}', [App\Http\Controllers\TryoutController::class, 'show'])->name('tryouts.show');
-    Route::get('/hasil/{id}', [App\Http\Controllers\TryoutHasilController::class, 'index'])->name('tryouts.hasil.index');
-    Route::post('/downloadReportBidang', [App\Http\Controllers\PDFController::class, 'downloadReportBidang'])->name('tryout.downloadReportBidang');
-    Route::get('/pembahasan/{id}', [App\Http\Controllers\TryoutHasilController::class, 'pembahasan'])->name('tryouts.hasil.pembahasan');
+Route::middleware([AuthMiddleware::class])->group(function () {
+    Route::prefix('/tryout')->group(function () {
+        Route::get('/show/{id}', [App\Http\Controllers\TryoutController::class, 'show'])->name('tryouts.show');
+        Route::get('/hasil/{id}', [App\Http\Controllers\TryoutHasilController::class, 'index'])->name('tryouts.hasil.index');
+        Route::post('/downloadReportBidang', [App\Http\Controllers\PDFController::class, 'downloadReportBidang'])->name('tryout.downloadReportBidang');
+        Route::get('/pembahasan/{id}', [App\Http\Controllers\TryoutHasilController::class, 'pembahasan'])->name('tryouts.hasil.pembahasan');
+        Route::get('/ranking/{id}', [App\Http\Controllers\TryoutHasilController::class, 'ranking'])->name('tryouts.hasil.perangkingan');
+    });
 });
-Route::middleware([AuthMiddleware::class])->get('/tryout/perangkingan/{id}', [App\Http\Controllers\TryoutHasilController::class, 'perangkingan'])->name('tryouts.hasil.perangkinan');
+// Route::middleware([AuthMiddleware::class])->get(uri: '/tryout/perangkingan/{id}', [App\Http\Controllers\TryoutHasilController::class, 'perangkingan'])->name('tryouts.hasil.perangkinan');
 Route::middleware([AuthMiddleware::class])->post('/testimoni/store', [App\Http\Controllers\TestimoniController::class, 'store'])->name('testimoni.store');
 
 Route::middleware([AuthMiddleware::class])->get('/profile/my-profile', function () {

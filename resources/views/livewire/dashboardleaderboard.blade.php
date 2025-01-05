@@ -84,7 +84,9 @@ new class extends Component {
                                 </td>
                                 <td>{{ $leaderboard->nilai }}</td>
                                 <td>{{ $leaderboard->tryout->batch->nama }}</td>
-                                <td>{{ $leaderboard->tryout->nama }}</td>
+                                <td><a class="text-primary fw-semibold"
+                                        href="{{ route('tryouts.hasil.perangkingan', ['id' => $leaderboard->tryout_id]) }}">{{ $leaderboard->tryout->nama }}</a>
+                                </td>
                             </tr>
                         @empty
                             <tr>

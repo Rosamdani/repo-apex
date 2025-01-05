@@ -71,4 +71,9 @@ class TryoutHasilController extends Controller
 
         return view('tryouts.pembahasan', compact('userTryout'));
     }
+
+    public function ranking($id)
+    {
+        return view('tryouts.ranking', compact('id'));
+    }
 }

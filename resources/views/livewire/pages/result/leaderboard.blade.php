@@ -4,7 +4,7 @@ use Livewire\Volt\Component;
 use App\Models\UserTryouts;
 
 new class extends Component {
-    public $tryoutId; // ID Tryout
+    public $tryoutId;
     public $leaderboard = [];
 
     protected $listeners = ['refreshLeaderboard' => '$refresh'];
@@ -31,7 +31,7 @@ new class extends Component {
                     <h6 class="fw-bold text-lg mb-0">{{ __('Leaderboard') }}</h6>
                 </div>
                 @if ($leaderboard->count() == 10)
-                    <a href="javascript:void(0)"
+                    <a href="{{ route('tryouts.hasil.perangkingan', ['id' => $this->tryoutId]) }}"
                         class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
                         View All
                         <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
