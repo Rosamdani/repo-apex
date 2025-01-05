@@ -3,7 +3,7 @@
 use Livewire\Volt\Component;
 
 new class extends Component {
-    protected $listeners = ['saveTime', 'handleKeyPress', 'pauseTryout', 'endTryout'];
+    protected $listeners = ['handleKeyPress'];
     public $tryoutId;
     public $tryout;
     public $questions;
@@ -11,6 +11,10 @@ new class extends Component {
     public $selectedAnswer = [];
     public $questionStatus = [];
     public $userTryout;
+    public $totalBenar;
+    public $totalSalah;
+    public $totalRaguRagu;
+    public $totalTidakDikerjakan;
     public $totalQuestions;
     public $isDoubtful = [];
 
@@ -37,8 +41,36 @@ new class extends Component {
 
             $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
             $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
-            $this->questionStatus[$question->id] = $answer ? ($answer->status === 'ragu-ragu' ? 'ragu-ragu' : ($answer->jawaban ? 'sudah dijawab' : 'belum dijawab')) : 'belum dijawab';
+
+            if ($answer) {
+                if ($answer->status === 'ragu-ragu' && $answer->jawaban !== $question->jawaban) {
+                    $this->questionStatus[$question->id] = 'salah';
+                } elseif ($answer->status === 'ragu-ragu') {
+                    $this->questionStatus[$question->id] = 'ragu-ragu';
+                } elseif ($answer->jawaban === null) {
+                    $this->questionStatus[$question->id] = 'tidak dijawab';
+                } elseif ($answer->jawaban === $question->jawaban) {
+                    $this->questionStatus[$question->id] = 'benar';
+                } else {
+                    $this->questionStatus[$question->id] = 'salah';
+                }
+            } else {
+                $this->questionStatus[$question->id] = 'tidak dijawab';
+            }
         }
+
+        $this->totalBenar = collect($this->questionStatus)
+            ->filter(fn($status) => $status === 'benar')
+            ->count();
+        $this->totalSalah = collect($this->questionStatus)
+            ->filter(fn($status) => $status === 'salah')
+            ->count();
+        $this->totalRaguRagu = collect($this->questionStatus)
+            ->filter(fn($status) => $status === 'ragu-ragu')
+            ->count();
+        $this->totalTidakDikerjakan = collect($this->questionStatus)
+            ->filter(fn($status) => $status === 'tidak dijawab')
+            ->count();
     }
 
     public function jumpToQuestion($index)
@@ -68,38 +100,11 @@ new class extends Component {
             $this->currentQuestionIndex--;
         }
     }
-
-    #[On('saveTime')]
-    public function saveTime($remainingMinutes)
-    {
-        $this->userTryout->update(['waktu' => $remainingMinutes]);
-    }
-
-    #[On('pause')]
-    public function pauseTryout()
-    {
-        $this->userTryout->update(['status' => 'paused']);
-        return redirect()->route('index')->with('success', 'Tryout dijeda!');
-    }
-
-    #[On('end')]
-    public function endTryout()
-    {
-        $this->userTryout->update(['status' => 'finished']);
-        return redirect()->route('index')->with('success', 'Tryout selesai!');
-    }
-};
-?>
+}; ?>
 
 <div class="row">
     <!-- Ujian kiri start -->
     <div class="col-xxl-9">
-        <!-- Header Soal -->
-        <div class="card radius-8 border-0 mb-3">
-            <div class="card-body p-24">
-                <p class="text-2xl mb-0">{{ $tryout->nama }}</p>
-            </div>
-        </div>
 
         <!-- Countdown Mobile -->
         <div class="card d-xxl-none radius-8 border-0 mb-3">
@@ -123,8 +128,9 @@ new class extends Component {
                     <span
                         class="badge text-sm fw-semibold px-20 py-9 radius-4
                         {{ match ($questionStatus[$questions[$currentQuestionIndex]->id]) {
-                            'sudah dijawab' => 'text-primary-600 bg-primary-100',
-                            'ragu-ragu' => 'text-warning-600 bg-warning-100',
+                            'benar' => 'text-success-600 bg-success-100',
+                            'salah' => 'text-danger-600 bg-danger-100',
+                            'ragi-ragu' => 'text-warning-600 bg-warning-100',
                             default => 'text-neutral-800 bg-neutral-300',
                         } }}">
                         {{ ucfirst($questionStatus[$questions[$currentQuestionIndex]->id]) }}
@@ -137,12 +143,14 @@ new class extends Component {
                     <!-- Pilihan Jawaban -->
                     @foreach (['a', 'b', 'c', 'd', 'e'] as $option)
                         <li>
-                            <div class="form-check d-flex align-items-center gap-2">
+                            <div
+                                class="form-check d-flex align-items-center gap-2 {{ $questions[$currentQuestionIndex]->jawaban === $option ? 'bg-success-200' : '' }} {{ $selectedAnswer[$questions[$currentQuestionIndex]->id] === $option ? ($questionStatus[$questions[$currentQuestionIndex]->id] === 'salah' ? ($isDoubtful[$questions[$currentQuestionIndex]->id] ? 'bg-warning-200' : 'bg-danger-200') : '') : 'bg-transparent' }}">
                                 <input type="radio" name="pilihan_{{ $questions[$currentQuestionIndex]->id }}"
+                                    disabled
                                     id="pilihan_{{ $questions[$currentQuestionIndex]->id }}_{{ $option }}"
-                                    wire:click="selectAnswer('{{ $questions[$currentQuestionIndex]->id }}', '{{ $option }}')"
                                     class="form-check-input" @checked($selectedAnswer[$questions[$currentQuestionIndex]->id] === $option)>
-                                <label class="form-check-label fw-medium text-secondary-light"
+                                <label class="form-check-label fw-medium"
+                                    style="{{ $questions[$currentQuestionIndex]->jawaban === $option ? 'color:black !important;' : '' }} {{ $selectedAnswer[$questions[$currentQuestionIndex]->id] === $option ? ($questionStatus[$questions[$currentQuestionIndex]->id] === 'salah' ? 'color:black !important;' : 'color:black !important;') : '' }}"
                                     for="pilihan_{{ $questions[$currentQuestionIndex]->id }}_{{ $option }}">
                                     {{ strtoupper($option) }}.
                                     {{ $questions[$currentQuestionIndex]['pilihan_' . $option] }}
@@ -160,38 +168,11 @@ new class extends Component {
                             style="transform: rotate(-180deg);"></iconify-icon>
                         Sebelumnya
                     </button>
-                    <div class="form-check d-flex align-items-center gap-2">
-                        <input type="checkbox" id="raguRagu_{{ $questions[$currentQuestionIndex]->id }}"
-                            wire:click="toggleDoubtful('{{ $questions[$currentQuestionIndex]->id }}')"
-                            class="form-check-input" @checked($isDoubtful[$questions[$currentQuestionIndex]->id])>
-                        <label for="raguRagu_{{ $questions[$currentQuestionIndex]->id }}"
-                            class="form-check-label fw-medium text-secondary-light">
-                            Ragu-ragu
-                        </label>
-                    </div>
 
-                    @if ($currentQuestionIndex == $totalQuestions - 1)
-                        <button class="btn btn-success btn-sm d-flex align-items-center"
-                            @click="actionType = 'end'; Swal.fire({
-                                title: 'Konfirmasi',
-                                text: 'Apakah Anda yakin ingin menyelesaikan tryout ini? Pastikan anda telah menjawab semua soal sebelum menyelesaikan.',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonText: 'Ya',
-                                cancelButtonText: 'Batal'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    $wire.dispatchSelf('endTryout');
-                                }
-                            })">
-                            Selesai <iconify-icon icon="eva:checkmark-fill" class="icon text-xl"></iconify-icon>
-                        </button>
-                    @else
-                        <button class="btn btn-primary btn-sm d-flex align-items-center" wire:click="nextQuestion">
-                            Selanjutnya <iconify-icon icon="eva:arrow-ios-forward-fill"
-                                class="icon text-xl"></iconify-icon>
-                        </button>
-                    @endif
+                    <button class="btn btn-primary-600 btn-sm d-flex align-items-center" wire:click="nextQuestion"
+                        {{ $currentQuestionIndex == $totalQuestions - 1 ? 'disabled' : '' }}>
+                        Selanjutnya <iconify-icon icon="eva:arrow-ios-forward-fill" class="icon text-xl"></iconify-icon>
+                    </button>
                 </div>
             </div>
         </div>
@@ -201,74 +182,45 @@ new class extends Component {
 
     <!-- Ujian kanan start -->
     <div class="col-xxl-3">
-        <!-- Countdown Desktop -->
-        <div class="card d-none d-xxl-block radius-8 border-0 mb-3">
+        {{-- Tambah informasi disini --}}
+
+        <div class="card radius-8 border-0 mb-3">
             <div class="card-body p-24">
-                <h6 class="fw-bold text-lg">Sisa Waktu</h6>
-                <div class="d-flex justify-content-center fw-bold" style="font-size: 80px;" x-data="{
-                    countdown: @js($userTryout->waktu ?? $tryout->waktu) * 60,
-                    saveTime() { $wire.saveTime(Math.floor(this.countdown / 60)); }
-                }"
-                    x-init="setInterval(() => {
-                        countdown--;
-                        if (countdown >= 0 && countdown % 60 === 0) saveTime();
-                        if (countdown <= 0) { // Ubah dari === menjadi <=
-                            clearInterval(this.interval); // Hentikan timer
-                            Swal.fire({
-                                title: 'Waktu Habis!',
-                                text: 'Tryout telah selesai otomatis. Hasil Anda akan disimpan.',
-                                icon: 'info',
-                                confirmButtonText: 'OK',
-                                allowOutsideClick: false,
-                            }).then(() => {
-                                $wire.dispatchSelf('endTryout'); // Kirim event untuk menyimpan hasil
-                            });
-                        }
-                    }, 1000)">
-                    <span class="text-primary-600"
-                        x-text="`${Math.floor(countdown / 3600)}:${String(Math.floor(countdown / 60) % 60).padStart(2, '0')}:${String(countdown % 60).padStart(2, '0')}`">
-                    </span>
-                </div>
+                <h6 class="fw-bold text-lg">Hasil</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2 mt-2 h-100">
+                    <li class="d-flex align-items-center h-100">
+                        <span
+                            class="badge text-sm fw-semibold px-20 py-9 radius-4 text-success-600 bg-success-100 w-100">
+                            {{ $totalBenar }} Benar
+                        </span>
+                    </li>
+                    <li class="d-flex align-items-center h-100">
+                        <span class="badge text-sm fw-semibold px-20 py-9 radius-4 text-danger-600 bg-danger-100 w-100">
+                            {{ $totalSalah }} Salah
+                        </span>
+                    </li>
+                    <li class="d-flex align-items-center h-100">
+                        <span
+                            class="badge text-sm fw-semibold px-20 py-9 radius-4 text-warning-600 bg-warning-100 w-100">
+                            {{ $totalRaguRagu }} Ragu-ragu
+                        </span>
+                    </li>
+                    <li class="d-flex align-items-center h-100">
+                        <span
+                            class="badge text-sm fw-semibold px-20 py-9 radius-4 text-neutral-800 bg-neutral-300 w-100">
+                            {{ $totalTidakDikerjakan }} Tidak Dikerjakan
+                        </span>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <!-- Button -->
-        <div x-data="{ actionType: null }">
-            <!-- Tombol Jeda -->
-            <button class="btn col btn-warning"
-                @click="actionType = 'pause'; Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah Anda yakin ingin menjeda tryout ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $wire.dispatchSelf('pauseTryout');
-                }
-            })">
-                Jeda
-            </button>
-
-            <!-- Tombol Selesai -->
-            <button class="btn col btn-success"
-                @click="actionType = 'end'; Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah Anda yakin ingin menyelesaikan tryout ini? Pastikan anda telah menjawab semua soal sebelum menyelesaikan.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $wire.dispatchSelf('endTryout');
-                }
-            })">
-                Selesai
-            </button>
+        <div class="d-flex justify-content-center w-100">
+            <a href="{{ route('index') }}" wire:navigate
+                class="btn btn-outline-success-800 text-success-600 border-success-600 d-inline-flex align-items-center text-center gap-2 text-sm btn-sm px-8 py-13 w-100">
+                <iconify-icon icon="mdi:arrow-left" class="icon text-xl"></iconify-icon> Kembali ke Dashboard
+            </a>
         </div>
-
     </div>
 
     <div class="col-12">
@@ -281,8 +233,9 @@ new class extends Component {
                                 $index === $currentQuestionIndex
                                     ? 'bg-primary-50 text-primary-800'
                                     : match ($questionStatus[$question->id]) {
-                                        'sudah dijawab' => 'bg-primary-600',
-                                        'ragu-ragu' => 'bg-warning-600',
+                                        'benar' => 'bg-success-400',
+                                        'salah' => 'bg-danger-400',
+                                        'ragu-ragu' => 'bg-warning-400',
                                         default => 'bg-neutral-200 text-neutral-800',
                                     };
                         @endphp
@@ -294,16 +247,20 @@ new class extends Component {
                 </div>
                 <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-12-px h-8-px rounded-pill bg-primary-600"></span>
-                        <span class="text-sm fw-semibold text-neutral-800">Sudah dijawab</span>
+                        <span class="w-12-px h-8-px rounded-pill bg-success-400"></span>
+                        <span class="text-sm fw-semibold text-neutral-800">Benar</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-12-px h-8-px rounded-pill bg-warning-600"></span>
+                        <span class="w-12-px h-8-px rounded-pill bg-danger-400"></span>
+                        <span class="text-sm fw-semibold text-neutral-800">Salah</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="w-12-px h-8-px rounded-pill bg-warning-400"></span>
                         <span class="text-sm fw-semibold text-neutral-800">Ragu-ragu</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <span class="w-12-px h-8-px rounded-pill bg-neutral-200"></span>
-                        <span class="text-sm fw-semibold text-neutral-800">Belum dijawab</span>
+                        <span class="text-sm fw-semibold text-neutral-800">Tidak Dijawab</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <span class="w-12-px h-8-px rounded-pill bg-primary-50"></span>

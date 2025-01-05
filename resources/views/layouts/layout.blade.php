@@ -6,6 +6,7 @@
 <x-style />
 
 @livewireStyles
+@stack('style')
 
 <body>
 
