@@ -23,6 +23,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
+        'image_url',
         'email',
         'password',
     ];
@@ -50,8 +52,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function devices()
+    public function sessions()
     {
-        return $this->hasMany(UserDevice::class);
+        return $this->hasMany(Session::class);
+    }
+
+    public function answers()
+    {
+        return $this->hasMany(UserAnswer::class);
+    }
+
+    public function userTryouts()
+    {
+        return $this->hasMany(UserTryouts::class);
     }
 }

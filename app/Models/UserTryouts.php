@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enum\TryoutStatus;
+use App\Observers\UserTryoutsObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -28,6 +31,10 @@ class UserTryouts extends Model
         'status',
         'waktu',
         'catatan',
+    ];
+
+    protected $casts = [
+        'status' => TryoutStatus::class,
     ];
 
     public function user()

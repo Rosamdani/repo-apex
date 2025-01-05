@@ -9,8 +9,10 @@
         "php": "^8.2",
         "eightynine/filament-excel-import": "^3.1",
         "filament/filament": "^3.2",
+        "jenssegers/agent": "^2.6",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
+        "livewire/volt": "^1.6",
         "outerweb/filament-settings": "^1.2",
         "pxlrbt/filament-excel": "^2.3"
     },

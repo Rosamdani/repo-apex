@@ -15,8 +15,9 @@
                     <button type="button"
                         class="me-1 border-0 primary-button rounded-circle d-flex align-items-center justify-content-center shadow-none"
                         style="outline: none; box-shadow: none; width: 30px; height: 30px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
@@ -50,10 +51,10 @@
 
         {{-- Navbar --}}
         <ul class="d-flex gap-4 mb-0 px-0 mt-2">
-            <li class="list-unstyled"><a href="{{ route('tryout.index') }}"
-                    class="link-secondary {{ request()->routeIs('tryout.index') ? 'active' : '' }} text-muted px-0 text-decoration-none">Home</a>
+            <li class="list-unstyled"><a href="{{ route('index') }}"
+                    class="link-secondary {{ request()->routeIs('index') ? 'active' : '' }} text-muted px-0 text-decoration-none">Home</a>
             </li>
-            <li class="list-unstyled"><a href="{{ route('tryouts.mytryout')}}"
+            <li class="list-unstyled"><a href="{{ route('tryouts.mytryout') }}"
                     class="link-secondary {{ request()->routeIs('tryouts.mytryout') ? 'active' : '' }} text-muted px-0 text-decoration-none">My
                     Tryouts</a>
             </li>
