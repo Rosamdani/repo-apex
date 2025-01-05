@@ -3438,6 +3438,14 @@ html[data-theme="dark"] .bg-gradient-start-5 {
     );
 }
 
+html[data-theme="dark"] .bg-gradient-primary-50 {
+    background: linear-gradient(
+        to right,
+        rgba(255, 238, 238, 0.15),
+        rgba(255, 252, 252, 0.1)
+    );
+}
+
 html[data-theme="dark"] .bg-gradient-dark-start-1 {
     background: linear-gradient(
         261deg,
