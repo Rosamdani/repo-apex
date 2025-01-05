@@ -3255,6 +3255,10 @@ th {
     background: linear-gradient(to right, #ffeeee, #fffcfc);
 }
 
+.bg-gradient-primary-50 {
+    background: linear-gradient(to right, var(--primary-50), #ffffffff);
+}
+
 .bg-gradient-dark-start-1 {
     background: linear-gradient(
         261deg,
