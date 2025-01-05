@@ -14,9 +14,10 @@ class TryoutHasilController extends Controller
     {
         try {
             $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
-            if ($userTryout->status != 'finished') {
+            if ($userTryout->status->value != 'finished') {
                 return redirect()->back();
             }
+
             $totalUser = UserTryouts::where('tryout_id', $id)->where('status', 'finished')->count();
             $userTryoutRank = UserTryouts::where('tryout_id', $id)
                 ->orderBy('nilai', 'DESC')
@@ -28,9 +29,9 @@ class TryoutHasilController extends Controller
             }
 
             $status_lulus = $userTryout->nilai >= 60 ? 'Lulus' : 'Belum Lulus';
-            return view('tryouts.hasil', compact('userTryout', 'status_lulus', 'totalUser', 'userTryoutRank'));
+            return view('result', compact('userTryout', 'status_lulus', 'totalUser', 'userTryoutRank'));
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan ']);
+            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan disini ' . $e->getMessage()]);
         }
     }
 
@@ -64,7 +65,7 @@ class TryoutHasilController extends Controller
     public function pembahasan($id)
     {
         $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::id())->first();
-        if (!$userTryout || $userTryout->status != 'finished') {
+        if (!$userTryout || $userTryout->status->value != 'finished') {
             abort(404);
         }
 
@@ -168,6 +169,8 @@ class TryoutHasilController extends Controller
 
         if ($userTryout && $userTryout->status == 'finished') {
             try {
+                $totalSoal = SoalTryout::where('tryout_id', $request->tryout_id)->count();
+
                 $soal = SoalTryout::with(['userAnswer' => function ($query) {
                     $query->where('user_id', Auth::id());
                 }])
@@ -179,7 +182,8 @@ class TryoutHasilController extends Controller
                 $summary = [
                     'benar' => 0,
                     'ragu-ragu' => 0,
-                    'tidak_dikerjakan' => 0
+                    'tidak_dikerjakan' => 0,
+                    'total_soal' => $totalSoal
                 ];
 
                 $soal->each(function ($s) use (&$summary) {

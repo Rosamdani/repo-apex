@@ -32,26 +32,18 @@ class UserTryoutsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')->searchable(),
                 Tables\Columns\TextColumn::make('nilai')->sortable(),
-                Tables\Columns\TextColumn::make('status')->sortable()
-                    ->formatStateUsing(fn(string $state): string => match ($state) {
-                        'paused' => 'Paused',
-                        'started' => 'Dimulai',
-                        'finished' => 'Selesai',
-                        'not_started' => 'Belum Mulai',
-                        default => $state,
-                    })
-                    ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'paused' => 'gray',
-                        'started' => 'warning',
-                        'finished' => 'success',
-                        'not_started' => 'danger',
-                    }),
                 Tables\Columns\TextColumn::make('catatan'),
             ])
             ->filters([])
             ->headerActions([])
-            ->actions([])
-            ->bulkActions([]);
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 }

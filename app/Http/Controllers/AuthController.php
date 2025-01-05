@@ -3,19 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
-use App\Models\Tryouts;
+use App\Models\Session;
 use App\Models\User;
+use App\Models\UserDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use TomatoPHP\FilamentLogger\Facades\FilamentLogger;
+use Jenssegers\Agent\Agent;
 
 class AuthController extends Controller
 {
     public function login()
     {
-        return view('auth.login');
+        return view('auth.signin');
     }
 
     public function loginStore(Request $request)
@@ -23,35 +24,47 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
-        ], [
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Email tidak valid',
-            'password.required' => 'Password wajib diisi',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $credentials = $request->only('email', 'password');
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            $deviceId = Str::uuid()->toString(); // Buat ID unik perangkat
-
-            // Hitung perangkat aktif saat ini
-            $activeDevices = $user->devices()->count();
-
-            // Jika perangkat aktif sudah mencapai batas maksimal
-            if ($activeDevices >= 5) {
-                return redirect()->back()->with('error', 'Anda sudah login di 2 perangkat lain. Silakan logout dahulu sebelum login kembali.');
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            if (session()->has('sessions')) {
+                session()->forget('sessions');
             }
 
-            $user->devices()->create(['device_id' => $deviceId]);
+            $userSession = Session::where('user_id', $user->id)->get();
+            if ($userSession && $userSession->count() >= 2) {
+                $request->session()->put('sessions', Auth::user()->sessions);
+                Auth::logout();
+                return redirect()->route('anotherDevice');
+            } else {
+                $agent = new Agent();
+                $session = new Session();
+                $session->user_id = $user->id;
+                $session->browser = $agent->browser();
+                $session->device = $agent->isMobile() ? 'Mobile' : ($agent->isTablet() ? 'Tablet' : 'Desktop');
+                $session->os = $agent->platform();
+                $session->os_version = $agent->version($agent->platform());
+                $session->last_activity = now();
+                $session->save();
+                session()->put('session_id', $session->id);
+            }
 
-            session(['device_id' => $deviceId]);
 
-            Auth::login($user, $request->boolean('remember'));
-            return redirect()->intended();
+            return redirect()->intended('/');
         }
 
-        return redirect()->back()->with('error', 'Email atau password salah!');
+        return back()->withErrors(['email' => 'Email atau password salah.']);
     }
+
+    public function showSessions()
+    {
+        $sessions = session('sessions');
+        return view('auth.another-device', compact('sessions'));
+    }
+
 
     public function register()
     {
@@ -74,14 +87,23 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        if ($request->user()) {
-            $deviceId = session('device_id');
-            $request->user()->devices()->where('device_id', $deviceId)->delete();
-        }
-
         Auth::logout();
+
+        $session = Session::findOrFail(session('session_id'));
+
+        $session->delete();
+
         $request->session()->flush();
 
         return redirect()->route('login');
+    }
+
+    public function logoutSession(Request $request)
+    {
+        $session = Session::findOrFail($request->session_id);
+
+        $session->delete();
+
+        return redirect()->route('login')->with('success', 'Perangkat lain berhasil di-logout.');
     }
 }

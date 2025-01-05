@@ -23,11 +23,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Buat admin user
-        User::firstOrCreate([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('password'), // Hash password
-        ]);
+        // User::firstOrCreate([
+        //     'name' => 'Admin',
+        //     'email' => 'admin@gmail.com',
+        //     'password' => bcrypt('password'), // Hash password
+        // ]);
 
         // Buat batch tryout
         $batch = BatchTryouts::firstOrCreate([
@@ -39,10 +39,10 @@ class DatabaseSeeder extends Seeder
 
         // Buat tryout
         $tryout = \App\Models\Tryouts::firstOrCreate([
-            'nama' => 'TRY OUT FDI 1 BATCH 1 2024',
+            'nama' => 'TRY OUT FDI 5 BATCH 1 2024',
             'batch_id' => $batch->id,
             'tanggal' => now(),
-            'waktu' => 240,
+            'waktu' => '200',
         ]);
 
         // Buat kompetensi dan bidang

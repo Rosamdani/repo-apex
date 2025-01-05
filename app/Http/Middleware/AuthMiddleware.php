@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Session;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,17 @@ class AuthMiddleware
     {
         if (!Auth::check()) {
             return redirect()->route('login');
+        }
+
+        if (session('session_id') && !Session::where('id', session('session_id'))->exists()) {
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'Perangkat anda telah dikeluarkan dari perangkat lain!');
+        }
+
+        if (session('session_id')) {
+            $session = Session::findOrFail(session('session_id'));
+            $session->last_activity = now();
+            $session->save();
         }
         return $next($request);
     }

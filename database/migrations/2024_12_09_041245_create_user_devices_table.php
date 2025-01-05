@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('device_id');
+            $table->string('device_info');
+            $table->datetime('last_view')->nullable();
             $table->timestamps();
         });
     }

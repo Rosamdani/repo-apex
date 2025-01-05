@@ -1,134 +1,372 @@
+<!-- meta tags and other links -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>
-        {{ 'Register - ' . setting('general.app_name') ?? 'Laravel'}}
-    </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<x-head :title="'Register'" />
 
-    @include('layouts.style')
-</head>
+<body>
 
-<body class="primary-background">
+    <section class="auth bg-base d-flex flex-wrap">
+        <div class="auth-left d-lg-block d-none">
+            <div class="d-flex align-items-center flex-column h-100 justify-content-center">
+                <img style="height: 100%; width: 100%"
+                    src="{{ setting('auth.login_image') ? asset('storage/' . setting('auth.login_image')) : asset('assets/images/auth/auth-img.png') }}"
+                    alt="">
+            </div>
+        </div>
+        <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">
+            <div class="max-w-464-px mx-auto w-100">
+                <div>
+                    <a href="{{ route('index') }}" class="mb-40 max-w-290-px">
+                        <img style="height: 60px;"
+                            src="{{ setting('general.logo') ? asset('storage/' . setting('general.logo')) : asset('assets/images/logo.png') }}"
+                            alt="">
+                    </a>
+                    <h4 class="mb-12">Buat akun anda</h4>
+                    <p class="mb-32 text-secondary-light text-lg">Untuk membuat akun, isi informasi berikut</p>
+                </div>
+                <div class="form-wizard">
+                    <form action="#" method="post">
+                        <div class="form-wizard-header overflow-x-auto scroll-sm pb-8 my-32">
+                            <ul class="list-unstyled form-wizard-list">
+                                <li class="form-wizard-list__item active">
+                                    <div class="form-wizard-list__line">
+                                        <span class="count">1</span>
+                                        <span class="form-wizard-list__line__connector"></span>
+                                    </div>
+                                    <span class="text text-xs fw-semibold">Informasi Personal </span>
+                                </li>
+                                <li class="form-wizard-list__item">
+                                    <div class="form-wizard-list__line">
+                                        <span class="count">2</span>
+                                        <span class="form-wizard-list__line__connector"></span>
+                                    </div>
+                                    <span class="text text-xs fw-semibold">Informasi Akademik</span>
+                                </li>
+                                <li class="form-wizard-list__item">
+                                    <div class="form-wizard-list__line">
+                                        <span class="count">3</span>
+                                    </div>
+                                    <span class="text text-xs fw-semibold">Keamanan Akun</span>
+                                </li>
+                            </ul>
+                        </div>
 
-    <div class="row mx-0">
-        <div class="col-12 col-md-6 px-0">
-            <div class="d-flex justify-content-center align-items-center w-100" style="height: 100vh">
-                <div class="card bg-transparent container border-0 px-2 px-md-5">
-                    <div class="card-header primary-background border-0">
-                        <h4 class="text-center">Sign up to {{ setting('general.app_name') ?? 'Apexmedika'}}</h4>
-                    </div>
-                    <div class="card-body border-0 px-3 px-md-5">
-                        <form action="{{ route('registerStore') }}" method="post">
-                            @csrf
-                            @if (session()->has('error'))
-                            <div class="alert py-1 alert-danger">
-                                {{ session()->get('error') }}
-                            </div>
-                            @endif
-                            <div class="mb-3">
-                                <input type="email" name="email"
-                                    class="form-control {{ $errors->has('email') ? 'is-invalid' : ''}} bg-light rounded-pill"
-                                    required placeholder="Email">
-                                @if ($errors->has('email'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('email') }}
+                        <fieldset class="wizard-fieldset show">
+                            <h6 class="text-md text-neutral-500">Informasi Personal</h6>
+                            <div class="row gy-3">
+                                <div class="position-relative ">
+                                    <div class="icon-field mb-16">
+                                        <span class="icon top-50 translate-middle-y">
+                                            <iconify-icon icon="f7:person"></iconify-icon>
+                                        </span>
+                                        <input type="text" class="form-control h-56-px bg-neutral-50 radius-12"
+                                            placeholder="Nama Lengkap">
+                                    </div>
                                 </div>
-                                @endif
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" name="name"
-                                    class="form-control {{ $errors->has('name') ? 'is-invalid' : ''}} bg-light rounded-pill"
-                                    required placeholder="Nama">
-                                @if ($errors->has('name'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('name') }}
+                                <div class="-mb-6">
+                                    <div class="position-relative ">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y">
+                                                <iconify-icon icon="f7:person"></iconify-icon>
+                                            </span>
+                                            <input type="text" class="form-control h-56-px bg-neutral-50 radius-12"
+                                                placeholder="Username">
+                                        </div>
+                                    </div>
+                                    <span class="mt-8 text-sm text-secondary-light">Username digunakan untuk
+                                        login</span>
                                 </div>
-                                @endif
-                            </div>
-                            <div class="mb-3">
-                                <input type="password" name="password"
-                                    class="form-control bg-light {{ $errors->has('password') ? 'is-invalid' : ''}} rounded-pill"
-                                    required placeholder="Password">
-                                @if ($errors->has('password'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('password') }}
+                                <div class="position-relative ">
+                                    <div class="icon-field mb-16">
+                                        <span class="icon top-50 translate-middle-y">
+                                            <iconify-icon icon="mage:email"></iconify-icon>
+                                        </span>
+                                        <input type="email" class="form-control h-56-px bg-neutral-50 radius-12"
+                                            placeholder="Email">
+                                    </div>
                                 </div>
-                                @endif
-                            </div>
-                            <div class="mb-4">
-                                <input type="password" name="re-password"
-                                    class="form-control bg-light {{ $errors->has('re-password') ? 'is-invalid' : ''}} rounded-pill"
-                                    required placeholder="Ulangi Password">
-                                @if ($errors->has('re-password'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('re-password') }}
+                                <div class="position-relative ">
+                                    <div class="icon-field mb-16">
+                                        <span class="icon top-50 translate-middle-y">
+                                            <iconify-icon icon="mage:phone"></iconify-icon>
+                                        </span>
+                                        <input type="text" class="form-control h-56-px bg-neutral-50 radius-12"
+                                            placeholder="Nomor Telepon Aktif (08-------------)">
+                                    </div>
                                 </div>
-                                @endif
-                            </div>
-                            <div class="d-flex mb-3">
-                                <button type="submit" class="btn w-100 rounded-pill primary-button">Register</button>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="flex-grow-1">
-                                    <hr class="m-0">
-                                </div>
-                                <div class="flex-shrink px-2 text-muted">Atau daftar dengan</div>
-                                <div class="flex-grow-1">
-                                    <hr class="m-0">
+
+                                <div class="form-group text-end">
+                                    <button type="button"
+                                        class="form-wizard-next-btn btn btn-primary-600 px-32">Next</button>
                                 </div>
                             </div>
-                            <div class="text-center mb-3">
-                                <a href="/auth/google"
-                                    class="btn border btn-outline-light text-secondary rounded-pill d-flex align-items-center justify-content-center">
-                                    <img src="{{ asset('asset/images/google.png')}}" alt="Google"
-                                        style="width: 20px; height: 20px;" class="me-2">
-                                    Google
-                                </a>
+                        </fieldset>
+
+                        <fieldset class="wizard-fieldset">
+                            <h6 class="text-md text-neutral-500">Informasi Akademik</h6>
+                            <div class="row gy-3">
+                                <div class="position-relative ">
+                                    <div class="icon-field mb-16">
+                                        <span class="icon top-50 translate-middle-y">
+                                            <iconify-icon icon="mdi:school"></iconify-icon>
+                                        </span>
+                                        <input type="text" class="form-control h-56-px bg-neutral-50 radius-12"
+                                            placeholder="Universitas Asal">
+                                    </div>
+                                </div>
+                                <div class="position-relative ">
+                                    <div class="icon-field mb-16">
+                                        <span class="icon top-50 translate-middle-y">
+                                            <iconify-icon icon="mdi:calendar-blank"></iconify-icon>
+                                        </span>
+                                        <input type="number" class="form-control h-56-px bg-neutral-50 radius-12"
+                                            placeholder="Tahun masuk">
+                                    </div>
+                                </div>
+                                <div class="position-relative d-flex align-items-center">
+                                    <select name="status_pendidikan" id="status_pendidikan"
+                                        class="form-control form-select h-56-px bg-neutral-50 radius-12 ms-auto me-auto">
+                                        <option value="">--Pilih Status Pendidikan--</option>
+                                        <option value="koas">Koas</option>
+                                        <option value="pre-klinik">Pre Klinik</option>
+                                    </select>
+                                </div>
+                                <div class="mb-20">
+                                    <div class="position-relative ">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y">
+                                                <iconify-icon icon="mdi:university"></iconify-icon>
+                                            </span>
+                                            <input type="number" class="form-control h-56-px bg-neutral-50 radius-12"
+                                                placeholder="Semester Saat Ini">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-end gap-8">
+                                    <button type="button"
+                                        class="form-wizard-previous-btn btn btn-neutral-500 border-neutral-100 px-32">Back</button>
+                                    <button type="button"
+                                        class="form-wizard-next-btn btn btn-primary-600 px-32">Next</button>
+                                </div>
                             </div>
-                            <div class="text-center">
-                                <p class="text-muted">Sudah punya akun? <a href="{{ route('login') }}"
-                                        class="link-primary text-decoration-none">Login</a>
-                                </p>
+                        </fieldset>
+
+                        <fieldset class="wizard-fieldset">
+                            <h6 class="text-md text-neutral-500">Keamanan Akun</h6>
+                            <div class="row gy-3">
+
+                                <div class="">
+                                    <div class="position-relative ">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y">
+                                                <iconify-icon icon="solar:lock-password-outline"></iconify-icon>
+                                            </span>
+                                            <input type="password"
+                                                class="form-control h-56-px bg-neutral-50 radius-12"
+                                                id="your-password" placeholder="Password">
+                                        </div>
+                                        <span
+                                            class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light"
+                                            data-toggle="#your-password"></span>
+                                    </div>
+                                    <span class="mt-8 text-sm text-secondary-light">Password minimal 8 karakter</span>
+                                </div>
+                                <div class="mb-20">
+                                    <div class="position-relative ">
+                                        <div class="icon-field">
+                                            <span class="icon top-50 translate-middle-y">
+                                                <iconify-icon icon="solar:lock-password-outline"></iconify-icon>
+                                            </span>
+                                            <input type="password"
+                                                class="form-control h-56-px bg-neutral-50 radius-12"
+                                                id="your-re-password" placeholder="Konfirmasi Password">
+                                        </div>
+                                        <span
+                                            class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light"
+                                            data-toggle="#your-password"></span>
+                                    </div>
+                                </div>
+                                <div class="">
+                                    <div class="d-flex justify-content-between gap-2">
+                                        <div class="form-check style-check d-flex align-items-start">
+                                            <input class="form-check-input border border-neutral-300 mt-4"
+                                                type="checkbox" value="" id="condition">
+                                            <label class="form-check-label text-sm" for="condition">
+                                                By creating an account means you agree to the
+                                                <a href="javascript:void(0)"
+                                                    class="text-primary-600 fw-semibold">Terms
+                                                    &
+                                                    Conditions</a> and our
+                                                <a href="javascript:void(0)"
+                                                    class="text-primary-600 fw-semibold">Privacy Policy</a>
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-end gap-8">
+                                    <button type="button"
+                                        class="form-wizard-previous-btn btn btn-neutral-500 border-neutral-100 px-32">Back</button>
+                                    <button type="button"
+                                        class="form-wizard-next-btn btn btn-primary-600 px-32">Daftar
+                                        Sekarang</button>
+                                </div>
                             </div>
-                        </form>
+                        </fieldset>
+                    </form>
+                    <div class="mt-32 text-center text-sm">
+                        <p class="mb-0">Sudah punya akun? <a href="{{ route('login') }}"
+                                class="text-primary-600 fw-semibold">Masuk</a></p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 d-none d-md-block px-0">
-            <img src="{{ asset('asset/images/cotton-plants-still-life.jpg') }}" alt="" class="w-100 object-cover"
-                style="height: 100vh">
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
+    </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
-        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtHqNGTfbWV9yUzIz5O0F3RRrwJZS17tM0GcMQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    @php
+        $script = '<script>
+            // ================== Password Show Hide Js Start ==========
+            function initializePasswordToggle(toggleSelector) {
+                $(toggleSelector).on("click", function() {
+                    $(this).toggleClass("ri-eye-off-line");
+                    var input = $($(this).attr("data-toggle"));
+                    if (input.attr("type") === "password") {
+                        input.attr("type", "text");
+                    } else {
+                        input.attr("type", "password");
+                    }
+                });
+            }
+            // Call the function
+            initializePasswordToggle(".toggle-password");
+            // ========================= Password Show Hide Js End ===========================
+        </script>';
+    @endphp
 
-    @if ($errors->any())
+    <!-- jQuery library js -->
+    <script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
+    <!-- Bootstrap js -->
+    <script src="{{ asset('assets/js/lib/bootstrap.bundle.min.js') }}"></script>
+    <!-- Iconify Font js -->
+    <script src="{{ asset('assets/js/lib/iconify-icon.min.js') }}"></script>
+    <!-- jQuery UI js -->
+    <script src="{{ asset('assets/js/lib/jquery-ui.min.js') }}"></script>
+    <!-- Vector Map js -->
+    <script src="{{ asset('assets/js/lib/jquery-jvectormap-2.0.5.min.js') }}"></script>
+    <script src="{{ asset('assets/js/lib/jquery-jvectormap-world-mill-en.js') }}"></script>
+    <!-- Popup js -->
+    <script src="{{ asset('assets/js/lib/magnifc-popup.min.js') }}"></script>
+    <x-script />
     <script>
-        @if ($errors->any())
-            let errors = @json($errors->all());
-            errors.forEach(error => {
-                toastr.error(error);
+        // =============================== Wizard Step Js Start ================================
+        $(document).ready(function() {
+            // click on next button
+            $(".form-wizard-next-btn").on("click", function() {
+                var parentFieldset = $(this).parents(".wizard-fieldset");
+                var currentActiveStep = $(this).parents(".form-wizard").find(".form-wizard-list .active");
+                var next = $(this);
+                var nextWizardStep = true;
+                parentFieldset.find(".wizard-required").each(function() {
+                    var thisValue = $(this).val();
+
+                    if (thisValue == "") {
+                        $(this).siblings(".wizard-form-error").show();
+                        nextWizardStep = false;
+                    } else {
+                        $(this).siblings(".wizard-form-error").hide();
+                    }
+                });
+                if (nextWizardStep) {
+                    next.parents(".wizard-fieldset").removeClass("show", "400");
+                    currentActiveStep.removeClass("active").addClass("activated").next().addClass("active",
+                        "400");
+                    next.parents(".wizard-fieldset").next(".wizard-fieldset").addClass("show", "400");
+                    $(document).find(".wizard-fieldset").each(function() {
+                        if ($(this).hasClass("show")) {
+                            var formAtrr = $(this).attr("data-tab-content");
+                            $(document).find(".form-wizard-list .form-wizard-step-item").each(
+                                function() {
+                                    if ($(this).attr("data-attr") == formAtrr) {
+                                        $(this).addClass("active");
+                                        var innerWidth = $(this).innerWidth();
+                                        var position = $(this).position();
+                                        $(document).find(".form-wizard-step-move").css({
+                                            "left": position.left,
+                                            "width": innerWidth
+                                        });
+                                    } else {
+                                        $(this).removeClass("active");
+                                    }
+                                });
+                        }
+                    });
+                }
             });
-        @endif
+            //click on previous button
+            $(".form-wizard-previous-btn").on("click", function() {
+                var counter = parseInt($(".wizard-counter").text());;
+                var prev = $(this);
+                var currentActiveStep = $(this).parents(".form-wizard").find(".form-wizard-list .active");
+                prev.parents(".wizard-fieldset").removeClass("show", "400");
+                prev.parents(".wizard-fieldset").prev(".wizard-fieldset").addClass("show", "400");
+                currentActiveStep.removeClass("active").prev().removeClass("activated").addClass("active",
+                    "400");
+                $(document).find(".wizard-fieldset").each(function() {
+                    if ($(this).hasClass("show")) {
+                        var formAtrr = $(this).attr("data-tab-content");
+                        $(document).find(".form-wizard-list .form-wizard-step-item").each(
+                            function() {
+                                if ($(this).attr("data-attr") == formAtrr) {
+                                    $(this).addClass("active");
+                                    var innerWidth = $(this).innerWidth();
+                                    var position = $(this).position();
+                                    $(document).find(".form-wizard-step-move").css({
+                                        "left": position.left,
+                                        "width": innerWidth
+                                    });
+                                } else {
+                                    $(this).removeClass("active");
+                                }
+                            });
+                    }
+                });
+            });
+            //click on form submit button
+            $(document).on("click", ".form-wizard .form-wizard-submit", function() {
+                var parentFieldset = $(this).parents(".wizard-fieldset");
+                var currentActiveStep = $(this).parents(".form-wizard").find(".form-wizard-list .active");
+                parentFieldset.find(".wizard-required").each(function() {
+                    var thisValue = $(this).val();
+                    if (thisValue == "") {
+                        $(this).siblings(".wizard-form-error").show();
+                    } else {
+                        $(this).siblings(".wizard-form-error").hide();
+                    }
+                });
+            });
+            // focus on input field check empty or not
+            $(".form-control").on("focus", function() {
+                var tmpThis = $(this).val();
+                if (tmpThis == "") {
+                    $(this).parent().addClass("focus-input");
+                } else if (tmpThis != "") {
+                    $(this).parent().addClass("focus-input");
+                }
+            }).on("blur", function() {
+                var tmpThis = $(this).val();
+                if (tmpThis == "") {
+                    $(this).parent().removeClass("focus-input");
+                    $(this).siblings(".wizard-form-error").show();
+                } else if (tmpThis != "") {
+                    $(this).parent().addClass("focus-input");
+                    $(this).siblings(".wizard-form-error").hide();
+                }
+            });
+        });
+        // =============================== Wizard Step Js End ================================
     </script>
-    @endif
-    @if (session('error'))
-    <script>
-        toastr.error("{{ session('error') }}");
-    </script>
-    @endif
+
 </body>
 
 </html>

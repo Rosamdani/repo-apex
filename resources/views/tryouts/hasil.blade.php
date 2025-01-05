@@ -122,7 +122,8 @@
                                         </svg>
                                         Jawaban Benar
                                     </p>
-                                    <p class="fw-medium"><span class="jml_benar">0</span>/150</p>
+                                    <p class="fw-medium"><span class="jml_benar">0</span>/<span
+                                            class="jml_soal">0</span></p>
                                 </div>
                             </div>
                             <div class="card border w-100 mb-2">
@@ -312,7 +313,8 @@
                                     </svg>
                                     Jawaban Benar
                                 </p>
-                                <p class="fw-medium"><span class="jml_benar">0</span>/150</p>
+                                <p class="fw-medium"><span class="jml_benar">0</span>/<span class="jml_soal">0</span>
+                                </p>
                             </div>
                         </div>
                         <div class="card border w-100 mb-2">
@@ -506,6 +508,7 @@
                             $('.jml_benar').html(data.benar);
                             $('.jml_ragu').html(data.ragu);
                             $('.jml_tidak_dikerjakan').html(data.tidak_dikerjakan);
+                            $('.jml_soal').html(data.total_soal);
                         }
                     }
                 });

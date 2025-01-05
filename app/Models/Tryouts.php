@@ -13,12 +13,10 @@ class Tryouts extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected static function boot()
+    protected static function booted()
     {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->id = (string) Str::uuid();
+        static::creating(function ($tryout) {
+            $tryout->id = Str::uuid();
         });
     }
 
@@ -36,6 +34,7 @@ class Tryouts extends Model
     {
         return $this->hasMany(SoalTryout::class, 'tryout_id');
     }
+
 
     public function batch()
     {
