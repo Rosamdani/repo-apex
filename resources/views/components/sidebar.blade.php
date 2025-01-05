@@ -18,6 +18,12 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('katalog') }}" wire:navigate>
+                    <iconify-icon icon="ic:baseline-library-books" class="menu-icon"></iconify-icon>
+                    <span>Katalog Tryout</span>
+                </a>
+            </li>
             {{-- <li class="sidebar-menu-group-title">Application</li>
             <li>
                 <a href="{{ route('email') }}">

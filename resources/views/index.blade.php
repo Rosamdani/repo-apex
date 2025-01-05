@@ -40,9 +40,8 @@
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
                                         <div class="d-flex align-items-center flex-wrap gap-16">
                                             <span
-                                                class="mb-0 w-40-px h-40-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
-                                                <iconify-icon icon="flowbite:users-group-solid"
-                                                    class="icon"></iconify-icon>
+                                                class="mb-0 w-40-px h-40-px bg-cyan flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                                                <iconify-icon icon="ph:book-light" class="icon"></iconify-icon>
                                             </span>
 
                                             <div class="flex-grow-1">
@@ -63,9 +62,8 @@
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
                                         <div class="d-flex align-items-center flex-wrap gap-16">
                                             <span
-                                                class="mb-0 w-40-px h-40-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
-                                                <iconify-icon icon="flowbite:users-group-solid"
-                                                    class="icon"></iconify-icon>
+                                                class="mb-0 w-40-px h-40-px bg-yellow flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                                                <iconify-icon icon="ph:calendar-blank-light" class="icon"></iconify-icon>
                                             </span>
 
                                             <div class="flex-grow-1">
@@ -94,9 +92,8 @@
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
                                         <div class="d-flex align-items-center flex-wrap gap-16">
                                             <span
-                                                class="mb-0 w-40-px h-40-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
-                                                <iconify-icon icon="flowbite:users-group-solid"
-                                                    class="icon"></iconify-icon>
+                                                class="mb-0 w-40-px h-40-px bg-purple flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                                                <iconify-icon icon="mdi:check-all" class="icon"></iconify-icon>
                                             </span>
 
                                             <div class="flex-grow-1">
