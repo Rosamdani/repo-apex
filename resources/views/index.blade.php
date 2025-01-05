@@ -35,12 +35,12 @@
                     <div class="row gy-4">
                         <!-- Dashboard Widget Start -->
                         <div class="col-lg-4 col-sm-6">
-                            <div class="card px-24 py-16 shadow-none radius-12 border h-100 bg-gradient-start-3">
+                            <div class="card px-24 py-16 shadow-none radius-12 border h-100 bg-gradient-primary-50">
                                 <div class="card-body p-0">
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
                                         <div class="d-flex align-items-center flex-wrap gap-16">
                                             <span
-                                                class="mb-0 w-40-px h-40-px bg-cyan flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                                                class="mb-0 w-40-px h-40-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
                                                 <iconify-icon icon="ph:book-light" class="icon"></iconify-icon>
                                             </span>
 
@@ -57,12 +57,12 @@
 
                         <!-- Dashboard Widget Start -->
                         <div class="col-lg-4 col-sm-6">
-                            <div class="card px-24 py-16 shadow-none radius-12 border h-100 bg-gradient-start-5">
+                            <div class="card px-24 py-16 shadow-none radius-12 border h-100 bg-gradient-primary-50">
                                 <div class="card-body p-0">
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
                                         <div class="d-flex align-items-center flex-wrap gap-16">
                                             <span
-                                                class="mb-0 w-40-px h-40-px bg-yellow flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                                                class="mb-0 w-40-px h-40-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
                                                 <iconify-icon icon="ph:calendar-blank-light" class="icon"></iconify-icon>
                                             </span>
 
@@ -87,12 +87,12 @@
 
                         <!-- Dashboard Widget Start -->
                         <div class="col-lg-4 col-sm-6">
-                            <div class="card px-24 py-16 shadow-none radius-12 border h-100 bg-gradient-start-2">
+                            <div class="card px-24 py-16 shadow-none radius-12 border h-100 bg-gradient-primary-50">
                                 <div class="card-body p-0">
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
                                         <div class="d-flex align-items-center flex-wrap gap-16">
                                             <span
-                                                class="mb-0 w-40-px h-40-px bg-purple flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                                                class="mb-0 w-40-px h-40-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
                                                 <iconify-icon icon="mdi:check-all" class="icon"></iconify-icon>
                                             </span>
 
