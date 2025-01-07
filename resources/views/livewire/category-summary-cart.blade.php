@@ -120,84 +120,82 @@ new class extends Component {
 
 @push('script')
     <script>
-        document.addEventListener("livewire:init", () => {
-            $(function() {
-                const bidangData = @json($this->bidang);
+        $(function() {
+            const bidangData = @json($this->bidang);
 
-                // ================================ Client Payment Status chart End ================================
-                var options = {
-                    series: [{
-                        name: "Persentase Hasil",
-                        data: bidangData.map(item => item.persen_benar)
-                    }],
-                    legend: {
-                        show: false
+            // ================================ Client Payment Status chart End ================================
+            var options = {
+                series: [{
+                    name: "Persentase Hasil",
+                    data: bidangData.map(item => item.persen_benar)
+                }],
+                legend: {
+                    show: false
+                },
+                chart: {
+                    type: "bar",
+                    height: 260,
+                    toolbar: {
+                        show: true
                     },
-                    chart: {
-                        type: "bar",
-                        height: 260,
-                        toolbar: {
-                            show: true
-                        },
+                },
+                grid: {
+                    show: true,
+                    borderColor: "#D1D5DB",
+                    strokeDashArray: 4, // Use a number for dashed style
+                    position: "back",
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '10px', // Sesuaikan lebar kolom
                     },
-                    grid: {
-                        show: true,
-                        borderColor: "#D1D5DB",
-                        strokeDashArray: 4, // Use a number for dashed style
-                        position: "back",
-                    },
-                    plotOptions: {
-                        bar: {
-                            borderRadius: 4,
-                            columnWidth: '10px', // Sesuaikan lebar kolom
-                        },
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    states: {
-                        hover: {
-                            filter: {
-                                type: "none"
-                            }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                states: {
+                    hover: {
+                        filter: {
+                            type: "none"
                         }
-                    },
-                    stroke: {
-                        show: true,
-                        width: 0,
-                        colors: ["transparent"]
-                    },
-                    xaxis: {
-                        categories: bidangData.map(item => item.kategori), // Nama bidang
-                        title: {
-                            text: 'Bidang',
-                        }
-                    },
-                    yaxis: {
-                        max: 100, // Skala y-axis maksimum 100%
-                        title: {
-                            text: 'Persentase Hasil',
-                        }
-                    },
-                    fill: {
-                        type: 'solid', // Tidak ada gradient, gunakan warna solid
-                    },
-                    colors: bidangData.map(item => {
-                        const persenBenar = parseFloat(item.persen_benar);
-                        if (persenBenar < 60) {
-                            return '#FF6666'; // Merah
-                        } else if (persenBenar >= 60 && persenBenar < 80) {
-                            return '#FFA500'; // Oranye
-                        } else {
-                            return '#66CC66'; // Hijau
-                        }
-                    })
-                };
+                    }
+                },
+                stroke: {
+                    show: true,
+                    width: 0,
+                    colors: ["transparent"]
+                },
+                xaxis: {
+                    categories: bidangData.map(item => item.kategori), // Nama bidang
+                    title: {
+                        text: 'Bidang',
+                    }
+                },
+                yaxis: {
+                    max: 100, // Skala y-axis maksimum 100%
+                    title: {
+                        text: 'Persentase Hasil',
+                    }
+                },
+                fill: {
+                    type: 'solid', // Tidak ada gradient, gunakan warna solid
+                },
+                colors: bidangData.map(item => {
+                    const persenBenar = parseFloat(item.persen_benar);
+                    if (persenBenar < 60) {
+                        return '#FF6666'; // Merah
+                    } else if (persenBenar >= 60 && persenBenar < 80) {
+                        return '#FFA500'; // Oranye
+                    } else {
+                        return '#66CC66'; // Hijau
+                    }
+                })
+            };
 
-                var chart = new ApexCharts(document.querySelector("#paymentStatusChart"), options);
-                chart.render();
-                // ================================ Client Payment Status chart End ================================
-            });
+            var chart = new ApexCharts(document.querySelector("#paymentStatusChart"), options);
+            chart.render();
+            // ================================ Client Payment Status chart End ================================
         });
     </script>
 @endpush

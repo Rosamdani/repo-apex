@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Session;
 use App\Models\User;
+use App\Models\UserAcademy;
 use App\Models\UserDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,13 +77,34 @@ class AuthController extends Controller
     {
         $user = User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'no_telp' => $request->no_telp,
         ]);
+
+        $userAcademy = new UserAcademy();
+        $userAcademy->user_id = $user->id;
+        $userAcademy->universitas = $request->universitas;
+        $userAcademy->tahun_masuk = $request->tahun_masuk;
+        $userAcademy->status_pendidikan = $request->status_pendidikan;
+        $userAcademy->semester = $request->semester;
+        $userAcademy->save();
+
+        $agent = new Agent();
+        $session = new Session();
+        $session->user_id = $user->id;
+        $session->browser = $agent->browser();
+        $session->device = $agent->isMobile() ? 'Mobile' : ($agent->isTablet() ? 'Tablet' : 'Desktop');
+        $session->os = $agent->platform();
+        $session->os_version = $agent->version($agent->platform());
+        $session->last_activity = now();
+        $session->save();
+        session()->put('session_id', $session->id);
 
         Auth::login($user);
 
-        return redirect()->route('tryout.index')->with('success', 'Pendaftaran berhasil!');
+        return redirect()->route('index')->with('success', 'Pendaftaran berhasil!');
     }
 
     public function logout(Request $request)

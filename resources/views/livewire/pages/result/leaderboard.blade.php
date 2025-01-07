@@ -33,7 +33,7 @@ new class extends Component {
                 @if ($leaderboard->count() == 10)
                     <a href="{{ route('tryouts.hasil.perangkingan', ['id' => $this->tryoutId]) }}"
                         class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                        View All
+                        Selengkapnya
                         <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
                     </a>
                 @endif

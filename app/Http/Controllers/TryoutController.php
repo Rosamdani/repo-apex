@@ -33,6 +33,11 @@ class TryoutController extends Controller
         return view('tryouts.katalog');
     }
 
+    public function katalaogDetail($id)
+    {
+        $tryout = Tryouts::find($id);
+        return view('tryouts.detail-tryout', compact('id', 'tryout'));
+    }
 
     public function show($id)
     {
