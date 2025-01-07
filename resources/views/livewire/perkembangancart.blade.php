@@ -97,11 +97,11 @@ new class extends Component {
                         stroke: {
                             curve: "straight",
                             width: 3,
-                            colors: ["#487FFF"]
+                            colors: ['#ffb945']
                         },
                         grid: {
                             show: true,
-                            borderColor: "#D1D5DB",
+                            borderColor: "#DBD9D1FF",
                         },
                         fill: {
                             type: "gradient",

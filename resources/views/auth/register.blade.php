@@ -3,6 +3,7 @@
 <html lang="en" data-theme="light">
 
 <x-head :title="'Register'" />
+<x-style />
 
 <body>
 
@@ -26,7 +27,8 @@
                     <p class="mb-32 text-secondary-light text-lg">Untuk membuat akun, isi informasi berikut</p>
                 </div>
                 <div class="form-wizard">
-                    <form action="#" method="post">
+                    <form action="{{ route('registerStore') }}" method="post">
+                        @csrf
                         <div class="form-wizard-header overflow-x-auto scroll-sm pb-8 my-32">
                             <ul class="list-unstyled form-wizard-list">
                                 <li class="form-wizard-list__item active">
@@ -55,12 +57,32 @@
                         <fieldset class="wizard-fieldset show">
                             <h6 class="text-md text-neutral-500">Informasi Personal</h6>
                             <div class="row gy-3">
+                                @if ($errors->has('name') || $errors->has('username') || $errors->has('email') || $errors->has('no_telp'))
+                                    <div class="alert alert-danger radius-8 mb-16" role="alert">
+                                        <h6 class="text-md">{{ __('Terjadi Kesalahan!') }}</h6>
+                                        <ul class="list-unstyled">
+                                            @if ($errors->has('name'))
+                                                <li>{{ $errors->first('name') }}</li>
+                                            @endif
+                                            @if ($errors->has('username'))
+                                                <li>{{ $errors->first('username') }}</li>
+                                            @endif
+                                            @if ($errors->has('email'))
+                                                <li>{{ $errors->first('email') }}</li>
+                                            @endif
+                                            @if ($errors->has('no_telp'))
+                                                <li>{{ $errors->first('no_telp') }}</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                @endif
                                 <div class="position-relative ">
                                     <div class="icon-field mb-16">
                                         <span class="icon top-50 translate-middle-y">
                                             <iconify-icon icon="f7:person"></iconify-icon>
                                         </span>
-                                        <input type="text" class="form-control h-56-px bg-neutral-50 radius-12"
+                                        <input type="text" name="name" value="{{ old('name') }}"
+                                            class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('name') ? 'is-invalid' : '' }}"
                                             placeholder="Nama Lengkap">
                                     </div>
                                 </div>
@@ -70,8 +92,9 @@
                                             <span class="icon top-50 translate-middle-y">
                                                 <iconify-icon icon="f7:person"></iconify-icon>
                                             </span>
-                                            <input type="text" class="form-control h-56-px bg-neutral-50 radius-12"
-                                                placeholder="Username">
+                                            <input type="text" required value="{{ old('username') }}"
+                                                class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('username') ? 'is-invalid' : '' }}"
+                                                placeholder="Username" name="username">
                                         </div>
                                     </div>
                                     <span class="mt-8 text-sm text-secondary-light">Username digunakan untuk
@@ -82,7 +105,8 @@
                                         <span class="icon top-50 translate-middle-y">
                                             <iconify-icon icon="mage:email"></iconify-icon>
                                         </span>
-                                        <input type="email" class="form-control h-56-px bg-neutral-50 radius-12"
+                                        <input type="email" name="email" value="{{ old('email') }}"
+                                            class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('email') ? 'is-invalid' : '' }}"
                                             placeholder="Email">
                                     </div>
                                 </div>
@@ -91,14 +115,15 @@
                                         <span class="icon top-50 translate-middle-y">
                                             <iconify-icon icon="mage:phone"></iconify-icon>
                                         </span>
-                                        <input type="text" class="form-control h-56-px bg-neutral-50 radius-12"
+                                        <input type="text" name="no_telp" value="{{ old('no_telp') }}"
+                                            class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('no_telp') ? 'is-invalid' : '' }}"
                                             placeholder="Nomor Telepon Aktif (08-------------)">
                                     </div>
                                 </div>
 
                                 <div class="form-group text-end">
                                     <button type="button"
-                                        class="form-wizard-next-btn btn btn-primary-600 px-32">Next</button>
+                                        class="form-wizard-next-btn btn btn-primary-600 px-32">{{ __('Selanjutnya') }}</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -106,12 +131,37 @@
                         <fieldset class="wizard-fieldset">
                             <h6 class="text-md text-neutral-500">Informasi Akademik</h6>
                             <div class="row gy-3">
+                                @if (
+                                    $errors->has('universitas') ||
+                                        $errors->has('tahun_masuk') ||
+                                        $errors->has('status_pendidikan') ||
+                                        $errors->has('semester'))
+                                    <div class="alert alert-danger radius-8 mb-16" role="alert">
+                                        <h6 class="text-md">{{ __('Terjadi Kesalahan!') }}</h6>
+                                        <ul class="list-unstyled">
+                                            @if ($errors->has('universitas'))
+                                                <li>{{ $errors->first('universitas') }}</li>
+                                            @endif
+                                            @if ($errors->has('tahun_masuk'))
+                                                <li>{{ $errors->first('tahun_masuk') }}</li>
+                                            @endif
+                                            @if ($errors->has('status_pendidikan'))
+                                                <li>{{ $errors->first('status_pendidikan') }}</li>
+                                            @endif
+                                            @if ($errors->has('semester'))
+                                                <li>{{ $errors->first('semester') }}</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 <div class="position-relative ">
                                     <div class="icon-field mb-16">
                                         <span class="icon top-50 translate-middle-y">
                                             <iconify-icon icon="mdi:school"></iconify-icon>
                                         </span>
-                                        <input type="text" class="form-control h-56-px bg-neutral-50 radius-12"
+                                        <input type="text" name="universitas" value="{{ old('universitas') }}"
+                                            class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('universitas') ? 'is-invalid' : '' }}"
                                             placeholder="Universitas Asal">
                                     </div>
                                 </div>
@@ -120,34 +170,38 @@
                                         <span class="icon top-50 translate-middle-y">
                                             <iconify-icon icon="mdi:calendar-blank"></iconify-icon>
                                         </span>
-                                        <input type="number" class="form-control h-56-px bg-neutral-50 radius-12"
+                                        <input type="number" name="tahun_masuk" value="{{ old('tahun_masuk') }}"
+                                            class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('tahun_masuk') ? 'is-invalid' : '' }}"
                                             placeholder="Tahun masuk">
                                     </div>
                                 </div>
-                                <div class="position-relative d-flex align-items-center">
-                                    <select name="status_pendidikan" id="status_pendidikan"
-                                        class="form-control form-select h-56-px bg-neutral-50 radius-12 ms-auto me-auto">
+                                <div class="position-relative d-flex align-items-center mb-16">
+                                    <select name="status_pendidikan" name="status_pendidikan" id="status_pendidikan"
+                                        class="form-control form-select h-5 bg-neutral-50 radius-12 ms-auto me-auto {{ $errors->has('status_pendidikan') ? 'is-invalid' : '' }}">
                                         <option value="">--Pilih Status Pendidikan--</option>
-                                        <option value="koas">Koas</option>
-                                        <option value="pre-klinik">Pre Klinik</option>
+                                        <option {{ old('status_pendidikan') == 'koas' ? 'selected' : '' }}
+                                            value="koas">Koas</option>
+                                        <option {{ old('status_pendidikan') == 'pre-klinik' ? 'selected' : '' }}
+                                            value="pre-klinik">Pre Klinik</option>
                                     </select>
                                 </div>
-                                <div class="mb-20">
+                                <div class="mb-16" id="semester">
                                     <div class="position-relative ">
                                         <div class="icon-field">
                                             <span class="icon top-50 translate-middle-y">
                                                 <iconify-icon icon="mdi:university"></iconify-icon>
                                             </span>
-                                            <input type="number" class="form-control h-56-px bg-neutral-50 radius-12"
+                                            <input type="number" name="semester" value="{{ old('semester') }}"
+                                                class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('semester') ? 'is-invalid' : '' }}"
                                                 placeholder="Semester Saat Ini">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group d-flex align-items-center justify-content-end gap-8">
+                                <div class="form-group d-flex align-items-center justify-content-end gap-8 mt-20">
                                     <button type="button"
-                                        class="form-wizard-previous-btn btn btn-neutral-500 border-neutral-100 px-32">Back</button>
+                                        class="form-wizard-previous-btn btn btn-neutral-500 border-neutral-100 px-32">{{ __('Kembali') }}</button>
                                     <button type="button"
-                                        class="form-wizard-next-btn btn btn-primary-600 px-32">Next</button>
+                                        class="form-wizard-next-btn btn btn-primary-600 px-32">{{ __('Selanjutnya') }}</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -155,6 +209,24 @@
                         <fieldset class="wizard-fieldset">
                             <h6 class="text-md text-neutral-500">Keamanan Akun</h6>
                             <div class="row gy-3">
+                                @if ($errors->has('password') || $errors->has('password_confirmation'))
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <span
+                                                    class="text-danger-500 fw-semibold">{{ __('Terjadi Kesalahan') }}</span>
+                                                @error('password')
+                                                    <span>{{ $message }}</span>
+                                                @enderror
+                                                @error('password_confirmation')
+                                                    <span>{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                @endif
 
                                 <div class="">
                                     <div class="position-relative ">
@@ -162,15 +234,16 @@
                                             <span class="icon top-50 translate-middle-y">
                                                 <iconify-icon icon="solar:lock-password-outline"></iconify-icon>
                                             </span>
-                                            <input type="password"
-                                                class="form-control h-56-px bg-neutral-50 radius-12"
-                                                id="your-password" placeholder="Password">
+                                            <input type="password" name="password" value="{{ old('password') }}"
+                                                class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                                id="password" placeholder="Password">
                                         </div>
                                         <span
                                             class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light"
-                                            data-toggle="#your-password"></span>
+                                            data-toggle="#password"></span>
                                     </div>
-                                    <span class="mt-8 text-sm text-secondary-light">Password minimal 8 karakter</span>
+                                    <span
+                                        class="mt-8 text-sm text-secondary-light">{{ __('Password minimal 8 karakter, huruf besar, huruf kecil, angka, dan simbol') }}</span>
                                 </div>
                                 <div class="mb-20">
                                     <div class="position-relative ">
@@ -178,28 +251,29 @@
                                             <span class="icon top-50 translate-middle-y">
                                                 <iconify-icon icon="solar:lock-password-outline"></iconify-icon>
                                             </span>
-                                            <input type="password"
-                                                class="form-control h-56-px bg-neutral-50 radius-12"
-                                                id="your-re-password" placeholder="Konfirmasi Password">
+                                            <input type="password" name="password_confirmation"
+                                                value="{{ old('password_confirmation') }}"
+                                                class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('password_confirmation') ? 'is-invalid' : '' }}"
+                                                id="password_confirmation" placeholder="Konfirmasi Password">
                                         </div>
                                         <span
                                             class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light"
-                                            data-toggle="#your-password"></span>
+                                            data-toggle="#password_confirmation"></span>
                                     </div>
                                 </div>
                                 <div class="">
                                     <div class="d-flex justify-content-between gap-2">
                                         <div class="form-check style-check d-flex align-items-start">
-                                            <input class="form-check-input border border-neutral-300 mt-4"
-                                                type="checkbox" value="" id="condition">
-                                            <label class="form-check-label text-sm" for="condition">
-                                                By creating an account means you agree to the
+                                            <input name="syarat" id="syarat" required
+                                                class="form-check-input border border-neutral-300 mt-4 {{ $errors->has('syarat') ? 'is-invalid' : '' }}"
+                                                type="checkbox" value="" id="syarat">
+                                            <label class="form-check-label text-sm" for="syarat">
+                                                {{ __('Dengan membuat akun berarti Anda setuju dengan') }}
                                                 <a href="javascript:void(0)"
-                                                    class="text-primary-600 fw-semibold">Terms
-                                                    &
-                                                    Conditions</a> and our
+                                                    class="text-primary-600 fw-semibold">{{ __('Syarat & Ketentuan') }}</a>
+                                                {{ __('dan') }}
                                                 <a href="javascript:void(0)"
-                                                    class="text-primary-600 fw-semibold">Privacy Policy</a>
+                                                    class="text-primary-600 fw-semibold">{{ __('Kebijakan Privasi') }}</a>
                                             </label>
                                         </div>
 
@@ -207,9 +281,8 @@
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-end gap-8">
                                     <button type="button"
-                                        class="form-wizard-previous-btn btn btn-neutral-500 border-neutral-100 px-32">Back</button>
-                                    <button type="button"
-                                        class="form-wizard-next-btn btn btn-primary-600 px-32">Daftar
+                                        class="form-wizard-previous-btn btn btn-neutral-500 border-neutral-100 px-32">{{ __('Kembali') }}</button>
+                                    <button type="submit" class="form-wizard-submit btn btn-primary-600 px-32">Daftar
                                         Sekarang</button>
                                 </div>
                             </div>
@@ -224,25 +297,6 @@
         </div>
     </section>
 
-    @php
-        $script = '<script>
-            // ================== Password Show Hide Js Start ==========
-            function initializePasswordToggle(toggleSelector) {
-                $(toggleSelector).on("click", function() {
-                    $(this).toggleClass("ri-eye-off-line");
-                    var input = $($(this).attr("data-toggle"));
-                    if (input.attr("type") === "password") {
-                        input.attr("type", "text");
-                    } else {
-                        input.attr("type", "password");
-                    }
-                });
-            }
-            // Call the function
-            initializePasswordToggle(".toggle-password");
-            // ========================= Password Show Hide Js End ===========================
-        </script>';
-    @endphp
 
     <!-- jQuery library js -->
     <script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
@@ -365,8 +419,34 @@
             });
         });
         // =============================== Wizard Step Js End ================================
+
+
+        $(document).on('change', '#status_pendidikan', function() {
+            var status_pendidikan = $(this).val();
+            if (status_pendidikan == 'pre-klinik') {
+                $('#semester').show();
+            } else {
+                $('#semester').hide();
+            }
+        })
+
+        $('#status_pendidikan').trigger('change');
     </script>
 
+    <script>
+        function initializePasswordToggle(toggleSelector) {
+            $(toggleSelector).on("click", function() {
+                $(this).toggleClass("ri-eye-off-line");
+                var input = $($(this).attr("data-toggle"));
+                if (input.attr("type") === "password") {
+                    input.attr("type", "text");
+                } else {
+                    input.attr("type", "password");
+                }
+            });
+        }
+        initializePasswordToggle(".toggle-password");
+    </script>
 </body>
 
 </html>

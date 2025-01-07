@@ -278,7 +278,7 @@
                         type="button" data-bs-toggle="dropdown">
                         <iconify-icon icon="iconoir:bell" class="text-primary-light text-xl"></iconify-icon>
                     </button>
-                    <div class="dropdown-menu to-top dropdown-menu-lg p-0">
+                    <div class="dropdown-menu to-top dropdown-menu-lg p-0 z-10">
                         <div
                             class="m-16 py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                             <div>

@@ -299,7 +299,7 @@
     --input-form-dark: #d1d5db;
     --input-bg: var(--dark-3);
     --input-stroke: #f3f4f6;
-    --primary-50: #e4f1ff0f;
+    --primary-50: #e4f1ff0f !important;
     --info-50: #eff6ff0f;
     --warning-50: #fefce80f;
     --success-50: #f0fdf40f;
@@ -402,7 +402,7 @@ body.overlay-active::after {
     background-color: var(--neutral-500);
     border-radius: 10px;
     border: 2px solid transparent; /* Tambahkan padding */
-    background-clip: padding-box;  /* Menghindari overlap */
+    background-clip: padding-box; /* Menghindari overlap */
 }
 
 body::after {
@@ -14634,7 +14634,7 @@ td.fc-header-center {
 }
 
 .form-wizard-list__item.activated .form-wizard-list__line::before {
-    width: 100%;
+    width: 200%;
 }
 
 .form-wizard-list__item:last-child .form-wizard-list__line::after,
