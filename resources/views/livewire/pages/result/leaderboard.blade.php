@@ -15,8 +15,9 @@ new class extends Component {
         $this->leaderboard = UserTryouts::select(['user_id', 'tryout_id', 'nilai'])
             ->where('tryout_id', $this->tryoutId)
             ->with(['user:id,name,image_url,email', 'tryout:id,nama'])
-            ->limit(10)
             ->orderBy('nilai', 'desc')
+            ->orderBy('created_at', 'asc')
+            ->limit(10)
             ->get();
     }
 }; ?>

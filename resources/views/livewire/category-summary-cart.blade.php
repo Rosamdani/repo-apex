@@ -142,11 +142,12 @@ new class extends Component {
                 grid: {
                     show: true,
                     borderColor: "#D1D5DB",
-                    strokeDashArray: 4, // Use a number for dashed style
+                    strokeDashArray: 4,
                     position: "back",
                 },
                 plotOptions: {
                     bar: {
+                        distributed: true,
                         borderRadius: 4,
                         columnWidth: '10px', // Sesuaikan lebar kolom
                     },
@@ -191,10 +192,12 @@ new class extends Component {
                         return '#66CC66'; // Hijau
                     }
                 })
+
             };
 
             var chart = new ApexCharts(document.querySelector("#paymentStatusChart"), options);
             chart.render();
+
             // ================================ Client Payment Status chart End ================================
         });
     </script>

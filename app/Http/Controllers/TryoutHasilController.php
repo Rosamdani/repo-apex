@@ -20,7 +20,8 @@ class TryoutHasilController extends Controller
 
             $totalUser = UserTryouts::where('tryout_id', $id)->where('status', 'finished')->count();
             $userTryoutRank = UserTryouts::where('tryout_id', $id)
-                ->orderBy('nilai', 'DESC')
+                ->orderBy('nilai', 'desc')
+                ->orderBy('created_at', 'asc') // Urutan tambahan untuk tie
                 ->pluck('nilai')
                 ->search($userTryout->nilai) + 1;
 

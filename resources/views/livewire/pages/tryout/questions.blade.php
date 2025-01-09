@@ -27,7 +27,21 @@ new class extends Component {
             'tryout_id' => $this->tryoutId,
         ]);
 
-        $this->questions = $this->tryout->questions;
+        if (!$this->userTryout->question_order) {
+            $questions = \App\Models\SoalTryout::where('tryout_id', $tryoutId)->pluck('id')->toArray();
+            shuffle($questions);
+
+            $this->userTryout->question_order = $questions;
+            $this->userTryout->save();
+        }
+
+        $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
+        $this->questions = $this->questions
+            ->sortBy(function ($question) {
+                return array_search($question->id, $this->userTryout->question_order);
+            })
+            ->values(); // Reset array keys to ensure proper indexing.
+
         $this->totalQuestions = $this->questions->count();
 
         $answers = \App\Models\UserAnswer::where('user_id', auth()->id())->whereIn('soal_id', $this->questions->pluck('id'))->get();
@@ -43,22 +57,15 @@ new class extends Component {
 
     public function jumpToQuestion($index)
     {
-        $this->currentQuestionIndex = $index;
+        if ($index >= 0 && $index < $this->totalQuestions) {
+            $this->currentQuestionIndex = $index;
+        }
     }
 
     public function nextQuestion()
     {
         if ($this->currentQuestionIndex < $this->totalQuestions - 1) {
             $this->currentQuestionIndex++;
-        }
-    }
-
-    public function handleKeyPress($key)
-    {
-        if ($key === 'ArrowLeft') {
-            $this->prevQuestion();
-        } elseif ($key === 'ArrowRight') {
-            $this->nextQuestion();
         }
     }
 
@@ -69,17 +76,13 @@ new class extends Component {
         }
     }
 
-    #[On('saveTime')]
-    public function saveTime($remainingMinutes)
+    public function handleKeyPress($key)
     {
-        $this->userTryout->update(['waktu' => $remainingMinutes]);
-    }
-
-    #[On('pause')]
-    public function pauseTryout()
-    {
-        $this->userTryout->update(['status' => 'paused']);
-        return redirect()->route('index')->with('success', 'Tryout dijeda!');
+        if ($key === 'ArrowLeft') {
+            $this->prevQuestion();
+        } elseif ($key === 'ArrowRight') {
+            $this->nextQuestion();
+        }
     }
 
     public function selectAnswer($soalId, $jawaban)
@@ -101,6 +104,19 @@ new class extends Component {
         \App\Models\UserAnswer::updateOrCreate(['user_id' => auth()->id(), 'soal_id' => $soalId], ['status' => $status]);
 
         $this->questionStatus[$soalId] = $this->isDoubtful[$soalId] ? 'ragu-ragu' : ($this->selectedAnswer[$soalId] ? 'sudah dijawab' : 'belum dijawab');
+    }
+
+    #[On('saveTime')]
+    public function saveTime($remainingMinutes)
+    {
+        $this->userTryout->update(['waktu' => $remainingMinutes]);
+    }
+
+    #[On('pause')]
+    public function pauseTryout()
+    {
+        $this->userTryout->update(['status' => 'paused']);
+        return redirect()->route('index')->with('success', 'Tryout dijeda!');
     }
 
     #[On('end')]
@@ -140,7 +156,8 @@ new class extends Component {
         <div class="card radius-8 border-0 mb-3">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h6 class="fw-bold text-lg">Nomor {{ $questions[$currentQuestionIndex]->nomor }}</h6>
+                    <h6 class="fw-bold text-lg">Nomor
+                        {{ array_search($questions[$currentQuestionIndex]->id, $userTryout->question_order) + 1 }}</h6>
                     <span
                         class="badge text-sm fw-semibold px-20 py-9 radius-4
                         {{ match ($questionStatus[$questions[$currentQuestionIndex]->id]) {
@@ -254,7 +271,7 @@ new class extends Component {
         </div>
 
         <!-- Button -->
-        <div x-data="{ actionType: null }">
+        <div x-data="{ actionType: null }" class="mb-10">
             <!-- Tombol Jeda -->
             <button class="btn col btn-warning"
                 @click="actionType = 'pause'; Swal.fire({
@@ -309,7 +326,7 @@ new class extends Component {
                         @endphp
                         <button class="col btn mb-1 shadow-sm min-w-50-px {{ $buttonClass }}"
                             wire:click="jumpToQuestion({{ $index }})">
-                            {{ $index + 1 }}
+                            {{ $loop->iteration }}
                         </button>
                     @endforeach
                 </div>
