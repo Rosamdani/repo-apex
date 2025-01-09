@@ -87,8 +87,7 @@ class TryoutsResource extends Resource
                         Forms\Components\TextInput::make('details.harga')
                             ->label('Harga Produk')
                             ->numeric()
-                            ->required()
-                            ->placeholder('Masukkan harga produk')
+                            ->placeholder('Masukkan harga produk apabila pembelian secara satuan')
                             ->dehydrateStateUsing(
                                 fn($state, $record) =>
                                 $record->details()->updateOrCreate([], ['harga' => $state])
@@ -98,7 +97,6 @@ class TryoutsResource extends Resource
                             ->placeholder('https://shopee.co.id/.....')
                             ->hint('Anda dapat memasukkan link pembelian produk seperti link shopee, tokopedia, dll.')
                             ->url()
-                            ->required()
                             ->dehydrateStateUsing(
                                 fn($state, $record) =>
                                 $record->details()->updateOrCreate([], ['url' => $state])

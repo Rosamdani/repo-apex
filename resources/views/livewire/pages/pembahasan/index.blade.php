@@ -22,55 +22,45 @@ new class extends Component {
     {
         $this->tryoutId = $tryoutId;
 
-        $this->tryout = \App\Models\Tryouts::with([
-            'questions' => fn($query) => $query->orderBy('nomor'),
-        ])->findOrFail($this->tryoutId);
+        $this->tryout = \App\Models\Tryouts::findOrFail($this->tryoutId);
 
         $this->userTryout = \App\Models\UserTryouts::firstOrCreate([
             'user_id' => auth()->id(),
             'tryout_id' => $this->tryoutId,
         ]);
 
-        $this->questions = $this->tryout->questions;
+        // Ambil soal berdasarkan question_order
+        $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
+        $this->questions = $this->questions
+            ->sortBy(function ($question) {
+                return array_search($question->id, $this->userTryout->question_order);
+            })
+            ->values();
+
         $this->totalQuestions = $this->questions->count();
 
+        // Ambil jawaban pengguna untuk soal yang diurutkan
         $answers = \App\Models\UserAnswer::where('user_id', auth()->id())->whereIn('soal_id', $this->questions->pluck('id'))->get();
 
         foreach ($this->questions as $question) {
             $answer = $answers->where('soal_id', $question->id)->first();
-
             $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
             $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
 
             if ($answer) {
-                if ($answer->status === 'ragu-ragu' && $answer->jawaban !== $question->jawaban) {
-                    $this->questionStatus[$question->id] = 'salah';
-                } elseif ($answer->status === 'ragu-ragu') {
-                    $this->questionStatus[$question->id] = 'ragu-ragu';
-                } elseif ($answer->jawaban === null) {
-                    $this->questionStatus[$question->id] = 'tidak dijawab';
-                } elseif ($answer->jawaban === $question->jawaban) {
-                    $this->questionStatus[$question->id] = 'benar';
-                } else {
-                    $this->questionStatus[$question->id] = 'salah';
-                }
+                $this->questionStatus[$question->id] = match (true) {
+                    $answer->status === 'ragu-ragu' && $answer->jawaban !== $question->jawaban => 'salah',
+                    $answer->status === 'ragu-ragu' => 'ragu-ragu',
+                    $answer->jawaban === null => 'tidak dijawab',
+                    $answer->jawaban === $question->jawaban => 'benar',
+                    default => 'salah',
+                };
             } else {
                 $this->questionStatus[$question->id] = 'tidak dijawab';
             }
         }
 
-        $this->totalBenar = collect($this->questionStatus)
-            ->filter(fn($status) => $status === 'benar')
-            ->count();
-        $this->totalSalah = collect($this->questionStatus)
-            ->filter(fn($status) => $status === 'salah')
-            ->count();
-        $this->totalRaguRagu = collect($this->questionStatus)
-            ->filter(fn($status) => $status === 'ragu-ragu')
-            ->count();
-        $this->totalTidakDikerjakan = collect($this->questionStatus)
-            ->filter(fn($status) => $status === 'tidak dijawab')
-            ->count();
+        $this->updateTotals();
     }
 
     public function jumpToQuestion($index)
@@ -100,6 +90,25 @@ new class extends Component {
             $this->currentQuestionIndex--;
         }
     }
+
+    public function updateTotals()
+    {
+        $this->totalBenar = collect($this->questionStatus)
+            ->filter(fn($status) => $status === 'benar')
+            ->count();
+
+        $this->totalSalah = collect($this->questionStatus)
+            ->filter(fn($status) => $status === 'salah')
+            ->count();
+
+        $this->totalRaguRagu = collect($this->questionStatus)
+            ->filter(fn($status) => $status === 'ragu-ragu')
+            ->count();
+
+        $this->totalTidakDikerjakan = collect($this->questionStatus)
+            ->filter(fn($status) => $status === 'tidak dijawab')
+            ->count();
+    }
 }; ?>
 
 <div class="row">
@@ -124,7 +133,8 @@ new class extends Component {
         <div class="card radius-8 border-0 mb-3">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h6 class="fw-bold text-lg">Nomor {{ $questions[$currentQuestionIndex]->nomor }}</h6>
+                    <h6 class="fw-bold text-lg">Nomor
+                        {{ array_search($questions[$currentQuestionIndex]->id, $userTryout->question_order) + 1 }}</h6>
                     <span
                         class="badge text-sm fw-semibold px-20 py-9 radius-4
                         {{ match ($questionStatus[$questions[$currentQuestionIndex]->id]) {
@@ -231,7 +241,7 @@ new class extends Component {
                         @php
                             $buttonClass =
                                 $index === $currentQuestionIndex
-                                    ? 'bg-primary-50 text-primary-800'
+                                    ? 'bg-primary-200 text-primary-800'
                                     : match ($questionStatus[$question->id]) {
                                         'benar' => 'bg-success-400',
                                         'salah' => 'bg-danger-400',
@@ -241,7 +251,7 @@ new class extends Component {
                         @endphp
                         <button class="col btn mb-1 shadow-sm min-w-50-px {{ $buttonClass }}"
                             wire:click="jumpToQuestion({{ $index }})">
-                            {{ $index + 1 }}
+                            {{ $loop->iteration }}
                         </button>
                     @endforeach
                 </div>
@@ -263,7 +273,7 @@ new class extends Component {
                         <span class="text-sm fw-semibold text-neutral-800">Tidak Dijawab</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-12-px h-8-px rounded-pill bg-primary-50"></span>
+                        <span class="w-12-px h-8-px rounded-pill bg-primary-200"></span>
                         <span class="text-sm fw-semibold text-neutral-800">Sedang dibuka</span>
                     </div>
                 </div>

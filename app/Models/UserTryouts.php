@@ -33,8 +33,10 @@ class UserTryouts extends Model
         'catatan',
     ];
 
+
     protected $casts = [
         'status' => TryoutStatus::class,
+        'question_order' => 'array',
     ];
 
     public function user()
