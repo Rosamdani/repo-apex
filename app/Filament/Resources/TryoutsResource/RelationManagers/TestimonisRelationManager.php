@@ -40,6 +40,11 @@ class TestimonisRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('user.name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('testimoni')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('nilai')->sortable()->searchable(),
+                Tables\Columns\SelectColumn::make('visibility')
+                    ->options([
+                        'active' => 'Aktif',
+                        'disabled' => 'Non Aktif',
+                    ])->sortable()->searchable(),
             ])
             ->filters([
                 //

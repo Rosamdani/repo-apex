@@ -76,9 +76,14 @@ new class extends Component {
                                             alt=""
                                             class="flex-shrink-0 me-12 w-40-px h-40-px rounded-circle me-12">
                                         <div class="flex-grow-1">
-                                            <h6 class="text-md mb-0 fw-semibold">{{ $leaderboard->user->name }}</h6>
-                                            <span class="text-sm text-secondary-light fw-normal">Owned by
-                                                {{ $leaderboard->user->email }}</span>
+                                            <h6 class="text-md mb-0 fw-semibold">{{ $leaderboard->user->name }}
+                                                {{ $leaderboard->user->name }}
+                                                @if ($leaderboard->user->id === auth()->user()->id)
+                                                    <span class="badge bg-primary-300">{{ __('Anda') }}</span>
+                                                @endif
+                                            </h6>
+                                            <span
+                                                class="text-sm text-secondary-light">{{ $leaderboard->user->userAcademy->universitas ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </td>

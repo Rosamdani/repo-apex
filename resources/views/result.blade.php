@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 @php
-    $title = 'Hasil Try Out';
+    $title = $userTryout->tryout->nama;
     $subTitle = 'Hasil Try out';
 @endphp
 
@@ -90,7 +90,6 @@
                 <livewire:pages.result.leaderboard :tryoutId="$userTryout->tryout_id" />
                 <!-- Leaderboard -->
 
-
             </div>
         </div>
 
@@ -101,6 +100,7 @@
                     <livewire:result-chart :userTryout="$userTryout" />
                 </div>
                 {{-- Create User Testimonials Here --}}
+                <livewire:pages.result.testimonials :tryoutId="$userTryout->tryout_id" />
             </div>
         </div>
     </div>

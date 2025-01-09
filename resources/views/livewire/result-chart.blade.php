@@ -62,7 +62,7 @@ new class extends Component {
 };
 ?>
 
-<div class="card h-100 radius-8 border-0">
+<div class="card radius-8 border-0">
     <div class="card-header border-bottom d-flex align-items-center flex-wrap gap-2 justify-content-between">
         <h6 class="mb-2 fw-bold text-lg">Ringkasan Hasil</h6>
         <a href="{{ route('tryouts.hasil.pembahasan', $this->userTryout->tryout_id) }}"

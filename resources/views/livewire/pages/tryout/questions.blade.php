@@ -82,6 +82,27 @@ new class extends Component {
         return redirect()->route('index')->with('success', 'Tryout dijeda!');
     }
 
+    public function selectAnswer($soalId, $jawaban)
+    {
+        $this->selectedAnswer[$soalId] = $jawaban;
+        $this->questionStatus[$soalId] = 'sudah dijawab';
+
+        $status = $this->isDoubtful[$soalId] ? 'ragu-ragu' : 'dijawab';
+
+        \App\Models\UserAnswer::updateOrCreate(['user_id' => auth()->id(), 'soal_id' => $soalId], ['jawaban' => $jawaban, 'status' => $status]);
+    }
+
+    public function toggleDoubtful($soalId)
+    {
+        $this->isDoubtful[$soalId] = !$this->isDoubtful[$soalId];
+
+        $status = $this->isDoubtful[$soalId] ? 'ragu-ragu' : ($this->selectedAnswer[$soalId] ? 'dijawab' : 'belum_dijawab');
+
+        \App\Models\UserAnswer::updateOrCreate(['user_id' => auth()->id(), 'soal_id' => $soalId], ['status' => $status]);
+
+        $this->questionStatus[$soalId] = $this->isDoubtful[$soalId] ? 'ragu-ragu' : ($this->selectedAnswer[$soalId] ? 'sudah dijawab' : 'belum dijawab');
+    }
+
     #[On('end')]
     public function endTryout()
     {
