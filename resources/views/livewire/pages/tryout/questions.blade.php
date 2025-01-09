@@ -19,7 +19,7 @@ new class extends Component {
         $this->tryoutId = $tryoutId;
 
         $this->tryout = \App\Models\Tryouts::with([
-            'questions' => fn($query) => $query->orderBy('nomor'),
+            'questions' => fn($query) => $query->orderBy('id', 'asc'),
         ])->findOrFail($this->tryoutId);
 
         $this->userTryout = \App\Models\UserTryouts::firstOrCreate([
