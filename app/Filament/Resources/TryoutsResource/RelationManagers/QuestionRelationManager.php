@@ -23,16 +23,16 @@ class QuestionRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nomor')
-                    ->numeric()
-                    ->minValue(1)
-                    ->required()
-                    ->default(function (): int {
-                        return static::getOwnerRecord()->questions()->where('tryout_id', static::getOwnerRecord()->id)->max('nomor') + 1;
-                    })
-                    ->columnSpanFull(),
+                Forms\Components\FileUpload::make('file_pembahasan')
+                    ->label('Upload File')
+                    ->disk('public')
+                    ->directory('pembahasan')
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->maxSize(2048)
+                    ->hint('Upload file pdf pembahasan soal')
+                    ->columnSpanFull()
+                    ->required(),
                 Forms\Components\Select::make('bidang_id')
-                    ->searchable()
                     ->native(false)
                     ->placeholder('Pilih salah satu')
                     ->relationship('bidang', 'nama')
@@ -48,7 +48,6 @@ class QuestionRelationManager extends RelationManager
                     ])
                     ->required(),
                 Forms\Components\Select::make('kompetensi_id')
-                    ->searchable()
                     ->native(false)
                     ->placeholder('Pilih salah satu')
                     ->relationship('kompetensi', 'nama')
@@ -100,17 +99,15 @@ class QuestionRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('nomor')
             ->emptyStateHeading('Tidak Ada Soal')
             ->emptyStateDescription('Tidak ada soal yang tersedia saat ini.')
             ->emptyStateIcon('heroicon-o-archive-box-x-mark')
             ->columns([
-                Tables\Columns\TextColumn::make('nomor')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('bidang.nama'),
                 Tables\Columns\TextColumn::make('kompetensi.nama'),
                 Tables\Columns\TextColumn::make('soal')
                     ->searchable()
+                    ->wrap(true)
                     ->formatStateUsing(fn(string $state): string => strip_tags($state)),
                 Tables\Columns\TextColumn::make('pilihan_a'),
                 Tables\Columns\TextColumn::make('pilihan_b'),
@@ -122,12 +119,10 @@ class QuestionRelationManager extends RelationManager
             ->filters([
                 Tables\Filters\SelectFilter::make('bidang_id')
                     ->relationship('bidang', 'nama')
-                    ->searchable()
                     ->label('Bidang')
                     ->placeholder('Semua Bidang'),
                 Tables\Filters\SelectFilter::make('kompetensi_id')
                     ->relationship('kompetensi', 'nama')
-                    ->searchable()
                     ->label('Kompetensi')
                     ->placeholder('Semua Kompetensi'),
             ])
