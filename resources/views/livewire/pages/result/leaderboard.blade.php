@@ -58,9 +58,14 @@ new class extends Component {
                                             alt="{{ $leaderboard->user->name }}"
                                             class="rounded-circle w-32-px h-32-px me-8">
                                         <div class="flex-grow-1">
-                                            <h6 class="text-sm fw-semibold mb-0">{{ $leaderboard->user->name }}</h6>
+                                            <h6 class="text-sm fw-semibold mb-0 d-flex gap-2">
+                                                {{ $leaderboard->user->name }}
+                                                @if ($leaderboard->user->id === auth()->user()->id)
+                                                    <span class="badge bg-primary-300">{{ __('Anda') }}</span>
+                                                @endif
+                                            </h6>
                                             <span
-                                                class="text-sm text-secondary-light">{{ $leaderboard->user->email }}</span>
+                                                class="text-sm text-secondary-light">{{ $leaderboard->user->userAcademy->universitas ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </td>

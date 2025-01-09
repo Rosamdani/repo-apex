@@ -53,7 +53,7 @@ new class extends Component {
                                                     @endif
                                                 </h6>
                                                 <span
-                                                    class="text-sm text-secondary-light">{{ $leaderboard->user->email }}</span>
+                                                    class="text-sm text-secondary-light">{{ $leaderboard->user->userAcademy->universitas ?? '-' }}</span>
                                             </div>
                                         </div>
                                     </td>

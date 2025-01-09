@@ -66,4 +66,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserTryouts::class);
     }
+
+    public function userAcademy()
+    {
+        return $this->hasOne(UserAcademy::class, 'user_id');
+    }
+
+    public function userAccessTryouts()
+    {
+        return $this->hasMany(UserAccessTryouts::class);
+    }
 }

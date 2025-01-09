@@ -50,4 +50,14 @@ class Tryouts extends Model
     {
         return $this->hasMany(Testimoni::class, 'tryout_id');
     }
+
+    public function details()
+    {
+        return $this->hasOne(TryoutsDetail::class, 'tryout_id');
+    }
+
+    public function userAccess()
+    {
+        return $this->hasMany(UserAccessTryouts::class, 'tryout_id');
+    }
 }

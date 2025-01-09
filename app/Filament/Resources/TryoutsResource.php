@@ -7,6 +7,7 @@ use App\Filament\Resources\TryoutsResource\RelationManagers;
 use App\Models\BatchTryouts;
 use App\Models\Tryouts;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -26,54 +27,85 @@ class TryoutsResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()->schema([
-                    Forms\Components\Select::make('batch_id')
-                        ->relationship('batch', 'nama')
-                        ->columnSpanFull()
-                        ->createOptionForm([
-                            Forms\Components\TextInput::make('nama')
-                                ->placeholder('Masukkan nama batch')
-                                ->unique(BatchTryouts::class, 'nama')
-                                ->validationMessages([
-                                    'unique' => 'Nama batch sudah digunakan',
-                                ])
-                                ->required(),
-                            Forms\Components\DatePicker::make('start_date')->label('Tanggal Mulai')
-                                ->native(false)
-                                ->minDate(now())
-                                ->required(),
-                            Forms\Components\DatePicker::make('end_date')->label('Tanggal Selesai')
-                                ->native(false)
-                                ->minDate(fn(?BatchTryouts $record): string => $record?->start_date ?? now())
-                                ->required(),
-                        ])
-                        ->required(),
-                    Forms\Components\TextInput::make('nama')
-                        ->placeholder('Nama Tryout')
-                        ->columnSpanFull()
-                        ->required(),
-                    Forms\Components\TextInput::make('waktu')
-                        ->placeholder('Waktu Pengerjaan Tryout (dalam menit)')
-                        ->columnSpanFull()
-                        ->required(),
-                    Forms\Components\DatePicker::make('tanggal')
-                        ->label('Tanggal Dibuat')
-                        ->default(now())
-                        ->native(false)
-                        ->displayFormat('l, d F Y')
-                        ->locale('id')
-                        ->columnSpanFull(),
-                    Forms\Components\FileUpload::make('image')
-                        ->label('Gambar')
-                        ->image()
-                        ->columnSpanFull()
-                        ->maxSize(5120)
+                Tabs::make('Tryout')->columnSpanFull()->schema([
+                    Tabs\Tab::make('Informasi')->schema([
+                        Forms\Components\Select::make('batch_id')
+                            ->relationship('batch', 'nama')
+                            ->columnSpanFull()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('nama')
+                                    ->placeholder('Masukkan nama batch')
+                                    ->unique(BatchTryouts::class, 'nama')
+                                    ->validationMessages([
+                                        'unique' => 'Nama batch sudah digunakan',
+                                    ])
+                                    ->required(),
+                                Forms\Components\DatePicker::make('start_date')->label('Tanggal Mulai')
+                                    ->native(false)
+                                    ->minDate(now())
+                                    ->required(),
+                                Forms\Components\DatePicker::make('end_date')->label('Tanggal Selesai')
+                                    ->native(false)
+                                    ->minDate(fn(?BatchTryouts $record): string => $record?->start_date ?? now())
+                                    ->required(),
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('nama')
+                            ->placeholder('Nama Tryout')
+                            ->columnSpanFull()
+                            ->required(),
+                        Forms\Components\TextInput::make('waktu')
+                            ->placeholder('Waktu Pengerjaan Tryout (dalam menit)')
+                            ->columnSpanFull()
+                            ->required(),
+                        Forms\Components\DatePicker::make('tanggal')
+                            ->label('Tanggal Dibuat')
+                            ->default(now())
+                            ->native(false)
+                            ->displayFormat('l, d F Y')
+                            ->locale('id')
+                            ->columnSpanFull(),
+                        Forms\Components\FileUpload::make('image')
+                            ->label('Gambar')
+                            ->image()
+                            ->columnSpanFull()
+                            ->maxSize(5120)
 
-                        ->validationMessages(['maxSize' => 'Ukuran gambar terlalu besar'])
-                        ->directory('asset/tryouts/image')
-                        ->disk('public')
-                        ->required(),
-                ])->columns(2),
+                            ->validationMessages(['maxSize' => 'Ukuran gambar terlalu besar'])
+                            ->directory('asset/tryouts/image')
+                            ->disk('public')
+                            ->required(),
+                    ]),
+                    Tabs\Tab::make('Detail')->schema([
+                        Forms\Components\RichEditor::make('details.deskripsi')
+                            ->label('Deskripsi')
+                            ->required()
+                            ->dehydrateStateUsing(
+                                fn($state, $record) =>
+                                $record->details()->updateOrCreate([], ['deskripsi' => $state])
+                            ),
+                        Forms\Components\TextInput::make('details.harga')
+                            ->label('Harga Produk')
+                            ->numeric()
+                            ->required()
+                            ->placeholder('Masukkan harga produk')
+                            ->dehydrateStateUsing(
+                                fn($state, $record) =>
+                                $record->details()->updateOrCreate([], ['harga' => $state])
+                            ),
+                        Forms\Components\TextInput::make('details.url')
+                            ->label('Link Pembelian')
+                            ->placeholder('https://shopee.co.id/.....')
+                            ->hint('Anda dapat memasukkan link pembelian produk seperti link shopee, tokopedia, dll.')
+                            ->url()
+                            ->required()
+                            ->dehydrateStateUsing(
+                                fn($state, $record) =>
+                                $record->details()->updateOrCreate([], ['url' => $state])
+                            ),
+                    ]),
+
+                ]),
             ]);
     }
 
