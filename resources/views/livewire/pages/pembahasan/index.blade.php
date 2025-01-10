@@ -239,7 +239,7 @@ new class extends Component {
                                     : match ($questionStatus[$question->id]) {
                                         'benar' => 'bg-success-400',
                                         'salah' => 'bg-danger-400',
-                                        'ragu-ragu' => 'bg-warning-400',
+                                        'ragu-ragu' => 'bg-warning-900',
                                         default => 'bg-neutral-200 text-neutral-800',
                                     };
                         @endphp
@@ -259,7 +259,7 @@ new class extends Component {
                         <span class="text-sm fw-semibold text-neutral-800">Salah</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-12-px h-8-px rounded-pill bg-warning-400"></span>
+                        <span class="w-12-px h-8-px rounded-pill bg-warning-900"></span>
                         <span class="text-sm fw-semibold text-neutral-800">Ragu-ragu</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
