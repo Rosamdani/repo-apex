@@ -211,12 +211,6 @@ new class extends Component {
                     </li>
                     <li class="d-flex align-items-center h-100">
                         <span
-                            class="badge text-sm fw-semibold px-20 py-9 radius-4 text-warning-600 bg-warning-100 w-100">
-                            {{ $totalRaguRagu }} Ragu-ragu
-                        </span>
-                    </li>
-                    <li class="d-flex align-items-center h-100">
-                        <span
                             class="badge text-sm fw-semibold px-20 py-9 radius-4 text-neutral-800 bg-neutral-300 w-100">
                             {{ $totalTidakDikerjakan }} Tidak Dikerjakan
                         </span>

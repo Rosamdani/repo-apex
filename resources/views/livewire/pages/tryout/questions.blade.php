@@ -1,58 +1,88 @@
 <?php
-
 use Livewire\Volt\Component;
+use Illuminate\Support\Facades\Cache;
 
 new class extends Component {
     protected $listeners = ['saveTime', 'handleKeyPress', 'pauseTryout', 'endTryout'];
     public $tryoutId;
     public $tryout;
+    public $userTryout;
     public $questions;
     public $currentQuestionIndex = 0;
     public $selectedAnswer = [];
     public $questionStatus = [];
-    public $userTryout;
-    public $totalQuestions;
     public $isDoubtful = [];
+    public $totalQuestions;
+    public $timeLeft;
 
     public function mount($tryoutId)
     {
         $this->tryoutId = $tryoutId;
 
-        $this->tryout = \App\Models\Tryouts::with([
-            'questions' => fn($query) => $query->orderBy('id', 'asc'),
-        ])->findOrFail($this->tryoutId);
+        $this->tryout = \App\Models\Tryouts::findOrFail($this->tryoutId);
 
         $this->userTryout = \App\Models\UserTryouts::firstOrCreate([
             'user_id' => auth()->id(),
             'tryout_id' => $this->tryoutId,
         ]);
 
-        if (!$this->userTryout->question_order) {
-            $questions = \App\Models\SoalTryout::where('tryout_id', $tryoutId)->pluck('id')->toArray();
-            shuffle($questions);
+        $cacheKey = "tryout_{$this->userTryout->id}";
 
-            $this->userTryout->question_order = $questions;
-            $this->userTryout->save();
+        if (Cache::has($cacheKey)) {
+            $cacheData = Cache::get($cacheKey);
+            $this->questions = $cacheData['questions'];
+            $this->selectedAnswer = $cacheData['selectedAnswer'];
+            $this->questionStatus = $cacheData['questionStatus'];
+            $this->isDoubtful = $cacheData['isDoubtful'];
+            $this->timeLeft = $cacheData['timeLeft'];
+            $this->totalQuestions = $this->questions->count();
+        } else {
+            if (!$this->userTryout->question_order) {
+                $questions = \App\Models\SoalTryout::where('tryout_id', $tryoutId)->pluck('id')->toArray();
+                shuffle($questions);
+
+                $this->userTryout->question_order = $questions;
+                $this->userTryout->save();
+            }
+
+            $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
+            $this->questions = $this->questions
+                ->sortBy(function ($question) {
+                    return array_search($question->id, $this->userTryout->question_order);
+                })
+                ->values();
+
+            $this->totalQuestions = $this->questions->count();
+            $this->timeLeft = $this->userTryout->waktu ?? $this->tryout->waktu;
+
+            $answers = \App\Models\UserAnswer::where('user_id', auth()->id())->whereIn('soal_id', $this->questions->pluck('id'))->get();
+
+            foreach ($this->questions as $question) {
+                $answer = $answers->where('soal_id', $question->id)->first();
+
+                $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
+                $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
+                $this->questionStatus[$question->id] = $answer ? ($answer->status === 'ragu-ragu' ? 'ragu-ragu' : ($answer->jawaban ? 'sudah dijawab' : 'belum dijawab')) : 'belum dijawab';
+            }
+
+            $this->cacheData();
         }
+    }
 
-        $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
-        $this->questions = $this->questions
-            ->sortBy(function ($question) {
-                return array_search($question->id, $this->userTryout->question_order);
-            })
-            ->values(); // Reset array keys to ensure proper indexing.
-
-        $this->totalQuestions = $this->questions->count();
-
-        $answers = \App\Models\UserAnswer::where('user_id', auth()->id())->whereIn('soal_id', $this->questions->pluck('id'))->get();
-
-        foreach ($this->questions as $question) {
-            $answer = $answers->where('soal_id', $question->id)->first();
-
-            $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
-            $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
-            $this->questionStatus[$question->id] = $answer ? ($answer->status === 'ragu-ragu' ? 'ragu-ragu' : ($answer->jawaban ? 'sudah dijawab' : 'belum dijawab')) : 'belum dijawab';
-        }
+    public function cacheData()
+    {
+        $cacheKey = "tryout_{$this->userTryout->id}";
+        Cache::put(
+            $cacheKey,
+            [
+                'questions' => $this->questions,
+                'selectedAnswer' => $this->selectedAnswer,
+                'questionStatus' => $this->questionStatus,
+                'isDoubtful' => $this->isDoubtful,
+                'timeLeft' => $this->timeLeft,
+            ],
+            now()->addMinutes(60),
+        );
     }
 
     public function jumpToQuestion($index)
@@ -89,32 +119,31 @@ new class extends Component {
     {
         $this->selectedAnswer[$soalId] = $jawaban;
         $this->questionStatus[$soalId] = 'sudah dijawab';
+        $this->isDoubtful[$soalId] = false;
 
-        $status = $this->isDoubtful[$soalId] ? 'ragu-ragu' : 'dijawab';
-
-        \App\Models\UserAnswer::updateOrCreate(['user_id' => auth()->id(), 'soal_id' => $soalId], ['jawaban' => $jawaban, 'status' => $status]);
+        $this->cacheData();
     }
 
     public function toggleDoubtful($soalId)
     {
         $this->isDoubtful[$soalId] = !$this->isDoubtful[$soalId];
-
-        $status = $this->isDoubtful[$soalId] ? 'ragu-ragu' : ($this->selectedAnswer[$soalId] ? 'dijawab' : 'belum_dijawab');
-
-        \App\Models\UserAnswer::updateOrCreate(['user_id' => auth()->id(), 'soal_id' => $soalId], ['status' => $status]);
-
-        $this->questionStatus[$soalId] = $this->isDoubtful[$soalId] ? 'ragu-ragu' : ($this->selectedAnswer[$soalId] ? 'sudah dijawab' : 'belum dijawab');
+        $this->questionStatus[$soalId] = $this->isDoubtful[$soalId] ? 'ragu-ragu' : 'sudah dijawab';
+        $this->cacheData();
     }
 
     #[On('saveTime')]
     public function saveTime($remainingMinutes)
     {
-        $this->userTryout->update(['waktu' => $remainingMinutes]);
+        $cacheKey = "tryout_{$this->userTryout->id}";
+        $cacheData = Cache::get($cacheKey);
+        $cacheData['timeLeft'] = $remainingMinutes;
+        Cache::put($cacheKey, $cacheData, now()->addMinutes(60));
     }
 
     #[On('pause')]
     public function pauseTryout()
     {
+        $this->saveToDatabase();
         $this->userTryout->update(['status' => 'paused']);
         return redirect()->route('index')->with('success', 'Tryout dijeda!');
     }
@@ -122,8 +151,24 @@ new class extends Component {
     #[On('end')]
     public function endTryout()
     {
+        $this->saveToDatabase();
         $this->userTryout->update(['status' => 'finished']);
         return redirect()->route('index')->with('success', 'Tryout selesai!');
+    }
+
+    public function saveToDatabase()
+    {
+        $cacheKey = "tryout_{$this->userTryout->id}";
+        $cacheData = Cache::get($cacheKey);
+
+        foreach ($cacheData['questions'] as $question) {
+            \App\Models\UserAnswer::updateOrCreate(['user_id' => auth()->id(), 'soal_id' => $question->id], ['jawaban' => $cacheData['selectedAnswer'][$question->id] ?? null, 'status' => $cacheData['questionStatus'][$question->id] === 'sudah dijawab' ? 'dijawab' : ($cacheData['questionStatus'][$question->id] === 'ragu-ragu' ? 'ragu-ragu' : 'tidak_dijawab')]);
+        }
+
+        $remainingMinutes = $cacheData['timeLeft'];
+        $this->userTryout->update(['waktu' => $remainingMinutes]);
+
+        Cache::forget($cacheKey);
     }
 };
 ?>
@@ -142,7 +187,7 @@ new class extends Component {
         <div class="card d-xxl-none radius-8 border-0 mb-3">
             <div class="card-body p-24">
                 <h6 class="fw-bold text-lg">Sisa Waktu</h6>
-                <div class="d-flex justify-content-center fw-bold" style="font-size: 80px;" x-data="{ countdown: 7200 }"
+                <div class="d-flex justify-content-center fw-bold" style="font-size: 80px;" x-data="{ countdown: @js($timeLeft) * 60 }"
                     x-init="setInterval(() => countdown--, 1000)">
                     <span class="text-primary-600"
                         x-text="`${Math.floor(countdown / 3600)}:${String(Math.floor(countdown / 60) % 60).padStart(2, '0')}:${String(countdown % 60).padStart(2, '0')}`">
@@ -201,7 +246,8 @@ new class extends Component {
                     <div class="form-check d-flex align-items-center gap-2">
                         <input type="checkbox" id="raguRagu_{{ $questions[$currentQuestionIndex]->id }}"
                             wire:click="toggleDoubtful('{{ $questions[$currentQuestionIndex]->id }}')"
-                            class="form-check-input" @checked($isDoubtful[$questions[$currentQuestionIndex]->id])>
+                            class="form-check-input" @if ($questionStatus[$questions[$currentQuestionIndex]->id] === 'belum dijawab') disabled @endif
+                            @checked($isDoubtful[$questions[$currentQuestionIndex]->id])>
                         <label for="raguRagu_{{ $questions[$currentQuestionIndex]->id }}"
                             class="form-check-label fw-medium text-secondary-light">
                             Ragu-ragu
@@ -244,7 +290,7 @@ new class extends Component {
             <div class="card-body p-24">
                 <h6 class="fw-bold text-lg">Sisa Waktu</h6>
                 <div class="d-flex justify-content-center fw-bold" style="font-size: 80px;" x-data="{
-                    countdown: @js($userTryout->waktu ?? $tryout->waktu) * 60,
+                    countdown: @js($timeLeft) * 60,
                     saveTime() { $wire.saveTime(Math.floor(this.countdown / 60)); }
                 }"
                     x-init="setInterval(() => {
