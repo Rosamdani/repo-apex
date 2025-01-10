@@ -28,7 +28,11 @@ class Tryouts extends Model
         'tanggal',
         'status',
         'image',
+        'deskripsi',
+        'harga',
+        'url',
     ];
+
 
     public function questions(): HasMany
     {
@@ -49,11 +53,6 @@ class Tryouts extends Model
     public function testimonis()
     {
         return $this->hasMany(Testimoni::class, 'tryout_id');
-    }
-
-    public function details()
-    {
-        return $this->hasOne(TryoutsDetail::class, 'tryout_id');
     }
 
     public function userAccess()
