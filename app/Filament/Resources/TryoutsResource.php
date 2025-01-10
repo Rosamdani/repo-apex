@@ -77,30 +77,18 @@ class TryoutsResource extends Resource
                             ->required(),
                     ]),
                     Tabs\Tab::make('Detail')->schema([
-                        Forms\Components\RichEditor::make('details.deskripsi')
+                        Forms\Components\RichEditor::make('deskripsi')
                             ->label('Deskripsi')
-                            ->required()
-                            ->dehydrateStateUsing(
-                                fn($state, $record) =>
-                                $record->details()->updateOrCreate([], ['deskripsi' => $state])
-                            ),
-                        Forms\Components\TextInput::make('details.harga')
+                            ->required(),
+                        Forms\Components\TextInput::make('harga')
                             ->label('Harga Produk')
                             ->numeric()
-                            ->placeholder('Masukkan harga produk apabila pembelian secara satuan')
-                            ->dehydrateStateUsing(
-                                fn($state, $record) =>
-                                $record->details()->updateOrCreate([], ['harga' => $state])
-                            ),
-                        Forms\Components\TextInput::make('details.url')
+                            ->placeholder('Masukkan harga produk apabila pembelian secara satuan'),
+                        Forms\Components\TextInput::make('url')
                             ->label('Link Pembelian')
                             ->placeholder('https://shopee.co.id/.....')
                             ->hint('Anda dapat memasukkan link pembelian produk seperti link shopee, tokopedia, dll.')
-                            ->url()
-                            ->dehydrateStateUsing(
-                                fn($state, $record) =>
-                                $record->details()->updateOrCreate([], ['url' => $state])
-                            ),
+                            ->url(),
                     ]),
 
                 ]),

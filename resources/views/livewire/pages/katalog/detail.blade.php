@@ -24,7 +24,7 @@ new class extends Component {
     {
         $this->tryout = Tryouts::where('id', $tryoutId)
             ->select(['id', 'nama', 'image', 'waktu', 'batch_id'])
-            ->with(['batch', 'details'])
+            ->with(['batch'])
             ->first();
 
         $this->userTryout = UserTryouts::where('user_id', auth()->id())->where('tryout_id', $tryoutId)->first();
@@ -82,10 +82,10 @@ new class extends Component {
             alt="{{ $tryout->nama }}" class="w-100 h-auto max-h-400-px rounded mb-20">
         <div class="card">
             <div class="card-body">
-                @if ($tryout->details?->deskripsi)
+                @if ($tryout->deskripsi)
                     <h5 class="fw-semibold">Deskripsi</h5>
                     <p class="mt-10 text-secondary-light" style="text-align: justify;">
-                        {!! $tryout->details->deskripsi !!}
+                        {!! $tryout->deskripsi !!}
                     </p>
                 @endif
                 <h5 class="my-20">Testimoni</h5>
@@ -146,7 +146,7 @@ new class extends Component {
                                 class="text-primary-600 icon me-1 text-xl"></iconify-icon>
                             <span class="text-xl">Harga:</span>
                         </div>
-                        <span class="text-xl">Rp. {{ number_format($tryout->details?->harga, 0, ',', '.') }}</span>
+                        <span class="text-xl">Rp. {{ number_format($tryout->harga, 0, ',', '.') }}</span>
                     </li>
                     <li
                         class="d-flex align-items-center flex-wrap justify-content-between text-sm text-secondary-light mb-1 border-start-0 border-end-0 border-bottom-0 border py-10">
@@ -176,7 +176,7 @@ new class extends Component {
                 </ul>
 
                 @if ($requestStatus === 'accepted')
-                    @if ($userTryout->status->value == 'finished')
+                    @if ($userTryout?->status?->value == 'finished')
                         <a href="{{ route('tryouts.hasil.index', $tryout->id) }}" wire:navigate
                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 mt-16">
                             Hasil
@@ -185,7 +185,7 @@ new class extends Component {
                             class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">
                             Pembahasan
                         </a>
-                    @elseif ($userTryout->status->value == 'started' || $userTryout->status->value == 'paused')
+                    @elseif ($userTryout?->status?->value == 'started' || $userTryout?->status?->value == 'paused')
                         <a href="{{ route('tryouts.show', ['id' => $tryout->id]) }}" wire:navigate
                             class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">
                             Lanjutkan
@@ -204,7 +204,7 @@ new class extends Component {
                         <p class="mb-0 text-secondary">Menunggu konfirmasi admin...</p>
                     </div>
                 @else
-                    <a href="{{ $tryout->details?->url }}" target="_blank"
+                    <a href="{{ $tryout->url }}" target="_blank"
                         class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
                         Beli Sekarang
                     </a>
@@ -233,13 +233,9 @@ new class extends Component {
                     @endif
                     <p>{{ $tryout->nama }}?</p>
                     <div class="mb-3">
-                        <label for="file-upload-name"
-                            class="mb-16 border border-neutral-600 fw-medium text-secondary-light px-16 py-12 radius-12 d-inline-flex align-items-center gap-2 bg-hover-neutral-200">
-                            <iconify-icon icon="solar:upload-linear" class="text-xl"></iconify-icon>
-                            Klik untuk upload bukti transaksi
-                            <input type="file" class="form-control w-auto mt-24 form-control-lg"
-                                id="file-upload-name" wire:model="image" accept="image/*" hidden="">
-                        </label>
+                        <label for="file-upload-name">Upload Bukti Pembayaran </label>
+                        <input type="file" class="form-control w-auto mt-24 form-control-lg" id="file-upload-name"
+                            wire:model="image" accept="image/*">
                         <ul id="uploaded-img-names"></ul>
                         @error('image')
                             <span class="text-danger">{{ $message }}</span>

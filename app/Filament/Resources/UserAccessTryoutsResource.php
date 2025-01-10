@@ -54,6 +54,7 @@ class UserAccessTryoutsResource extends Resource
                     ]),
                 Forms\Components\TextInput::make('catatan'),
                 Forms\Components\FileUpload::make('image')
+                    ->label('Bukti Bayar')
                     ->downloadable()
                     ->image(),
             ]);
@@ -77,7 +78,7 @@ class UserAccessTryoutsResource extends Resource
                     ]),
                 Tables\Columns\TextColumn::make('catatan')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')->label('Bukti Bayar'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
