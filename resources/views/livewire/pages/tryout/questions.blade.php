@@ -271,7 +271,7 @@ new class extends Component {
                             Selesai <iconify-icon icon="eva:checkmark-fill" class="icon text-xl"></iconify-icon>
                         </button>
                     @else
-                        <button class="btn btn-primary btn-sm d-flex align-items-center" wire:click="nextQuestion">
+                        <button class="btn btn-primary-600 btn-sm d-flex align-items-center" wire:click="nextQuestion">
                             Selanjutnya <iconify-icon icon="eva:arrow-ios-forward-fill"
                                 class="icon text-xl"></iconify-icon>
                         </button>
@@ -363,10 +363,10 @@ new class extends Component {
                         @php
                             $buttonClass =
                                 $index === $currentQuestionIndex
-                                    ? 'bg-primary-50 text-primary-800'
+                                    ? 'bg-primary-200 text-primary-800'
                                     : match ($questionStatus[$question->id]) {
                                         'sudah dijawab' => 'bg-primary-600',
-                                        'ragu-ragu' => 'bg-warning-600',
+                                        'ragu-ragu' => 'bg-warning-900',
                                         default => 'bg-neutral-200 text-neutral-800',
                                     };
                         @endphp
@@ -382,7 +382,7 @@ new class extends Component {
                         <span class="text-sm fw-semibold text-neutral-800">Sudah dijawab</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-12-px h-8-px rounded-pill bg-warning-600"></span>
+                        <span class="w-12-px h-8-px rounded-pill bg-warning-900"></span>
                         <span class="text-sm fw-semibold text-neutral-800">Ragu-ragu</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
@@ -390,7 +390,7 @@ new class extends Component {
                         <span class="text-sm fw-semibold text-neutral-800">Belum dijawab</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-12-px h-8-px rounded-pill bg-primary-50"></span>
+                        <span class="w-12-px h-8-px rounded-pill bg-primary-200"></span>
                         <span class="text-sm fw-semibold text-neutral-800">Sedang dibuka</span>
                     </div>
                 </div>
