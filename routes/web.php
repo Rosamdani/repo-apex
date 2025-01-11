@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AnotherDeviceMiddleware;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CheckTryoutPermission;
 use App\Models\Tryouts;
@@ -32,4 +33,4 @@ Route::middleware('guest')->post('/logoutSession', [App\Http\Controllers\AuthCon
 Route::middleware('guest')->post('/login', [App\Http\Controllers\AuthController::class, 'loginStore'])->name('loginStore');
 Route::middleware('guest')->get('/register', [App\Http\Controllers\AuthController::class, 'register'])->name('register');
 Route::middleware('guest')->post('/register', [App\Http\Controllers\AuthController::class, 'registerStore'])->name('registerStore');
-Route::middleware('guest')->get('/another-device', [App\Http\Controllers\AuthController::class, 'showSessions'])->name('anotherDevice');
+Route::middleware(['guest', 'anotherdevice'])->get('/another-device', [App\Http\Controllers\AuthController::class, 'showSessions'])->name('anotherDevice');
