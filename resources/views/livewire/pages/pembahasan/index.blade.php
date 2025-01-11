@@ -1,6 +1,6 @@
 <?php
-
 use Livewire\Volt\Component;
+use Illuminate\Support\Facades\Cache;
 
 new class extends Component {
     protected $listeners = ['handleKeyPress'];
@@ -21,7 +21,6 @@ new class extends Component {
     public function mount($tryoutId)
     {
         $this->tryoutId = $tryoutId;
-
         $this->tryout = \App\Models\Tryouts::findOrFail($this->tryoutId);
 
         $this->userTryout = \App\Models\UserTryouts::firstOrCreate([
@@ -29,17 +28,30 @@ new class extends Component {
             'tryout_id' => $this->tryoutId,
         ]);
 
-        // Ambil soal berdasarkan question_order
+        $cacheKey = "tryout_{$this->userTryout->id}";
+
+        if (Cache::has($cacheKey)) {
+            $cacheData = Cache::get($cacheKey);
+
+            $this->questions = $cacheData['questions'];
+            $this->selectedAnswer = $cacheData['selectedAnswer'];
+            $this->questionStatus = $cacheData['questionStatus'];
+            $this->isDoubtful = $cacheData['isDoubtful'];
+        } else {
+            $this->initializeQuestionsAndAnswers();
+            $this->cacheData();
+        }
+
+        $this->updateTotals();
+    }
+
+    public function initializeQuestionsAndAnswers()
+    {
         $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
-        $this->questions = $this->questions
-            ->sortBy(function ($question) {
-                return array_search($question->id, $this->userTryout->question_order);
-            })
-            ->values();
+        $this->questions = $this->questions->sortBy(fn($question) => array_search($question->id, $this->userTryout->question_order))->values();
 
         $this->totalQuestions = $this->questions->count();
 
-        // Ambil jawaban pengguna untuk soal yang diurutkan
         $answers = \App\Models\UserAnswer::where('user_id', auth()->id())->whereIn('soal_id', $this->questions->pluck('id'))->get();
 
         foreach ($this->questions as $question) {
@@ -59,8 +71,21 @@ new class extends Component {
                 $this->questionStatus[$question->id] = 'tidak dijawab';
             }
         }
+    }
 
-        $this->updateTotals();
+    public function cacheData()
+    {
+        $cacheKey = "tryout_{$this->userTryout->id}";
+        Cache::put(
+            $cacheKey,
+            [
+                'questions' => $this->questions,
+                'selectedAnswer' => $this->selectedAnswer,
+                'questionStatus' => $this->questionStatus,
+                'isDoubtful' => $this->isDoubtful,
+            ],
+            now()->addMinutes(120),
+        );
     }
 
     public function jumpToQuestion($index)
@@ -109,7 +134,22 @@ new class extends Component {
             ->filter(fn($status) => $status === 'tidak dijawab')
             ->count();
     }
-}; ?>
+
+    public function mergeAndWatermark()
+    {
+        $this->dispatch('open-modal');
+        return;
+        dd($files);
+        $files = $this->questions->map(fn($question) => Storage::path($question['file_pembahasan']))->toArray();
+        $this->outputFilePath = 'merged_watermarked.pdf';
+        $outputFile = Storage::path($this->outputFilePath);
+
+        PdfHelper::mergeAndAddWatermark($files, $outputFile, $this->watermarkText);
+
+        $this->dispatchBrowserEvent('fileReady', ['filePath' => Storage::url($this->outputFilePath)]);
+    }
+};
+?>
 
 <div class="row">
     <!-- Ujian kiri start -->
@@ -219,10 +259,21 @@ new class extends Component {
             </div>
         </div>
 
-        <div class="d-flex justify-content-center w-100">
+        <div class="d-flex justify-content-center w-100 mb-3">
             <a href="{{ route('index') }}" wire:navigate
                 class="btn btn-outline-success-800 text-success-600 border-success-600 d-inline-flex align-items-center text-center gap-2 text-sm btn-sm px-8 py-13 w-100">
                 <iconify-icon icon="mdi:arrow-left" class="icon text-xl"></iconify-icon> Kembali ke Dashboard
+            </a>
+        </div>
+        <div class="d-flex justify-content-center w-100 mb-3">
+            <a wire:click='mergeAndWatermark' wire:navigate
+                class="btn btn-outline-primary-800 text-primary-600 border-primary-600 d-inline-flex align-items-center text-center gap-2 text-sm btn-sm px-8 py-13 w-100">
+                <span wire:loading.remove wire:target="mergeAndWatermark">
+                    Download Pembahasan
+                </span>
+                <span wire:loading wire:target="mergeAndWatermark">
+                    Sedang memproses...
+                </span>
             </a>
         </div>
     </div>

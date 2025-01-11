@@ -38,7 +38,10 @@ new class extends Component {
             $this->totalQuestions = $this->questions->count();
         } else {
             if (!$this->userTryout->question_order) {
-                $questions = \App\Models\SoalTryout::where('tryout_id', $tryoutId)->pluck('id')->toArray();
+                $questions = \App\Models\SoalTryout::select(['id', 'soal', 'pilihan_a', 'pilihan_b', 'pilihan_c', 'pilihan_d', 'tryout_id'])
+                    ->where('tryout_id', $tryoutId)
+                    ->pluck('id')
+                    ->toArray();
                 shuffle($questions);
 
                 $this->userTryout->question_order = $questions;

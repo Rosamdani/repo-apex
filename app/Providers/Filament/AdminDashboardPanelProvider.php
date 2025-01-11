@@ -31,11 +31,12 @@ class AdminDashboardPanelProvider extends PanelProvider
             ->favicon(setting('general.favicon') ? asset('storage/' . setting('general.favicon')) : '')
             ->brandLogo(setting('general.logo') ? asset('storage/' . setting('general.logo')) : '')
             ->brandName(setting('general.app_name') ?? '')
-            ->databaseNotificationsPolling(60)
+            ->databaseNotificationsPolling(300)
             ->colors([
                 'primary' => setting('general.primary_color') ?? Color::Blue,
                 'secondary' => Color::Gray,
-                'success' => Color::Lime,
+                'success' => Color::Green,
+                'warning' => Color::Yellow,
                 'danger' => Color::Red,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

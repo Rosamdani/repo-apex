@@ -31,7 +31,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if (session()->has('sessions')) {
+            if (session()->has(key: 'sessions')) {
                 session()->forget('sessions');
             }
 
