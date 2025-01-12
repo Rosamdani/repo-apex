@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TryoutsResource\RelationManagers;
 
+use App\Imports\ImportQuestions;
 use App\Models\BidangTryouts;
 use App\Models\KompetensiTryouts;
 use Filament\Forms;
@@ -23,15 +24,6 @@ class QuestionRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\FileUpload::make('file_pembahasan')
-                    ->label('Upload File')
-                    ->disk('public')
-                    ->directory('pembahasan')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->maxSize(2048)
-                    ->hint('Upload file pdf pembahasan soal')
-                    ->columnSpanFull()
-                    ->required(),
                 Forms\Components\Select::make('bidang_id')
                     ->native(false)
                     ->placeholder('Pilih salah satu')
@@ -132,40 +124,45 @@ class QuestionRelationManager extends RelationManager
                     ->exports([
                         \pxlrbt\FilamentExcel\Exports\ExcelExport::make('table')->fromTable(),
                     ]),
-                \EightyNine\ExcelImport\Tables\ExcelImportRelationshipAction::make()
-                    ->label('Import Soal')
-                    ->slideOver()
-                    ->color('success')
-                    ->sampleExcel(
-                        sampleData: [
-                            [
-                                'nomor' => 1,
-                                'soal' => 'Apa ibu kota Indonesia?',
-                                'pilihan_a' => 'Bandung',
-                                'pilihan_b' => 'Jakarta',
-                                'pilihan_c' => 'Surabaya',
-                                'pilihan_d' => 'Medan',
-                                'pilihan_e' => 'Yogyakarta',
-                                'jawaban' => 'b',
-                            ],
-                            [
-                                'nomor' => 2,
-                                'soal' => 'Berapa hasil dari 2 + 2?',
-                                'pilihan_a' => '3',
-                                'pilihan_b' => '4',
-                                'pilihan_c' => '5',
-                                'pilihan_d' => '6',
-                                'pilihan_e' => '7',
-                                'jawaban' => 'b',
-                            ],
-                        ],
-                        fileName: 'sample.xlsx',
-                        exportClass: \App\Exports\SampleExport::class,
-                        sampleButtonLabel: 'Download Sample',
-                        customiseActionUsing: fn(Action $action) => $action->color('secondary')
-                            ->icon('heroicon-m-clipboard')
-                            ->requiresConfirmation(),
-                    ),
+                // \EightyNine\ExcelImport\Tables\ExcelImportRelationshipAction::make()
+                //     ->label('Import Soal')
+                //     ->slideOver()
+                //     ->use(ImportQuestions::class)
+                //     ->color('success')
+                //     ->sampleExcel(
+                //         sampleData: [
+                //             [
+                //                 'nomor' => 1,
+                //                 'bidang' => '(Gunakan ID bidang di halaman Bidang)',
+                //                 'kompetensi' => '(Gunakan ID kompetensi di halaman Kompetensi)',
+                //                 'soal' => 'Apa ibu kota Indonesia?',
+                //                 'pilihan_a' => 'Bandung',
+                //                 'pilihan_b' => 'Jakarta',
+                //                 'pilihan_c' => 'Surabaya',
+                //                 'pilihan_d' => 'Medan',
+                //                 'pilihan_e' => 'Yogyakarta',
+                //                 'jawaban' => 'b',
+                //             ],
+                //             [
+                //                 'nomor' => 2,
+                //                 'bidang' => '(Gunakan ID bidang di halaman Bidang)',
+                //                 'kompetensi' => '(Gunakan ID kompetensi di halaman Kompetensi)',
+                //                 'soal' => 'Berapa hasil dari 2 + 2?',
+                //                 'pilihan_a' => '3',
+                //                 'pilihan_b' => '4',
+                //                 'pilihan_c' => '5',
+                //                 'pilihan_d' => '6',
+                //                 'pilihan_e' => '7',
+                //                 'jawaban' => 'b',
+                //             ],
+                //         ],
+                //         fileName: 'sample.xlsx',
+                //         exportClass: \App\Exports\SampleExport::class,
+                //         sampleButtonLabel: 'Download Sample',
+                //         customiseActionUsing: fn(Action $action) => $action->color('secondary')
+                //             ->icon('heroicon-m-clipboard')
+                //             ->requiresConfirmation(),
+                //     ),
                 Tables\Actions\CreateAction::make()->label('Tambah Soal')->icon('heroicon-o-plus'),
             ])
             ->actions([

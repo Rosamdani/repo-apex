@@ -12,7 +12,7 @@ use Livewire\WithFileUploads;
 
 new class extends Component {
     use WithFileUploads;
-    public Tryouts $tryout;
+    public $tryout;
     public $testimonials;
     public $isRequested = false;
     public $requestStatus;
@@ -23,9 +23,13 @@ new class extends Component {
     public function mount($tryoutId)
     {
         $this->tryout = Tryouts::where('id', $tryoutId)
+            ->where('status', 'active')
             ->select(['id', 'nama', 'image', 'waktu', 'batch_id'])
             ->with(['batch'])
             ->first();
+        if ($this->tryout == null) {
+            return redirect()->route('katalog');
+        }
 
         $this->userTryout = UserTryouts::where('user_id', auth()->id())->where('tryout_id', $tryoutId)->first();
 

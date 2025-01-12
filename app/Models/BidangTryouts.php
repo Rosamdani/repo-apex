@@ -18,6 +18,7 @@ class BidangTryouts extends Model
 
         static::creating(function ($model) {
             $model->id = (string) Str::uuid();
+            $model->nama = strtoupper($model->nama);
         });
     }
 

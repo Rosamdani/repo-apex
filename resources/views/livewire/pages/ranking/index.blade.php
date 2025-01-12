@@ -16,6 +16,7 @@ new class extends Component {
             ->where('tryout_id', $this->tryoutId)
             ->with(['user:id,name,image_url,email', 'tryout:id,nama'])
             ->orderBy('nilai', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
     }
 }; ?>
