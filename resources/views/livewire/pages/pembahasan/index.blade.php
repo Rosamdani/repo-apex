@@ -1,6 +1,8 @@
 <?php
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Cache;
+use App\Helpers\PdfHelper;
+use Illuminate\Support\Facades\Storage;
 
 new class extends Component {
     protected $listeners = ['handleKeyPress'];
@@ -17,6 +19,8 @@ new class extends Component {
     public $totalTidakDikerjakan;
     public $totalQuestions;
     public $isDoubtful = [];
+    public $watermarkText;
+    public $outputFilePath;
 
     public function mount($tryoutId)
     {
@@ -27,6 +31,8 @@ new class extends Component {
             'user_id' => auth()->id(),
             'tryout_id' => $this->tryoutId,
         ]);
+
+        $this->watermarkText = substr(auth()->user()->name, 0, 15);
 
         $cacheKey = "tryout_{$this->userTryout->id}";
 
@@ -135,18 +141,17 @@ new class extends Component {
             ->count();
     }
 
-    public function mergeAndWatermark()
+    public function downloadPembahasan()
     {
-        $this->dispatch('open-modal');
-        return;
-        dd($files);
-        $files = $this->questions->map(fn($question) => Storage::path($question['file_pembahasan']))->toArray();
-        $this->outputFilePath = 'merged_watermarked.pdf';
-        $outputFile = Storage::path($this->outputFilePath);
-
-        PdfHelper::mergeAndAddWatermark($files, $outputFile, $this->watermarkText);
-
-        $this->dispatchBrowserEvent('fileReady', ['filePath' => Storage::url($this->outputFilePath)]);
+        // $files = $this->questions->map(fn($question) => Storage::path($question['file_pembahasan']))->toArray();
+        // $this->outputFilePath = 'merged_watermarked.pdf';
+        // PdfHelper::mergeAndAddWatermark($files, $outputFile, $this->watermarkText);
+        try {
+            $outputFile = Storage::path($this->tryout->file_pembahasan);
+            return response()->download($outputFile, 'pembahasan_' . $this->tryout->nama . '.pdf');
+        } catch (\Exception $e) {
+            return abort(404);
+        }
     }
 };
 ?>
@@ -266,12 +271,12 @@ new class extends Component {
             </a>
         </div>
         <div class="d-flex justify-content-center w-100 mb-3">
-            <a wire:click='mergeAndWatermark' wire:navigate
+            <a wire:click='downloadPembahasan' wire:navigate
                 class="btn btn-outline-primary-800 text-primary-600 border-primary-600 d-inline-flex align-items-center text-center gap-2 text-sm btn-sm px-8 py-13 w-100">
-                <span wire:loading.remove wire:target="mergeAndWatermark">
+                <span wire:loading.remove wire:target="downloadPembahasan">
                     Download Pembahasan
                 </span>
-                <span wire:loading wire:target="mergeAndWatermark">
+                <span wire:loading wire:target="downloadPembahasan">
                     Sedang memproses...
                 </span>
             </a>
@@ -352,6 +357,19 @@ new class extends Component {
             if (document.activeElement && document.activeElement.matches('input[type="radio"]')) {
                 event.preventDefault();
             }
+        });
+    </script>
+    <script>
+        document.addEventListener('livewire:init', function() {
+            Livewire.on('fileDownloadReady', event => {
+                const link = document.createElement('a');
+                link.href = event.filePath;
+                link.download = event.fileName;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => document.body.removeChild(link), 0);
+            });
         });
     </script>
 @endpush

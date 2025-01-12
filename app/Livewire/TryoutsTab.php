@@ -37,6 +37,7 @@ class TryoutsTab extends Component
                 'tryouts.image',
                 'tryouts.batch_id',
                 'tryouts.waktu',
+                'tryouts.status as status_tryout',
                 'user_tryouts.status',
                 'user_tryouts.nilai',
                 DB::raw('(SELECT COUNT(*) FROM soal_tryouts WHERE soal_tryouts.tryout_id = tryouts.id) as question_count') // Hitung jumlah questions

@@ -21,6 +21,7 @@ new class extends Component {
                 'tryouts.image',
                 'tryouts.batch_id',
                 'tryouts.waktu',
+                'tryouts.status as status_tryout',
                 'user_tryouts.status',
                 'user_tryouts.nilai',
                 DB::raw('(SELECT COUNT(*) FROM soal_tryouts WHERE soal_tryouts.tryout_id = tryouts.id) as question_count'), // Hitung jumlah questions
@@ -33,6 +34,7 @@ new class extends Component {
             'tryouts.image',
             'tryouts.batch_id',
             'tryouts.waktu',
+            'tryouts.status as status_tryout',
             'user_tryouts.status',
             'user_tryouts.nilai',
         ])
@@ -53,48 +55,54 @@ new class extends Component {
         </div>
         <div class="row g-3">
             @foreach ($trendingTryouts as $trending)
-                <div class="col-xxl-3 col-md-4 col-sm-6">
-                    <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
-                        <div class="radius-16 overflow-hidden">
-                            <img src="{{ $trending->image ? asset('storage/' . $trending->image) : asset('assets/images/product/product-default.jpg') }}"
-                                alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
-                        </div>
-                        <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
-                            <div>
-                                <span class="text-sm fw-semibold text-primary-600">{{ $trending->batch->nama }}</span>
-                                <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}" wire:navigate
-                                    class="text-xl fw-bold text-primary-light">{{ $trending->nama }}</a>
-                                <div class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
-                                    <span class="text-sm text-secondary-light fw-medium">Harga:
-                                        <span class="text-sm fw-semibold text-primary-600">Rp
-                                            {{ number_format(150000, 0, ',', '.') }}</span>
-                                    </span>
-
-                                </div>
+                @if ($trending->status_tryout === 'active')
+                    <div class="col-xxl-3 col-md-4 col-sm-6">
+                        <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
+                            <div class="radius-16 overflow-hidden">
+                                <img src="{{ $trending->image ? asset('storage/' . $trending->image) : asset('assets/images/product/product-default.jpg') }}"
+                                    alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
                             </div>
-                            <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
-                                style="margin-top: auto;">
-                                @if ($trending->status == 'finished')
-                                    <a href="{{ route('tryouts.hasil.index', $trending->tryout_id) }}" wire:navigate
-                                        class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
-                                    <a href="{{ route('tryouts.hasil.pembahasan', $trending->tryout_id) }}"
-                                        wire:navigate
-                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
-                                @elseif ($trending->status == 'started' || $trending->status == 'paused')
-                                    <a href="{{ route('tryouts.show', ['id' => $trending->tryout_id]) }}" wire:navigate
-                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
-                                @else
+                            <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
+                                <div>
+                                    <span
+                                        class="text-sm fw-semibold text-primary-600">{{ $trending->batch->nama }}</span>
                                     <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
                                         wire:navigate
-                                        class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                    <a href="#"
-                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
-                                        Sekarang</a>
-                                @endif
+                                        class="text-xl fw-bold text-primary-light">{{ $trending->nama }}</a>
+                                    <div
+                                        class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
+                                        <span class="text-sm text-secondary-light fw-medium">Harga:
+                                            <span class="text-sm fw-semibold text-primary-600">Rp
+                                                {{ number_format(150000, 0, ',', '.') }}</span>
+                                        </span>
+
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
+                                    style="margin-top: auto;">
+                                    @if ($trending->status == 'finished')
+                                        <a href="{{ route('tryouts.hasil.index', $trending->tryout_id) }}" wire:navigate
+                                            class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
+                                        <a href="{{ route('tryouts.hasil.pembahasan', $trending->tryout_id) }}"
+                                            wire:navigate
+                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
+                                    @elseif ($trending->status == 'started' || $trending->status == 'paused')
+                                        <a href="{{ route('tryouts.show', ['id' => $trending->tryout_id]) }}"
+                                            wire:navigate
+                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
+                                    @else
+                                        <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
+                                            wire:navigate
+                                            class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                        <a href="#"
+                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
+                                            Sekarang</a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
             @endforeach
         </div>
     </div>
@@ -104,45 +112,50 @@ new class extends Component {
         </div>
         <div class="row g-3">
             @foreach ($tryouts as $item)
-                <div class="col-xxl-3 col-md-4 col-sm-6">
-                    <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
-                        <div class="radius-16 overflow-hidden">
-                            <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('assets/images/product/product-default.jpg') }}"
-                                alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
-                        </div>
-                        <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
-                            <div>
-                                <span class="text-sm fw-semibold text-primary-600">{{ $item->batch->nama }}</span>
-                                <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}" wire:navigate
-                                    class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
-                                <div class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
-                                    <span class="text-sm text-secondary-light fw-medium">Harga:
-                                        <span class="text-sm fw-semibold text-primary-600">Rp
-                                            {{ number_format(150000, 0, ',', '.') }}</span>
-                                    </span>
-                                </div>
+                @if ($item->status_tryout === 'active')
+                    <div class="col-xxl-3 col-md-4 col-sm-6">
+                        <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
+                            <div class="radius-16 overflow-hidden">
+                                <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('assets/images/product/product-default.jpg') }}"
+                                    alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
                             </div>
-                            <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
-                                style="margin-top: auto;">
-                                @if ($item->status == 'finished')
-                                    <a href="{{ route('tryouts.hasil.index', $item->tryout_id) }}" wire:navigate
-                                        class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
-                                    <a href="{{ route('tryouts.hasil.pembahasan', $item->tryout_id) }}" wire:navigate
-                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
-                                @elseif ($item->status == 'started' || $item->status == 'paused')
-                                    <a href="{{ route('tryouts.show', ['id' => $item->tryout_id]) }}" wire:navigate
-                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
-                                @else
+                            <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
+                                <div>
+                                    <span class="text-sm fw-semibold text-primary-600">{{ $item->batch->nama }}</span>
                                     <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}" wire:navigate
-                                        class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                    <a href="#"
-                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
-                                        Sekarang</a>
-                                @endif
+                                        class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
+                                    <div
+                                        class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
+                                        <span class="text-sm text-secondary-light fw-medium">Harga:
+                                            <span class="text-sm fw-semibold text-primary-600">Rp
+                                                {{ number_format(150000, 0, ',', '.') }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
+                                    style="margin-top: auto;">
+                                    @if ($item->status == 'finished')
+                                        <a href="{{ route('tryouts.hasil.index', $item->tryout_id) }}" wire:navigate
+                                            class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
+                                        <a href="{{ route('tryouts.hasil.pembahasan', $item->tryout_id) }}"
+                                            wire:navigate
+                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
+                                    @elseif ($item->status == 'started' || $item->status == 'paused')
+                                        <a href="{{ route('tryouts.show', ['id' => $item->tryout_id]) }}" wire:navigate
+                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
+                                    @else
+                                        <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
+                                            wire:navigate
+                                            class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                        <a href="#"
+                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
+                                            Sekarang</a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
             @endforeach
         </div>
     </div>

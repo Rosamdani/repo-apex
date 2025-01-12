@@ -31,6 +31,7 @@ class Tryouts extends Model
         'deskripsi',
         'harga',
         'url',
+        'file_pembahasan',
     ];
 
 

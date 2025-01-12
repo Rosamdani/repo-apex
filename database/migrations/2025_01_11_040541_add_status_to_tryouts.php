@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('user_tryouts', function (Blueprint $table) {
-            $table->json('question_order')->nullable();
+        Schema::table('tryouts', function (Blueprint $table) {
+            $table->enum('status', ['active', 'nonaktif'])->nullable();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('user_tryouts', function (Blueprint $table) {
-            $table->dropColumn('question_order');
+        Schema::table('tryouts', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

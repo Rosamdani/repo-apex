@@ -97,6 +97,12 @@ class Settings extends BaseSettings
                                 ->hint('(Ukuran gambar 917x917)')
                                 ->directory('/asset/image/auth'),
                         ]),
+                    Tabs\Tab::make('Pengerjaan Soal')
+                        ->schema([
+                            TextInput::make('soal.minimal_nilai')
+                                ->label('Nilai Minimal Syarat Lulus')
+                                ->numeric(),
+                        ]),
                 ]),
         ];
     }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class SoalTryout extends Model
@@ -16,7 +17,6 @@ class SoalTryout extends Model
     protected static function boot()
     {
         parent::boot();
-
         static::creating(function ($model) {
             $model->id = (string) Str::uuid();
         });
@@ -35,6 +35,7 @@ class SoalTryout extends Model
         'pilihan_d',
         'pilihan_e',
         'jawaban',
+        'file_pembahasan',
     ];
 
     public function tryout()
@@ -63,7 +64,7 @@ class SoalTryout extends Model
             ->whereHas('userAnswer', function ($query) use ($userId) { // Pastikan soal terkait dengan jawaban pengguna
                 $query->where('user_id', $userId);
             })
-            ->count(); // Menghitung jumlah soal yang sudah dijawab
+            ->count();
     }
 
 

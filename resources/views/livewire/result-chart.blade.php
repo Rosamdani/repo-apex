@@ -38,7 +38,7 @@ new class extends Component {
         foreach ($soalTryouts as $soal) {
             $answer = $userAnswers[$soal->id] ?? null;
 
-            if (!$answer) {
+            if (!$answer || $answer->status === 'tidak_dijawab') {
                 // Tidak ada jawaban (tidak dikerjakan)
                 $jumlahTidakDikerjakan++;
             } elseif ($answer->status === 'ragu') {
@@ -66,7 +66,7 @@ new class extends Component {
     <div class="card-header border-bottom d-flex align-items-center flex-wrap gap-2 justify-content-between">
         <h6 class="mb-2 fw-bold text-lg">Ringkasan Hasil</h6>
         <a href="{{ route('tryouts.hasil.pembahasan', $this->userTryout->tryout_id) }}"
-            class="btn btn-outline-primary d-inline-flex align-items-center gap-2 text-sm btn-sm px-8 py-6">
+            class="btn btn-outline-primary-600 d-inline-flex align-items-center gap-2 text-sm btn-sm px-8 py-6">
             <iconify-icon icon="mdi:eye" class="icon text-xl"></iconify-icon> Lihat Pembahasan
         </a>
     </div>

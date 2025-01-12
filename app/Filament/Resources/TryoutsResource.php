@@ -65,6 +65,24 @@ class TryoutsResource extends Resource
                             ->displayFormat('l, d F Y')
                             ->locale('id')
                             ->columnSpanFull(),
+                        Forms\Components\ToggleButtons::make('status')
+                            ->label('Status')
+                            ->options([
+                                'active' => 'Aktif',
+                                'nonaktif' => 'Non-Aktif',
+                            ])
+                            ->hint('Aktifkan apabila tryout sudah siap di publish')
+                            ->icons([
+                                'active' => 'heroicon-o-check-circle',
+                                'nonaktif' => 'heroicon-o-x-circle',
+                            ])
+                            ->colors([
+                                'active' => 'success',
+                                'nonaktif' => 'danger',
+                            ])
+                            ->required()
+                            ->default('nonaktif')
+                            ->inline(),
                         Forms\Components\FileUpload::make('image')
                             ->label('Gambar')
                             ->image()
@@ -73,8 +91,7 @@ class TryoutsResource extends Resource
 
                             ->validationMessages(['maxSize' => 'Ukuran gambar terlalu besar'])
                             ->directory('asset/tryouts/image')
-                            ->disk('public')
-                            ->required(),
+                            ->disk('public'),
                     ]),
                     Tabs\Tab::make('Detail')->schema([
                         Forms\Components\RichEditor::make('deskripsi')
@@ -89,6 +106,15 @@ class TryoutsResource extends Resource
                             ->placeholder('https://shopee.co.id/.....')
                             ->hint('Anda dapat memasukkan link pembelian produk seperti link shopee, tokopedia, dll.')
                             ->url(),
+                        Forms\Components\FileUpload::make('file_pembahasan')
+                            ->label('Upload File')
+                            ->disk('local')
+                            ->downloadable()
+                            ->directory('pembahasan')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->maxSize(2048)
+                            ->hint('Upload file pdf pembahasan')
+                            ->columnSpanFull(),
                     ]),
 
                 ]),
