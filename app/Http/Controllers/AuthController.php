@@ -23,11 +23,11 @@ class AuthController extends Controller
     public function loginStore(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'username' => 'required',
             'password' => 'required',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
@@ -82,6 +82,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'no_telp' => $request->no_telp,
         ]);
+
+        $user->assignRole('user');
 
         $userAcademy = new UserAcademy();
         $userAcademy->user_id = $user->id;

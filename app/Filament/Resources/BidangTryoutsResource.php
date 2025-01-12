@@ -46,11 +46,6 @@ class BidangTryoutsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable()
-                    ->color('primary')
-                    ->copyable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->label('Nama Bidang')
                     ->searchable(),

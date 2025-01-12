@@ -16,7 +16,8 @@
         "outerweb/filament-settings": "^1.2",
         "pxlrbt/filament-excel": "^2.3",
         "setasign/fpdf": "^1.8",
-        "setasign/fpdi": "^2.6"
+        "setasign/fpdi": "^2.6",
+        "spatie/laravel-permission": "^6.10"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

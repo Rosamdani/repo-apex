@@ -46,11 +46,6 @@ class KompetensiTryoutsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->color('primary')
-                    ->searchable()
-                    ->copyable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->label('Nama Kompetensi')
                     ->searchable(),

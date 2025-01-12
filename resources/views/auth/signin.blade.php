@@ -47,11 +47,11 @@
                     @csrf
                     <div class="icon-field mb-16">
                         <span class="icon top-50 translate-middle-y">
-                            <iconify-icon icon="mage:email"></iconify-icon>
+                            <iconify-icon icon="mage:user"></iconify-icon>
                         </span>
-                        <input type="email" name="email"
-                            class="form-control @error('email') is-invalid @enderror h-56-px bg-neutral-50 radius-12"
-                            placeholder="Email" value="{{ old('email') }}">
+                        <input type="text" name="username"
+                            class="form-control @error('username') is-invalid @enderror h-56-px bg-neutral-50 radius-12"
+                            placeholder="Username" value="{{ old('username') }}">
                     </div>
                     <div class="position-relative mb-20">
                         <div class="icon-field">
