@@ -20,8 +20,9 @@ new class extends Component {
         $query = UserTryouts::select('user_id', 'tryout_id', 'nilai')
             ->with(['user', 'tryout.batch'])
             ->where('status', 'finished')
-            ->orderByDesc('nilai')
-            ->orderByAsc('created_at');
+            ->orderBy('nilai', 'desc')
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         // Filter berdasarkan batch yang dipilih
         if (!empty($this->selectedBatch)) {
