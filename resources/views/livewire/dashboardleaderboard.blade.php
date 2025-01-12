@@ -21,8 +21,7 @@ new class extends Component {
             ->with(['user', 'tryout.batch'])
             ->where('status', 'finished')
             ->orderBy('nilai', 'desc')
-            ->orderBy('created_at', 'asc')
-            ->get();
+            ->orderBy('created_at', 'asc');
 
         // Filter berdasarkan batch yang dipilih
         if (!empty($this->selectedBatch)) {
