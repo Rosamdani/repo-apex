@@ -272,7 +272,7 @@
                     </div>
                 </div><!-- Message dropdown end --> --}}
 
-                <div class="dropdown">
+                {{-- <div class="dropdown">
                     <button
                         class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
                         type="button" data-bs-toggle="dropdown">
@@ -384,7 +384,8 @@
                         </div>
 
                     </div>
-                </div><!-- Notification dropdown end -->
+                </div> --}}
+                <!-- Notification dropdown end -->
 
                 <div class="dropdown">
                     <button class="d-flex justify-content-center align-items-center rounded-circle" type="button"
