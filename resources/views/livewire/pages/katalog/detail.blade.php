@@ -24,7 +24,7 @@ new class extends Component {
     {
         $this->tryout = Tryouts::where('id', $tryoutId)
             ->where('status', 'active')
-            ->select(['id', 'nama', 'image', 'waktu', 'batch_id'])
+            ->select(['id', 'nama', 'image', 'waktu', 'batch_id', 'url'])
             ->with(['batch'])
             ->first();
         if ($this->tryout == null) {

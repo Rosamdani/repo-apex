@@ -43,23 +43,23 @@
                             <li class="d-flex align-items-center gap-1 mb-12">
                                 <span class="w-30 text-md fw-semibold text-primary-light">Universitas Asal</span>
                                 <span class="w-70 text-secondary-light fw-medium">:
-                                    {{ auth()->user()->userAcademy->universitas }}</span>
+                                    {{ auth()->user()->userAcademy?->universitas }}</span>
                             </li>
                             <li class="d-flex align-items-center gap-1 mb-12">
                                 <span class="w-30 text-md fw-semibold text-primary-light">Tahun Masuk</span>
                                 <span class="w-70 text-secondary-light fw-medium">:
-                                    {{ auth()->user()->userAcademy->tahun_masuk }}</span>
+                                    {{ auth()->user()->userAcademy?->tahun_masuk }}</span>
                             </li>
                             <li class="d-flex align-items-center gap-1 mb-12">
                                 <span class="w-30 text-md fw-semibold text-primary-light">Status Pendidikan</span>
                                 <span class="w-70 text-secondary-light fw-medium">:
-                                    {{ ucwords(auth()->user()->userAcademy->status_pendidikan) }}</span>
+                                    {{ ucwords(auth()->user()->userAcademy?->status_pendidikan) }}</span>
                             </li>
-                            @if (auth()->user()->userAcademy->semester != null)
+                            @if (auth()->user()->userAcademy?->semester != null)
                                 <li class="d-flex align-items-center gap-1 mb-12">
                                     <span class="w-30 text-md fw-semibold text-primary-light">Semester</span>
                                     <span class="w-70 text-secondary-light fw-medium">:
-                                        {{ auth()->user()->userAcademy->semester }}</span>
+                                        {{ auth()->user()->userAcademy?->semester }}</span>
                                 </li>
                             @endif
                         </ul>

@@ -400,7 +400,8 @@
                                 <h6 class="text-lg text-primary-light fw-semibold mb-2 text-truncate"
                                     style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
                                     {{ auth()->user()->name }}</h6>
-                                <span class="text-secondary-light fw-medium text-sm">Admin</span>
+                                <span
+                                    class="text-secondary-light fw-medium text-sm">{{ auth()->user()->userAcademy?->universitas }}</span>
                             </div>
                             <button type="button" class="hover-text-danger">
                                 <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
