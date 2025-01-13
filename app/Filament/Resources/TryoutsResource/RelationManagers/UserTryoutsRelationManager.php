@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TryoutsResource\RelationManagers;
 
+use App\Enum\TryoutStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -19,9 +20,23 @@ class UserTryoutsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user.name')
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required()
+                    ->searchable(),
+                Forms\Components\TextInput::make('nilai')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Textarea::make('catatan')
+                    ->maxLength(65535),
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'not_started' => 'Belum Mulai',
+                        'started' => 'Sedang Mulai atau Dihentikan Sementara',
+                        'finished' => 'Selesai',
+                    ])
+                    ->searchable()
+                    ->required(),
             ]);
     }
 
@@ -33,6 +48,16 @@ class UserTryoutsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('user.name')->searchable(),
                 Tables\Columns\TextColumn::make('nilai')->sortable(),
                 Tables\Columns\TextColumn::make('catatan'),
+                Tables\Columns\TextColumn::make('status')
+                    ->formatStateUsing(function (?TryoutStatus $state): string {
+                        return match ($state) {
+                            TryoutStatus::FINISHED => 'Selesai',
+                            TryoutStatus::STARTED => 'Sedang Berlangsung',
+                            TryoutStatus::NOT_STARTED => 'Belum Dimulai',
+                            default => 'Tidak Diketahui',
+                        };
+                    })
+                    ->searchable(),
             ])
             ->filters([])
             ->headerActions([])

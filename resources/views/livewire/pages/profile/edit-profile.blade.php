@@ -48,7 +48,7 @@ new class extends Component {
         $this->validate();
 
         $imagePath = auth()->user()->image_url;
-        if ($this->image_url !== '') {
+        if ($this->image_url !== '' && $this->image_url != null) {
             $imagePath = $this->image_url->store('profile', 'public'); // Path relatif
         }
 
@@ -130,7 +130,7 @@ new class extends Component {
         </div>
         <div class="d-flex align-items-center justify-content-start gap-3">
 
-            <button type="submit" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+            <button type="submit" class="btn btn-primary-600 border border-primary-600 text-md px-56 py-12 radius-8">
                 Save
             </button>
         </div>

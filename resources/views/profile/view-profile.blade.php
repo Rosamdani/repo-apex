@@ -55,7 +55,7 @@
                                 <span class="w-70 text-secondary-light fw-medium">:
                                     {{ ucwords(auth()->user()->userAcademy?->status_pendidikan) }}</span>
                             </li>
-                            @if (auth()->user()->userAcademy?->semester != null)
+                            @if (auth()->user()->userAcademy?->semester != null && auth()->user()->userAcademy?->status_pendidikan == 'pre-klinik')
                                 <li class="d-flex align-items-center gap-1 mb-12">
                                     <span class="w-30 text-md fw-semibold text-primary-light">Semester</span>
                                     <span class="w-70 text-secondary-light fw-medium">:
