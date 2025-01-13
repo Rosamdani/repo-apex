@@ -55,7 +55,8 @@ class TryoutsResource extends Resource
                             ->columnSpanFull()
                             ->required(),
                         Forms\Components\TextInput::make('waktu')
-                            ->placeholder('Waktu Pengerjaan Tryout (dalam menit)')
+                            ->numeric()
+                            ->placeholder('Waktu Pengerjaan Tryout (menit)')
                             ->columnSpanFull()
                             ->required(),
                         Forms\Components\DatePicker::make('tanggal')
