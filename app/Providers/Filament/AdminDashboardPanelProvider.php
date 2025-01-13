@@ -33,7 +33,7 @@ class AdminDashboardPanelProvider extends PanelProvider
             ->brandName(setting('general.app_name') ?? '')
             ->databaseNotificationsPolling(1)
             ->colors([
-                'primary' => setting('general.primary_color') ?? Color::Blue,
+                'primary' => setting('color.primary-color-600') ?? Color::Blue,
                 'secondary' => Color::Gray,
                 'success' => Color::Green,
                 'warning' => Color::Yellow,
