@@ -368,7 +368,7 @@ new class extends Component {
                                 $index === $currentQuestionIndex
                                     ? 'bg-primary-200 text-primary-800'
                                     : match ($questionStatus[$question->id]) {
-                                        'sudah dijawab' => 'bg-primary-600 text-white',
+                                        'sudah dijawab' => 'bg-primary-300 text-primary-800',
                                         'ragu-ragu' => 'bg-warning-900',
                                         default => 'bg-neutral-200 text-neutral-800',
                                     };
@@ -381,7 +381,7 @@ new class extends Component {
                 </div>
                 <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-12-px h-8-px rounded-pill bg-primary-600 text-white"></span>
+                        <span class="w-12-px h-8-px rounded-pill bg-primary-300 text-primary-800"></span>
                         <span class="text-sm fw-semibold text-neutral-800">Sudah dijawab</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
