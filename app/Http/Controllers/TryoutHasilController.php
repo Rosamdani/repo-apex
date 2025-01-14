@@ -41,4 +41,10 @@ class TryoutHasilController extends Controller
     {
         return view('tryouts.ranking', compact('id'));
     }
+
+    public function pembahasan($id)
+    {
+        $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
+        return view('tryouts.pembahasan', compact('userTryout'));
+    }
 }

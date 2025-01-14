@@ -56,26 +56,16 @@
 
                         <fieldset class="wizard-fieldset show">
                             <h6 class="text-md text-neutral-500">Informasi Personal</h6>
+                            @if ($errors->any())
+                                <div class="alert alert-danger" role="alert">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                             <div class="row gy-3">
-                                @if ($errors->has('name') || $errors->has('username') || $errors->has('email') || $errors->has('no_telp'))
-                                    <div class="alert alert-danger radius-8 mb-16" role="alert">
-                                        <h6 class="text-md">{{ __('Terjadi Kesalahan!') }}</h6>
-                                        <ul class="list-unstyled">
-                                            @if ($errors->has('name'))
-                                                <li>{{ $errors->first('name') }}</li>
-                                            @endif
-                                            @if ($errors->has('username'))
-                                                <li>{{ $errors->first('username') }}</li>
-                                            @endif
-                                            @if ($errors->has('email'))
-                                                <li>{{ $errors->first('email') }}</li>
-                                            @endif
-                                            @if ($errors->has('no_telp'))
-                                                <li>{{ $errors->first('no_telp') }}</li>
-                                            @endif
-                                        </ul>
-                                    </div>
-                                @endif
                                 <div class="position-relative ">
                                     <div class="icon-field mb-16">
                                         <span class="icon top-50 translate-middle-y">
@@ -131,30 +121,6 @@
                         <fieldset class="wizard-fieldset">
                             <h6 class="text-md text-neutral-500">Informasi Akademik</h6>
                             <div class="row gy-3">
-                                @if (
-                                    $errors->has('universitas') ||
-                                        $errors->has('tahun_masuk') ||
-                                        $errors->has('status_pendidikan') ||
-                                        $errors->has('semester'))
-                                    <div class="alert alert-danger radius-8 mb-16" role="alert">
-                                        <h6 class="text-md">{{ __('Terjadi Kesalahan!') }}</h6>
-                                        <ul class="list-unstyled">
-                                            @if ($errors->has('universitas'))
-                                                <li>{{ $errors->first('universitas') }}</li>
-                                            @endif
-                                            @if ($errors->has('tahun_masuk'))
-                                                <li>{{ $errors->first('tahun_masuk') }}</li>
-                                            @endif
-                                            @if ($errors->has('status_pendidikan'))
-                                                <li>{{ $errors->first('status_pendidikan') }}</li>
-                                            @endif
-                                            @if ($errors->has('semester'))
-                                                <li>{{ $errors->first('semester') }}</li>
-                                            @endif
-                                        </ul>
-                                    </div>
-                                @endif
-
                                 <div class="position-relative ">
                                     <div class="icon-field mb-16">
                                         <span class="icon top-50 translate-middle-y">
@@ -209,24 +175,6 @@
                         <fieldset class="wizard-fieldset">
                             <h6 class="text-md text-neutral-500">Keamanan Akun</h6>
                             <div class="row gy-3">
-                                @if ($errors->has('password') || $errors->has('password_confirmation'))
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        <div class="d-flex align-items-center">
-                                            <div>
-                                                <span
-                                                    class="text-danger-500 fw-semibold">{{ __('Terjadi Kesalahan') }}</span>
-                                                @error('password')
-                                                    <span>{{ $message }}</span>
-                                                @enderror
-                                                @error('password_confirmation')
-                                                    <span>{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                            aria-label="Close"></button>
-                                    </div>
-                                @endif
 
                                 <div class="">
                                     <div class="position-relative ">
