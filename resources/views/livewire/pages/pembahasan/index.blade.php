@@ -160,19 +160,6 @@ new class extends Component {
     <!-- Ujian kiri start -->
     <div class="col-xxl-9">
 
-        <!-- Countdown Mobile -->
-        <div class="card d-xxl-none radius-8 border-0 mb-3">
-            <div class="card-body p-24">
-                <h6 class="fw-bold text-lg">Sisa Waktu</h6>
-                <div class="d-flex justify-content-center fw-bold" style="font-size: 80px;" x-data="{ countdown: 7200 }"
-                    x-init="setInterval(() => countdown--, 1000)">
-                    <span class="text-primary-600"
-                        x-text="`${Math.floor(countdown / 3600)}:${String(Math.floor(countdown / 60) % 60).padStart(2, '0')}:${String(countdown % 60).padStart(2, '0')}`">
-                    </span>
-                </div>
-            </div>
-        </div>
-        <!-- End Countdown Mobile -->
 
         <!-- Soal Ujian -->
         <div class="card radius-8 border-0 mb-3">
