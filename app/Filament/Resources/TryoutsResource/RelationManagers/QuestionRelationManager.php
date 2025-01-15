@@ -4,7 +4,6 @@ namespace App\Filament\Resources\TryoutsResource\RelationManagers;
 
 use App\Imports\ImportQuestions;
 use App\Models\BidangTryouts;
-use App\Models\KompetensiTryouts;
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\Actions\Action;
@@ -35,21 +34,6 @@ class QuestionRelationManager extends RelationManager
                             ->unique(BidangTryouts::class, 'nama')
                             ->validationMessages([
                                 'unique' => 'Nama bidang sudah digunakan',
-                            ])
-                            ->required(),
-                    ])
-                    ->required(),
-                Forms\Components\Select::make('kompetensi_id')
-                    ->native(false)
-                    ->placeholder('Pilih salah satu')
-                    ->relationship('kompetensi', 'nama')
-                    ->columnSpanFull()
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('nama')
-                            ->placeholder('Masukkan nama kompetensi')
-                            ->unique(KompetensiTryouts::class, 'nama')
-                            ->validationMessages([
-                                'unique' => 'Nama kompetensi sudah digunakan',
                             ])
                             ->required(),
                     ])
@@ -96,7 +80,6 @@ class QuestionRelationManager extends RelationManager
             ->emptyStateIcon('heroicon-o-archive-box-x-mark')
             ->columns([
                 Tables\Columns\TextColumn::make('bidang.nama'),
-                Tables\Columns\TextColumn::make('kompetensi.nama'),
                 Tables\Columns\TextColumn::make('soal')
                     ->searchable()
                     ->wrap(true)
@@ -113,10 +96,6 @@ class QuestionRelationManager extends RelationManager
                     ->relationship('bidang', 'nama')
                     ->label('Bidang')
                     ->placeholder('Semua Bidang'),
-                Tables\Filters\SelectFilter::make('kompetensi_id')
-                    ->relationship('kompetensi', 'nama')
-                    ->label('Kompetensi')
-                    ->placeholder('Semua Kompetensi'),
             ])
             ->headerActions([
                 \pxlrbt\FilamentExcel\Actions\Tables\ExportAction::make()
