@@ -25,7 +25,6 @@ class SoalTryout extends Model
     protected $fillable = [
         'id',
         'bidang_id',
-        'kompetensi_id',
         'nomor',
         'tryout_id',
         'soal',
@@ -46,11 +45,6 @@ class SoalTryout extends Model
     public function bidang()
     {
         return $this->belongsTo(BidangTryouts::class);
-    }
-
-    public function kompetensi()
-    {
-        return $this->belongsTo(KompetensiTryouts::class);
     }
 
     public function userAnswer()

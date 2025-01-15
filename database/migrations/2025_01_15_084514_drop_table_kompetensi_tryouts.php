@@ -11,9 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('soal_tryouts', function (Blueprint $table) {
-            $table->dropColumn('nomor');
-        });
+        Schema::dropIfExists('kompetensi_tryouts');
     }
 
     /**
@@ -21,8 +19,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('soal_tryouts', function (Blueprint $table) {
-            $table->integer('nomor')->nullable();
+        Schema::create('kompetensi_tryouts', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('nama');
+            $table->timestamps();
         });
     }
 };

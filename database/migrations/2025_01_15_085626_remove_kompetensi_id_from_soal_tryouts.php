@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('soal_tryouts', function (Blueprint $table) {
-            $table->dropColumn('nomor');
+            $table->dropForeign(['kompetensi_id']);
+
+            $table->dropColumn('kompetensi_id');
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('soal_tryouts', function (Blueprint $table) {
-            $table->integer('nomor')->nullable();
+            $table->string('kompetensi_id', 36);
+
+            $table->foreign('kompetensi_id')->references('id')->on('kompetensi_tryouts')->onDelete('cascade');
         });
     }
 };
