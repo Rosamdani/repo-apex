@@ -31,7 +31,6 @@ class AdminDashboardPanelProvider extends PanelProvider
             ->favicon(setting('general.favicon') ? asset('storage/' . setting('general.favicon')) : '')
             ->brandLogo(setting('general.logo') ? asset('storage/' . setting('general.logo')) : '')
             ->brandName(setting('general.app_name') ?? '')
-            ->databaseNotificationsPolling(1)
             ->colors([
                 'primary' => setting('color.primary-color-600') ?? Color::Blue,
                 'secondary' => Color::Gray,
