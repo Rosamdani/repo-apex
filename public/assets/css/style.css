@@ -263,6 +263,7 @@
     --yellow: #f4941e;
     --orange: #f86624;
     --pink: #de3ace;
+    --blue: #0d6efd;
     --primary-light: rgba(72, 127, 255, 0.15);
     --yellow-light: rgba(255, 159, 41, 0.15);
     --purple-light: rgba(130, 82, 233, 0.15);
@@ -1589,6 +1590,9 @@ th {
 
 .bg-primary-900 {
     background-color: var(--primary-900) !important;
+}
+.bg-blue {
+    background-color: var(--blue) !important;
 }
 
 .bg-neutral-50 {
