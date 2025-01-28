@@ -43,6 +43,7 @@ new class extends Component {
             $this->selectedAnswer = $cacheData['selectedAnswer'];
             $this->questionStatus = $cacheData['questionStatus'];
             $this->isDoubtful = $cacheData['isDoubtful'];
+            $this->totalQuestions = $cacheData['totalQuestions'];
         } else {
             $this->initializeQuestionsAndAnswers();
             $this->cacheData();
@@ -58,7 +59,9 @@ new class extends Component {
 
         $this->totalQuestions = $this->questions->count();
 
-        $answers = \App\Models\UserAnswer::where('user_id', auth()->id())->whereIn('soal_id', $this->questions->pluck('id'))->get();
+        $answers = \App\Models\UserAnswer::where('user_id', auth()->id())
+            ->whereIn('soal_id', $this->questions->pluck('id'))
+            ->get();
 
         foreach ($this->questions as $question) {
             $answer = $answers->where('soal_id', $question->id)->first();
@@ -89,6 +92,7 @@ new class extends Component {
                 'selectedAnswer' => $this->selectedAnswer,
                 'questionStatus' => $this->questionStatus,
                 'isDoubtful' => $this->isDoubtful,
+                'totalQuestions' => $this->totalQuestions,
             ],
             now()->addMinutes(120),
         );
@@ -124,21 +128,13 @@ new class extends Component {
 
     public function updateTotals()
     {
-        $this->totalBenar = collect($this->questionStatus)
-            ->filter(fn($status) => $status === 'benar')
-            ->count();
+        $this->totalBenar = collect($this->questionStatus)->filter(fn($status) => $status === 'benar')->count();
 
-        $this->totalSalah = collect($this->questionStatus)
-            ->filter(fn($status) => $status === 'salah')
-            ->count();
+        $this->totalSalah = collect($this->questionStatus)->filter(fn($status) => $status === 'salah')->count();
 
-        $this->totalRaguRagu = collect($this->questionStatus)
-            ->filter(fn($status) => $status === 'ragu-ragu')
-            ->count();
+        $this->totalRaguRagu = collect($this->questionStatus)->filter(fn($status) => $status === 'ragu-ragu')->count();
 
-        $this->totalTidakDikerjakan = collect($this->questionStatus)
-            ->filter(fn($status) => $status === 'tidak dijawab')
-            ->count();
+        $this->totalTidakDikerjakan = collect($this->questionStatus)->filter(fn($status) => $status === 'tidak dijawab')->count();
     }
 
     public function downloadPembahasan()
@@ -147,6 +143,9 @@ new class extends Component {
         // $this->outputFilePath = 'merged_watermarked.pdf';
         // PdfHelper::mergeAndAddWatermark($files, $outputFile, $this->watermarkText);
         try {
+            if ($this->tryout->file_pembahasan === null) {
+                return abort(404);
+            }
             $outputFile = Storage::path($this->tryout->file_pembahasan);
             return response()->download($outputFile, 'pembahasan_' . $this->tryout->nama . '.pdf');
         } catch (\Exception $e) {
@@ -210,6 +209,50 @@ new class extends Component {
                             style="transform: rotate(-180deg);"></iconify-icon>
                         Sebelumnya
                     </button>
+
+                    <div x-data="{ modalPembahasan: false }">
+                        <!-- Button to trigger modal -->
+                        <button class="btn btn-outline-success"
+                            x-on:click="console.log('Clicked!'); modalPembahasan = true">
+                            Pembahasan
+                        </button>
+
+                        <!-- Modal Overlay -->
+                        <div x-show="modalPembahasan" x-bind:class="{ 'show d-block': modalPembahasan }" x-cloak
+                            class="modal fade" style=" background: rgba(0,0,0,0.5);" x-transition.opacity
+                            @keydown.escape.window="modalPembahasan = false">
+
+                            <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Pembahasan soal nomor
+                                            {{ array_search($questions[$currentQuestionIndex]->id, $userTryout->question_order) + 1 }}
+                                        </h5>
+                                        <button type="button" class="btn-close" x-on:click="modalPembahasan = false"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <!-- Modal Body -->
+                                    <div
+                                        class="modal-body max-h-612-px overflow-auto d-flex flex-column align-items-center">
+                                        @forelse ($questions[$currentQuestionIndex]->image_pembahasan as $image)
+                                            <img src="{{ route('private.image', ['path' => $image]) }}"
+                                                class="img-fluid mb-2" alt="Pembahasan Soal">
+                                        @empty
+                                            <p class="text-center">Tidak ada pembahasan</p>
+                                        @endforelse
+                                    </div>
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer">
+                                        <p>Gunakan tombol <code>&lt;</code> dan <code>&gt;</code> untuk navigasi
+                                            pembahasan</p>
+                                        <button class="btn btn-secondary"
+                                            x-on:click="modalPembahasan = false">Tutup</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <button class="btn btn-primary-600 btn-sm d-flex align-items-center" wire:click="nextQuestion"
                         {{ $currentQuestionIndex == $totalQuestions - 1 ? 'disabled' : '' }}>
@@ -327,6 +370,7 @@ new class extends Component {
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 @endpush
 @push('script')
     <script>
@@ -335,10 +379,12 @@ new class extends Component {
                 Livewire.dispatch('handleKeyPress', {
                     key: 'ArrowLeft'
                 });
+                console.log('ArrowLeft')
             } else if (event.key === 'ArrowRight') {
                 Livewire.dispatch('handleKeyPress', {
                     key: 'ArrowRight'
                 });
+                console.log('ArrowRight')
             }
 
             if (document.activeElement && document.activeElement.matches('input[type="radio"]')) {

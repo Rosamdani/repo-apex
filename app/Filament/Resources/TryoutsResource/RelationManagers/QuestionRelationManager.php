@@ -68,7 +68,18 @@ class QuestionRelationManager extends RelationManager
                         'c' => 'C',
                         'd' => 'D',
                         'e' => 'E',
-                    ])
+                    ]),
+                Forms\Components\FileUpload::make('image_pembahasan')
+                    ->label('Pembahasan Soal')
+                    ->disk('local')
+                    ->downloadable()
+                    ->directory('pembahasan/persoal')
+                    ->image()
+                    ->maxSize(2048)
+                    ->multiple()
+                    ->hint('Upload image pembahasan')
+                    ->columnSpanFull(),
+
             ]);
     }
 

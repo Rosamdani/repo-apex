@@ -21,6 +21,8 @@ new class extends Component {
                 'tryouts.image',
                 'tryouts.batch_id',
                 'tryouts.waktu',
+                'tryouts.url',
+                'tryouts.harga',
                 'tryouts.status as status_tryout',
                 'user_tryouts.status',
                 'user_tryouts.nilai',
@@ -33,6 +35,8 @@ new class extends Component {
             'tryouts.tanggal',
             'tryouts.image',
             'tryouts.batch_id',
+            'tryouts.url',
+            'tryouts.harga',
             'tryouts.waktu',
             'tryouts.status as status_tryout',
             'user_tryouts.status',
@@ -67,13 +71,18 @@ new class extends Component {
                                     <span
                                         class="text-sm fw-semibold text-primary-600">{{ $trending->batch->nama }}</span>
                                     <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
-                                        wire:navigate
                                         class="text-xl fw-bold text-primary-light">{{ $trending->nama }}</a>
                                     <div
                                         class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
                                         <span class="text-sm text-secondary-light fw-medium">Harga:
-                                            <span class="text-sm fw-semibold text-primary-600">Rp
-                                                {{ number_format(150000, 0, ',', '.') }}</span>
+                                            @if ($trending->harga || $trending->harga > 0)
+                                                <span class="text-sm fw-semibold text-primary-600">Rp
+                                                    {{ number_format($trending->harga, 0, ',', '.') }}</span>
+                                            @else
+                                                <span class="text-sm fw-semibold text-primary-600">
+                                                    Gratis
+                                                </span>
+                                            @endif
                                         </span>
 
                                     </div>
@@ -91,12 +100,20 @@ new class extends Component {
                                             wire:navigate
                                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
                                     @else
-                                        <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
-                                            wire:navigate
-                                            class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                        <a href="{{ $trending->url ?? '#' }}"
-                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
-                                            Sekarang</a>
+                                        @if ($trending->harga && $trending->harga > 0)
+                                            <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
+                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                            <a href="{{ $trending->url ?? '#' }}"
+                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
+                                                Sekarang</a>
+                                        @else
+                                            <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
+                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                            <a href="{{ route('tryouts.show', ['id' => $trending->tryout_id]) }}"
+                                                wire:navigate
+                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Mulai
+                                                Kerjakan</a>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -122,13 +139,19 @@ new class extends Component {
                             <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
                                 <div>
                                     <span class="text-sm fw-semibold text-primary-600">{{ $item->batch->nama }}</span>
-                                    <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}" wire:navigate
+                                    <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
                                         class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
                                     <div
                                         class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
                                         <span class="text-sm text-secondary-light fw-medium">Harga:
-                                            <span class="text-sm fw-semibold text-primary-600">Rp
-                                                {{ number_format(150000, 0, ',', '.') }}</span>
+                                            @if ($item->harga && $item->harga > 0)
+                                                <span class="text-sm fw-semibold text-primary-600">Rp
+                                                    {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                            @else
+                                                <span class="text-sm fw-semibold text-primary-600">
+                                                    Gratis
+                                                </span>
+                                            @endif
                                         </span>
                                     </div>
                                 </div>
@@ -144,12 +167,20 @@ new class extends Component {
                                         <a href="{{ route('tryouts.show', ['id' => $item->tryout_id]) }}" wire:navigate
                                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
                                     @else
-                                        <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
-                                            wire:navigate
-                                            class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                        <a href="{{ $item->url ?? '#' }}"
-                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
-                                            Sekarang</a>
+                                        @if ($item->harga && $item->harga > 0)
+                                            <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
+                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                            <a href="{{ $item->url ?? '#' }}"
+                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
+                                                Sekarang</a>
+                                        @else
+                                            <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
+                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                            <a href="{{ route('tryouts.show', ['id' => $item->tryout_id]) }}"
+                                                wire:navigate
+                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Mulai
+                                                Kerjakan</a>
+                                        @endif
                                     @endif
                                 </div>
                             </div>

@@ -14,6 +14,10 @@ new class extends Component {
     public $isDoubtful = [];
     public $totalQuestions;
     public $timeLeft;
+    public $belumDijawab = 0;
+    public $tanpaRagu = 0;
+    public $masihRagu = 0;
+    public $dijawab = 0;
 
     public function mount($tryoutId)
     {
@@ -58,7 +62,9 @@ new class extends Component {
             $this->totalQuestions = $this->questions->count();
             $this->timeLeft = $this->userTryout->waktu ?? $this->tryout->waktu;
 
-            $answers = \App\Models\UserAnswer::where('user_id', auth()->id())->whereIn('soal_id', $this->questions->pluck('id'))->get();
+            $answers = \App\Models\UserAnswer::where('user_id', auth()->id())
+                ->whereIn('soal_id', $this->questions->pluck('id'))
+                ->get();
 
             foreach ($this->questions as $question) {
                 $answer = $answers->where('soal_id', $question->id)->first();
@@ -70,6 +76,10 @@ new class extends Component {
 
             $this->cacheData();
         }
+
+        $this->setBelumDijawabCount();
+        $this->setMasihRaguCount();
+        $this->setTanpaRaguCount();
     }
 
     public function cacheData()
@@ -86,6 +96,31 @@ new class extends Component {
             ],
             now()->addMinutes(60),
         );
+
+        $this->setTanpaRaguCount();
+        $this->setMasihRaguCount();
+        $this->setDijawabCount();
+        $this->setBelumDijawabCount();
+    }
+
+    public function setBelumDijawabCount()
+    {
+        $this->belumDijawab = collect($this->questionStatus)->filter(fn($status) => $status === 'belum dijawab')->count();
+    }
+
+    public function setTanpaRaguCount()
+    {
+        $this->tanpaRagu = $this->totalQuestions - $this->masihRagu;
+    }
+
+    public function setMasihRaguCount()
+    {
+        $this->masihRagu = collect($this->questionStatus)->filter(fn($status) => $status === 'ragu-ragu')->count();
+    }
+
+    public function setDijawabCount()
+    {
+        $this->dijawab = collect($this->questionStatus)->filter(fn($status) => $status === 'sudah dijawab')->count();
     }
 
     public function jumpToQuestion($index)
@@ -356,7 +391,40 @@ new class extends Component {
             </button>
         </div>
 
-
+        <div class="card radius-8 border-0 mb-3">
+            <div class="card-body p-24">
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="d-flex py-2">
+                        <div class="text-xl fw-bold">Detail Soal</div>
+                    </div>
+                    <div
+                        class="d-flex border border-start-0 border-end-0 border-bottom-0 justify-content-between py-10">
+                        <div class="text-muted text-neutral-500">Jumlah Soal</div>
+                        <div class="text-lg fw-bold text-neutral-500">{{ $totalQuestions }}</div>
+                    </div>
+                    <div
+                        class="d-flex border border-start-0 border-end-0 border-bottom-0 justify-content-between py-10">
+                        <div class="text-muted text-neutral-500">Jumlah Dijawab</div>
+                        <div class="text-lg fw-bold text-neutral-500">{{ $dijawab }}</div>
+                    </div>
+                    <div
+                        class="d-flex border border-start-0 border-end-0 border-bottom-0 justify-content-between py-10">
+                        <div class="text-muted text-neutral-500">Jumlah Tanpa Ragu</div>
+                        <div class="text-lg fw-bold text-neutral-500">{{ $tanpaRagu }}</div>
+                    </div>
+                    <div
+                        class="d-flex border border-start-0 border-end-0 border-bottom-0 justify-content-between py-10">
+                        <div class="text-muted text-neutral-500">Jumlah Masih Ragu</div>
+                        <div class="text-lg fw-bold text-neutral-500">{{ $masihRagu }}</div>
+                    </div>
+                    <div
+                        class="d-flex border border-start-0 border-end-0 border-bottom-0 justify-content-between py-10">
+                        <div class="text-muted text-neutral-500">Jumlah Belum Dijawab</div>
+                        <div class="text-lg fw-bold text-neutral-500">{{ $belumDijawab }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 

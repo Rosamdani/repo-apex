@@ -24,18 +24,23 @@ new class extends Component {
     {
         $this->tryout = Tryouts::where('id', $tryoutId)
             ->where('status', 'active')
-            ->select(['id', 'nama', 'image', 'waktu', 'batch_id', 'url'])
+            ->select(['id', 'nama', 'image', 'waktu', 'harga', 'batch_id', 'url'])
             ->with(['batch'])
             ->first();
         if ($this->tryout == null) {
             return redirect()->route('katalog');
         }
 
-        $this->userTryout = UserTryouts::where('user_id', auth()->id())->where('tryout_id', $tryoutId)->first();
+        $this->userTryout = UserTryouts::where('user_id', auth()->id())
+            ->where('tryout_id', $tryoutId)
+            ->first();
 
         $this->testimonials = Testimoni::where('tryout_id', $tryoutId)->where('visibility', 'active')->get();
 
-        $request = UserAccessTryouts::select('status')->where('user_id', auth()->id())->where('tryout_id', $tryoutId)->first();
+        $request = UserAccessTryouts::select('status')
+            ->where('user_id', auth()->id())
+            ->where('tryout_id', $tryoutId)
+            ->first();
         $this->requestStatus = $request ? $request->status : null;
     }
 
@@ -150,7 +155,11 @@ new class extends Component {
                                 class="text-primary-600 icon me-1 text-xl"></iconify-icon>
                             <span class="text-xl">Harga:</span>
                         </div>
-                        <span class="text-xl">Rp. {{ number_format($tryout->harga, 0, ',', '.') }}</span>
+                        @if ($tryout->harga && $tryout->harga > 0)
+                            <span class="text-xl">Rp. {{ number_format($tryout->harga, 0, ',', '.') }}</span>
+                        @else
+                            <span class="text-xl">Gratis</span>
+                        @endif
                     </li>
                     <li
                         class="d-flex align-items-center flex-wrap justify-content-between text-sm text-secondary-light mb-1 border-start-0 border-end-0 border-bottom-0 border py-10">
@@ -179,7 +188,7 @@ new class extends Component {
                     </li>
                 </ul>
 
-                @if ($requestStatus === 'accepted')
+                @if ($requestStatus === 'accepted' || $tryout->harga == null || $tryout->harga == 0)
                     @if ($userTryout?->status?->value == 'finished')
                         <a href="{{ route('tryouts.hasil.index', $tryout->id) }}" wire:navigate
                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 mt-16">
