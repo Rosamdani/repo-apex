@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Models\BatchTryouts;
+use App\Models\PaketTryout;
 use App\Models\SoalTryout;
 use App\Models\Tryouts;
 use App\Models\User;
@@ -37,6 +38,11 @@ class TryoutController extends Controller
     {
         $tryout = Tryouts::find($id);
         return view('tryouts.detail-tryout', compact('id', 'tryout'));
+    }
+    public function paketanDetail($id)
+    {
+        $paket = PaketTryout::find($id);
+        return view('tryouts.paketan-detail-tryout', compact('id', 'paket'));
     }
 
     public function show($id)

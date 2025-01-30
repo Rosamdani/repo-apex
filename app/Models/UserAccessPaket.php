@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class UserAccessTryouts extends Model
+#[ObservedBy([UserAccessPaketObserver::class])]
+class UserAccessPaket extends Model
 {
     protected $keyType = 'string';
     public $incrementing = false;
@@ -19,11 +20,11 @@ class UserAccessTryouts extends Model
         });
     }
 
-    protected $table = 'user_access_tryouts';
+    protected $table = 'user_access_pakets';
 
     protected $fillable = [
         'user_id',
-        'tryout_id',
+        'paket_id',
         'status',
         'catatan',
         'image',
@@ -34,8 +35,8 @@ class UserAccessTryouts extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function tryouts()
+    public function paket()
     {
-        return $this->belongsTo(Tryouts::class, 'tryout_id');
+        return $this->belongsTo(PaketTryout::class);
     }
 }

@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use App\Observers\UserAccessPaketObserver;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class UserAccessTryouts extends Model
+class PaketTryout extends Model
 {
     protected $keyType = 'string';
     public $incrementing = false;
@@ -19,23 +17,18 @@ class UserAccessTryouts extends Model
         });
     }
 
-    protected $table = 'user_access_tryouts';
-
     protected $fillable = [
-        'user_id',
-        'tryout_id',
+        'id',
+        'url',
+        'paket',
+        'harga',
+        'deskripsi',
         'status',
-        'catatan',
         'image',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function tryouts()
     {
-        return $this->belongsTo(Tryouts::class, 'tryout_id');
+        return $this->belongsToMany(Tryouts::class, 'tryout_has_pakets', 'paket_id', 'tryout_id');
     }
 }

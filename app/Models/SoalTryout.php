@@ -34,7 +34,11 @@ class SoalTryout extends Model
         'pilihan_d',
         'pilihan_e',
         'jawaban',
-        'file_pembahasan',
+        'image_pembahasan',
+    ];
+
+    protected $casts = [
+        'image_pembahasan' => 'array',
     ];
 
     public function tryout()

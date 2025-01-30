@@ -3,7 +3,7 @@
         <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
     </button>
     <div>
-        <a href="{{ route('index') }}" wire:navigate class="sidebar-logo">
+        <a href="{{ route('index') }}" class="sidebar-logo">
             <img src="{{ setting('general.logo') ? asset('storage/' . setting('general.logo')) : asset('assets/images/logo.png') }}"
                 alt="site logo" class="light-logo">
             <img src="{{ setting('general.logo_dark') ? asset('storage/' . setting('general.logo_dark')) : asset('assets/images/logo-light.png') }}"
@@ -13,13 +13,13 @@
     <div class="sidebar-menu-area">
         <ul class="sidebar-menu" id="sidebar-menu">
             <li>
-                <a href="{{ route('index') }}" wire:navigate>
+                <a href="{{ route('index') }}">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('katalog') }}" wire:navigate>
+                <a href="{{ route('katalog') }}">
                     <iconify-icon icon="ic:baseline-library-books" class="menu-icon"></iconify-icon>
                     <span>Katalog Tryout</span>
                 </a>
