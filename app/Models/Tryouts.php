@@ -60,4 +60,9 @@ class Tryouts extends Model
     {
         return $this->hasMany(UserAccessTryouts::class, 'tryout_id');
     }
+
+    public function tryoutHasPakets()
+    {
+        return $this->belongsToMany(PaketTryout::class, 'tryout_has_pakets', 'tryout_id', 'paket_id');
+    }
 }

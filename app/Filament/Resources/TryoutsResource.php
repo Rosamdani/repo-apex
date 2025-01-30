@@ -100,6 +100,7 @@ class TryoutsResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('harga')
                             ->label('Harga Produk')
+                            ->hint('Kosongkan jika gratis (free)')
                             ->numeric()
                             ->placeholder('Masukkan harga produk apabila pembelian secara satuan'),
                         Forms\Components\TextInput::make('url')
@@ -135,6 +136,14 @@ class TryoutsResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('waktu')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('questions_count')
+                    ->label('Jumlah Soal')
+                    ->counts('questions'),
+                Tables\Columns\SelectColumn::make('status')
+                    ->options([
+                        'active' => 'Aktif',
+                        'nonaktif' => 'Non Aktif',
+                    ]),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

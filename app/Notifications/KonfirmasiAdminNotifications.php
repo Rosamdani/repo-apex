@@ -10,19 +10,36 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Filament\Notifications\Notification as FilamentNotification;
+use Illuminate\Support\Facades\Log;
 
 class KonfirmasiAdminNotifications extends Notification
 {
     use Queueable;
 
-    private $userAccessTryoutId;
+    private $userAccessRequestId;
+    private $type;
+    private $message;
+    private $route;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($userAccessTryoutId)
+    public function __construct($userAccessRequestId, $type)
     {
-        $this->userAccessTryoutId = $userAccessTryoutId;
+        $this->userAccessRequestId = $userAccessRequestId;
+        $this->type = $type;
+    }
+
+    public function getType()
+    {
+        if ($this->type == 'tryout') {
+            $this->route = 'filament.admin-dashboard.resources.user-access-tryouts.view';
+        } else if ($this->type == 'paket') {
+            $this->route = 'filament.admin-dashboard.resources.user-access-pakets.view';
+        } else {
+            Log::info('Notification type not found');
+            abort(404);
+        }
     }
 
     /**
@@ -60,12 +77,13 @@ class KonfirmasiAdminNotifications extends Notification
 
     public function toDatabase(User $notifiable): array
     {
+        $this->getType();
         return FilamentNotification::make()
             ->title('Perlu konfirmasi')
             ->body('Ada permintaan akses baru, klik lihat untuk menampilkan.')
             ->actions([
                 Action::make('Lihat')
-                    ->url(fn() => route('filament.admin-dashboard.resources.user-access-tryouts.view', $this->userAccessTryoutId))
+                    ->url(fn() => route($this->route, $this->userAccessRequestId))
                     ->button()
                     ->markAsRead(),
             ])

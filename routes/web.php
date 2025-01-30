@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware([AuthMiddleware::class])->get('/', [App\Http\Controllers\TryoutController::class, 'index'])->name('index');
 Route::middleware([AuthMiddleware::class])->get('/katalog', [App\Http\Controllers\TryoutController::class, 'katalog'])->name('katalog');
 Route::middleware([AuthMiddleware::class])->get('/katalog/detail/{id}', [App\Http\Controllers\TryoutController::class, 'katalaogDetail'])->name('katalog.detail');
+Route::middleware([AuthMiddleware::class])->get('/katalog/paketan/{id}', [App\Http\Controllers\TryoutController::class, 'paketanDetail'])->name('katalog.paketan.detail');
 
 Route::middleware([AuthMiddleware::class])->group(function () {
     Route::prefix('/tryout')->group(function () {
