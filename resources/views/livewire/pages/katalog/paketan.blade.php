@@ -18,26 +18,30 @@ new class extends Component {
     public $isRequested = false;
     public $requestStatus;
     public $userTryout;
+    public $userTryoutStatus;
 
     public $image;
 
     public function mount($paketId)
     {
+        $userId = auth()->id();
+
         $this->paket = PaketTryout::where('id', $paketId)
             ->select(['id', 'paket', 'image', 'harga', 'url'])
             ->with([
-                'tryouts' => function ($query) {
-                    $query->select(['id', 'nama', 'tanggal', 'waktu', 'status'])->with('batch:id,nama');
+                'tryouts' => function ($query) use ($userId) {
+                    $query->select(['id', 'nama', 'tanggal', 'waktu', 'status'])->with([
+                        'batch:id,nama',
+                        'userTryouts' => function ($subQuery) use ($userId) {
+                            $subQuery->where('user_id', $userId)->select(['id', 'user_id', 'tryout_id', 'status']); // Sesuaikan kolom
+                        },
+                    ]);
                 },
             ])
             ->first();
         if ($this->paket == null) {
             return redirect()->route('katalog');
         }
-
-        $this->userTryout = UserTryouts::where('user_id', auth()->id())
-            ->where('id', $paketId)
-            ->first();
 
         $this->testimonials = Testimoni::where('id', $paketId)->where('visibility', 'active')->get();
 
@@ -123,13 +127,12 @@ new class extends Component {
                                 </div>
                                 <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
                                     style="margin-top: auto;">
-                                    @dd($item->status)
-                                    @if ($item->status == 'finished')
+                                    @if ($item->userTryouts[0]?->status->value == 'finished')
                                         <a href="{{ route('tryouts.hasil.index', $item->id) }}" wire:navigate
                                             class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
                                         <a href="{{ route('tryouts.hasil.pembahasan', $item->id) }}" wire:navigate
                                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
-                                    @elseif ($item->status == 'started' || $item->status == 'paused')
+                                    @elseif ($item->userTryouts[0]?->status->value == 'started' || $item->userTryouts[0]?->status->value == 'paused')
                                         <a href="{{ route('tryouts.show', ['id' => $item->id]) }}" wire:navigate
                                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
                                     @else
