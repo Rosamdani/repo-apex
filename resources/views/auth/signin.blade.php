@@ -73,7 +73,8 @@
                                     id="remeber" {{ old('remember') ? 'checked' : '' }}>
                                 <label class="form-check-label" for="remeber">Ingat saya </label>
                             </div>
-                            <a href="javascript:void(0)" class="text-primary-600 fw-medium">Lupa password?</a>
+                            <a href="{{ route('password.request') }}" class="text-primary-600 fw-medium">Lupa
+                                password?</a>
                         </div>
                     </div>
 

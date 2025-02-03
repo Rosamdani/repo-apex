@@ -22,7 +22,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|alpha|max:255',
+            'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'no_telp' => ['required', 'string', 'max:15', 'regex:/^(\+62|62|0)8[1-9][0-9]{6,9}$/'],
@@ -30,7 +30,7 @@ class RegisterRequest extends FormRequest
             'tahun_masuk' => 'required|integer|min:1900|max:2800',
             'status_pendidikan' => 'required|string|in:koas,pre-klinik',
             'semester' => 'nullable|required_if:status_pendidikan,pre-klinik|integer|min:1|max:20',
-            'password' => 'required|string|min:8|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$#%^&*()_+=@]).*$/',
+            'password' => 'required|string|min:8|regex:/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$#%^&*()_+=@]).*$/u',
             'password_confirmation' => 'required|string|same:password',
         ];
     }
@@ -64,7 +64,7 @@ class RegisterRequest extends FormRequest
             'semester.max' => 'Semester maksimal 20',
             'password.required' => 'Kata sandi harus diisi',
             'password.min' => 'Kata sandi minimal 8 karakter',
-            'password.regex' => 'Kata sandi harus mengandung setidaknya 1 huruf besar, 1 huruf kecil, 1 angka, dan 1 karakter spesial',
+            'password.regex' => 'Kata sandi harus mengandung setidaknya 1 huruf besar, 1 huruf kecil, 1 angka, dan 1 karakter spesial (e.g !$#%^&*()_+=@)',
             'password_confirmation.required' => 'Konfirmasi kata sandi harus diisi',
             'password_confirmation.same' => 'Konfirmasi kata sandi tidak sama',
         ];

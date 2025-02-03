@@ -20,7 +20,11 @@
                         {{ session('status') }}
                     </div>
                 @endif
-
+                @if (session('email'))
+                    <div class="alert alert-success mb-16">
+                        {{ session('email') }}
+                    </div>
+                @endif
                 <div>
                     <h4 class="mb-12">Lupa Password</h4>
                     <p class="mb-32 text-secondary-light text-lg">Masukkan alamat email yang terkait dengan akun Anda
@@ -32,39 +36,16 @@
                         <span class="icon top-50 translate-middle-y">
                             <iconify-icon icon="mage:email"></iconify-icon>
                         </span>
-                        <input type="email" name="email"
+                        <input type="email" name=""
                             class="form-control @error('email') is-invalid @enderror  h-56-px bg-neutral-50 radius-12"
                             placeholder="Masukkan Email">
                     </div>
-                    <button type="submit" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"
+                    <button type="button" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"
                         data-bs-toggle="modal" data-bs-target="#exampleModal">Lanjutkan</button>
 
                     <div class="mt-120 text-center text-sm">
                         <p class="mb-0">Sudah Punya Akun? <a href="{{ route('login') }}"
                                 class="text-primary-600 fw-semibold">Login</a></p>
-                    </div>
-
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog modal-dialog-centered">
-                            <div class="modal-content radius-16 bg-base">
-                                <div class="modal-body p-40 text-center">
-                                    <div class="mb-32">
-                                        <img src="{{ asset('assets/images/auth/envelop-icon.png') }}" alt="">
-                                    </div>
-                                    <h6 class="mb-12">Verify your Email</h6>
-                                    <p class="text-secondary-light text-sm mb-0">Terima kasih, periksa email Anda untuk
-                                        instruksi
-                                        mengatur
-                                        ulang kata sandi Anda</p>
-                                    <button type="button"
-                                        class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32">Skip</button>
-                                    <div class="mt-32 text-sm">
-                                        <p class="mb-0">Tidak menerima email? <a href=""
-                                                class="text-primary-600 fw-semibold">Kirim ulang</a></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </form>
             </div>

@@ -12,25 +12,57 @@ new class extends Component {
     public function mount()
     {
         $userId = auth()->id();
-        $this->tryouts = Tryouts::with('batch')
+
+        // Ambil dan format data tryouts satuan sebagai array of objects
+        $satuanTryouts = Tryouts::with('batch')
             ->leftJoin('user_tryouts', function ($join) use ($userId) {
                 $join->on('tryouts.id', '=', 'user_tryouts.tryout_id')->where('user_tryouts.user_id', '=', $userId);
             })
-            ->select([
-                'tryouts.id as tryout_id', // Kolom tryouts.id dengan alias
-                'tryouts.nama',
-                'tryouts.tanggal',
-                'tryouts.image',
-                'tryouts.batch_id',
-                'tryouts.waktu',
-                'tryouts.url',
-                'tryouts.harga',
-                'tryouts.status as status_tryout',
-                'user_tryouts.status',
-                'user_tryouts.nilai',
-                DB::raw('(SELECT COUNT(*) FROM soal_tryouts WHERE soal_tryouts.tryout_id = tryouts.id) as question_count'), // Hitung jumlah questions
-            ])
-            ->get();
+            ->select(['tryouts.id as tryout_id', 'tryouts.nama', 'tryouts.tanggal', 'tryouts.image', 'tryouts.batch_id', 'tryouts.waktu', 'tryouts.url', 'tryouts.harga', 'tryouts.status as status_tryout', 'user_tryouts.status', 'user_tryouts.nilai', DB::raw('(SELECT COUNT(*) FROM soal_tryouts WHERE soal_tryouts.tryout_id = tryouts.id) as question_count')])
+            ->get()
+            ->map(function ($item) {
+                return (object) [
+                    'tryout_id' => $item->tryout_id,
+                    'nama' => $item->nama,
+                    'tanggal' => $item->tanggal,
+                    'image' => $item->image,
+                    'batch_id' => $item->batch_id,
+                    'waktu' => $item->waktu,
+                    'url' => $item->url,
+                    'harga' => $item->harga,
+                    'status_tryout' => $item->status_tryout,
+                    'status' => $item->status,
+                    'nilai' => $item->nilai,
+                    'question_count' => $item->question_count,
+                    'type' => 'satuan',
+                ];
+            });
+
+        // Ambil dan format data paket tryouts sebagai array of objects
+        $paketTryouts = PaketTryout::with('tryouts')
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($paket) {
+                return (object) [
+                    'tryout_id' => $paket->id,
+                    'nama' => $paket->nama,
+                    'tanggal' => $paket->created_at,
+                    'image' => $paket->image,
+                    'batch_id' => null,
+                    'waktu' => null,
+                    'url' => $paket->url ?? '#',
+                    'harga' => $paket->harga,
+                    'status_tryout' => $paket->status,
+                    'status' => null,
+                    'nilai' => null,
+                    'question_count' => $paket->tryouts->count(),
+                    'type' => 'paket',
+                ];
+            });
+
+        // Gabungkan kedua koleksi
+        $this->tryouts = $satuanTryouts->merge($paketTryouts);
+
         $this->trendingTryouts = Tryouts::select([
             'tryouts.id as tryout_id', // Kolom tryouts.id dengan alias
             'tryouts.nama',
@@ -51,12 +83,6 @@ new class extends Component {
             ->orderBy('user_tryouts_count', 'desc')
             ->limit(4)
             ->get();
-        $this->getPaketTryout();
-    }
-
-    public function getPaketTryout()
-    {
-        $this->paketTryouts = PaketTryout::with('tryouts')->where('status', 'active')->get();
     }
 }; ?>
 
@@ -134,98 +160,12 @@ new class extends Component {
     <div class="col-12 mb-36">
         <div class="mb-16 mt-8 d-flex flex-wrap justify-content-between gap-16">
             <h6 class="mb-0">{{ __('Semua Tryout') }}</h6>
-            <ul class="nav button-tab nav-pills mb-16 gap-12" id="pills-tab-three" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button
-                        class="nav-link d-flex align-items-center gap-2 fw-semibold text-secondary-light rounded-pill px-20 py-6 border border-neutral-300 active"
-                        id="pills-button-satuan-tab" data-bs-toggle="pill" data-bs-target="#pills-button-satuan"
-                        type="button" role="tab" aria-controls="pills-button-satuan" aria-selected="false"
-                        tabindex="-1"><iconify-icon icon="mdi:clock-outline"
-                            class="icon text-xl me-1"></iconify-icon>Satuan</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button
-                        class="nav-link d-flex align-items-center gap-2 fw-semibold text-secondary-light rounded-pill px-20 py-6 border border-neutral-300"
-                        id="pills-button-paketan-tab" data-bs-toggle="pill" data-bs-target="#pills-button-paketan"
-                        type="button" role="tab" aria-controls="pills-button-paketan" aria-selected="false"
-                        tabindex="-1"><iconify-icon icon="ph:package-light"
-                            class="icon text-xl me-1"></iconify-icon>Paket</button>
-                </li>
-            </ul>
         </div>
-        <div class="tab-content" id="pills-tab-threeContent">
-            <div class="tab-pane fade show active" id="pills-button-satuan" role="tabpanel"
-                aria-labelledby="pills-button-satuan-tab" tabindex="0">
-                <div class="row g-3">
-                    @foreach ($tryouts as $item)
-                        @if ($item->status_tryout === 'active')
-                            <div class="col-xxl-3 col-md-4 col-sm-6">
-                                <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
-                                    <div class="radius-16 overflow-hidden">
-                                        <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('assets/images/product/product-default.jpg') }}"
-                                            alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
-                                    </div>
-                                    <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
-                                        <div>
-                                            <span
-                                                class="text-sm fw-semibold text-primary-600">{{ $item->batch->nama }}</span>
-                                            <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
-                                                class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
-                                            <div
-                                                class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
-                                                <span class="text-sm text-secondary-light fw-medium">Harga:
-                                                    @if ($item->harga && $item->harga > 0)
-                                                        <span class="text-sm fw-semibold text-primary-600">Rp
-                                                            {{ number_format($item->harga, 0, ',', '.') }}</span>
-                                                    @else
-                                                        <span class="text-sm fw-semibold text-primary-600">
-                                                            Gratis
-                                                        </span>
-                                                    @endif
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
-                                            style="margin-top: auto;">
-                                            @if ($item->status == 'finished')
-                                                <a href="{{ route('tryouts.hasil.index', $item->tryout_id) }}"
-                                                    wire:navigate
-                                                    class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
-                                                <a href="{{ route('tryouts.hasil.pembahasan', $item->tryout_id) }}"
-                                                    wire:navigate
-                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
-                                            @elseif ($item->status == 'started' || $item->status == 'paused')
-                                                <a href="{{ route('tryouts.show', ['id' => $item->tryout_id]) }}"
-                                                    wire:navigate
-                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
-                                            @else
-                                                @if ($item->harga && $item->harga > 0)
-                                                    <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
-                                                        class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                                    <a href="{{ $item->url ?? '#' }}"
-                                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
-                                                        Sekarang</a>
-                                                @else
-                                                    <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
-                                                        class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                                    <a href="{{ route('tryouts.show', ['id' => $item->tryout_id]) }}"
-                                                        wire:navigate
-                                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Mulai
-                                                        Kerjakan</a>
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            <div class="tab-pane fade show" id="pills-button-paketan" role="tabpanel"
-                aria-labelledby="pills-button-paketan-tab" tabindex="0">
-                <div class="row g-3">
-                    @foreach ($paketTryouts as $item)
+        <div class="row g-3">
+            @foreach ($tryouts as $item)
+                @if ($item->status_tryout === 'active')
+                    @if ($item->type === 'satuan')
+                        <!-- Tampilan untuk Tryout Satuan -->
                         <div class="col-xxl-3 col-md-4 col-sm-6">
                             <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
                                 <div class="radius-16 overflow-hidden">
@@ -234,8 +174,11 @@ new class extends Component {
                                 </div>
                                 <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
                                     <div>
-                                        <a href="{{ route('katalog.paketan.detail', ['id' => $item->id]) }}"
-                                            class="text-xl fw-bold text-primary-light">{{ $item->paket }}</a>
+                                        <span class="text-sm fw-semibold text-primary-600">
+                                            {{ $item->batch->nama ?? 'Satuan' }}
+                                        </span>
+                                        <a href="{{ $item->url }}"
+                                            class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
                                         <div
                                             class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
                                             <span class="text-sm text-secondary-light fw-medium">Harga:
@@ -243,37 +186,65 @@ new class extends Component {
                                                     <span class="text-sm fw-semibold text-primary-600">Rp
                                                         {{ number_format($item->harga, 0, ',', '.') }}</span>
                                                 @else
-                                                    <span class="text-sm fw-semibold text-primary-600">
-                                                        Gratis
-                                                    </span>
+                                                    <span class="text-sm fw-semibold text-primary-600">Gratis</span>
                                                 @endif
                                             </span>
-                                        </div>
-                                        <div
-                                            class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
-                                            <span class="text-sm text-secondary-light fw-medium">Total Tryout: <span
-                                                    class="text-sm fw-semibold text-primary-600">{{ $item->tryouts->count() }}</span></span>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
                                         style="margin-top: auto;">
-                                        @if ($item->harga && $item->harga > 0)
-                                            <a href="{{ route('katalog.paketan.detail', ['id' => $item->id]) }}"
-                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                            <a href="{{ $item->url ?? '#' }}"
-                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
-                                                Sekarang</a>
+                                        @if ($item->status == 'finished')
+                                            <a href="{{ route('tryouts.hasil.index', $item->tryout_id) }}"
+                                                wire:navigate
+                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
+                                            <a href="{{ route('tryouts.hasil.pembahasan', $item->tryout_id) }}"
+                                                wire:navigate
+                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
                                         @else
-                                            <a href="{{ route('katalog.paketan.detail', ['id' => $item->id]) }}"
-                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                            <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
+                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lihat
+                                                Detail</a>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
-                </div>
-            </div>
+                    @elseif ($item->type === 'paket')
+                        <!-- Tampilan untuk Tryout Paket -->
+                        <div class="col-xxl-3 col-md-4 col-sm-6">
+                            <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
+                                <div class="radius-16 overflow-hidden">
+                                    <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('assets/images/product/product-default.jpg') }}"
+                                        alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
+                                </div>
+                                <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
+                                    <div>
+                                        <span class="text-sm fw-semibold text-primary-600">Paket Tryout</span>
+                                        <a href="{{ route('katalog.paketan.detail', ['id' => $item->tryout_id]) }}"
+                                            class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
+                                        <div
+                                            class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
+                                            <span class="text-sm text-secondary-light fw-medium">Harga:
+                                                <span class="text-sm fw-semibold text-primary-600">Rp
+                                                    {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                            </span>
+                                            <span class="text-sm text-secondary-light fw-medium">Total Tryouts:
+                                                {{ $item->question_count }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
+                                        style="margin-top: auto;">
+                                        <a href="{{ route('katalog.paketan.detail', ['id' => $item->tryout_id]) }}"
+                                            class="btn
+                                            rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lihat
+                                            Detail</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+            @endforeach
         </div>
     </div>
 </div>

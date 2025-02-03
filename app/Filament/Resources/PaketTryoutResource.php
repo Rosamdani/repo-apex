@@ -33,6 +33,8 @@ class PaketTryoutResource extends Resource
                             ->label('Nama Paket')
                             ->required(),
                         Forms\Components\FileUpload::make('image')
+                            ->directory('paket_tryout')
+                            ->disk('public')
                             ->label('Gambar')
                             ->image(),
                         Forms\Components\TextInput::make('harga')
