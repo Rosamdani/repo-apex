@@ -136,14 +136,14 @@ new class extends Component {
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10">
-                                        @if ($item->userTryouts->isNotEmpty())
-                                            @if ($item->userTryouts->first()->status->value == 'finished')
+                                        @if ($item->userTryouts !== null)
+                                            @if ($item->userTryouts->first()->status == 'finished')
                                                 <a href="{{ route('tryouts.hasil.index', $item->id) }}" wire:navigate
                                                     class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
                                                 <a href="{{ route('tryouts.hasil.pembahasan', $item->id) }}"
                                                     wire:navigate
                                                     class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
-                                            @elseif ($item->userTryouts?->status?->value == 'started' || $item->userTryouts?->status?->value == 'paused')
+                                            @elseif ($item->userTryouts->first()->status == 'started' || $item->userTryouts->first()->status == 'paused')
                                                 <a href="{{ route('tryouts.show', ['id' => $item->id]) }}" wire:navigate
                                                     class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
                                             @endif
