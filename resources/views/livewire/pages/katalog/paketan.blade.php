@@ -26,6 +26,7 @@ new class extends Component {
     {
         $userId = auth()->id();
 
+        // Ambil data paket dengan relasi tryouts dan userTryouts
         $this->paket = PaketTryout::where('id', $paketId)
             ->select(['id', 'paket', 'image', 'harga', 'url'])
             ->with([
@@ -33,22 +34,24 @@ new class extends Component {
                     $query->select(['id', 'nama', 'tanggal', 'waktu', 'status'])->with([
                         'batch:id,nama',
                         'userTryouts' => function ($subQuery) use ($userId) {
-                            $subQuery->where('user_id', $userId)->select(['id', 'user_id', 'tryout_id', 'status']); // Sesuaikan kolom
+                            $subQuery->where('user_id', $userId)->select(['id', 'user_id', 'tryout_id', 'status']);
                         },
                     ]);
                 },
             ])
             ->first();
-        if ($this->paket == null) {
-            return redirect()->route('katalog');
+
+        // Redirect jika paket tidak ditemukan
+        if (!$this->paket) {
+            return redirect()->route('katalog')->with('error', 'Paket tidak ditemukan.');
         }
 
-        $this->testimonials = Testimoni::where('id', $paketId)->where('visibility', 'active')->get();
+        // Ambil testimoni yang aktif
+        $this->testimonials = Testimoni::where('paket_id', $paketId)->where('visibility', 'active')->get();
 
-        $request = UserAccessPaket::select('status')
-            ->where('user_id', auth()->id())
-            ->where('paket_id', $paketId)
-            ->first();
+        // Cek status akses pengguna
+        $request = UserAccessPaket::select('status')->where('user_id', $userId)->where('paket_id', $paketId)->first();
+
         $this->requestStatus = $request ? $request->status : null;
     }
 
@@ -62,10 +65,10 @@ new class extends Component {
     public function messages()
     {
         return [
-            'image.required' => 'Bukti pembayaran harus diunggah.',
-            'image.image' => 'Bukti pembayaran harus berupa gambar.',
-            'image.mimes' => 'Bukti pembayaran harus dalam format JPEG, PNG, JPG, GIF, atau SVG.',
-            'image.max' => 'Bukti pembayaran tidak boleh lebih besar dari 2 MB.',
+            'image.required' => 'Bukti harus diunggah.',
+            'image.image' => 'Bukti harus berupa gambar.',
+            'image.mimes' => 'Bukti harus dalam format JPEG, PNG, JPG, GIF, atau SVG.',
+            'image.max' => 'Bukti tidak boleh lebih besar dari 2 MB.',
         ];
     }
 
@@ -73,90 +76,109 @@ new class extends Component {
     {
         $this->validate();
 
-        $filePath = $this->image->store('bukti-transaksi', 'public');
+        try {
+            // Simpan file bukti pembayaran
+            $filePath = $this->image->store('bukti-transaksi', 'public');
 
-        $userAccessPaket = UserAccessPaket::create([
-            'user_id' => auth()->user()->id,
-            'paket_id' => $this->paket->id,
-            'status' => 'requested',
-            'image' => $filePath,
-            'catatan' => 'Menunggu konfirmasi',
-        ]);
+            // Buat record UserAccessPaket
+            $userAccessPaket = UserAccessPaket::create([
+                'user_id' => auth()->id(),
+                'paket_id' => $this->paket->id,
+                'status' => 'requested',
+                'image' => $filePath,
+                'catatan' => 'Menunggu konfirmasi',
+            ]);
 
-        auth()
-            ->user()
-            ->notify(new \App\Notifications\KonfirmasiAdminNotifications($userAccessPaket->id, 'paket'));
+            // Kirim notifikasi ke admin
+            auth()
+                ->user()
+                ->notify(new \App\Notifications\KonfirmasiAdminNotifications($userAccessPaket->id, 'paket'));
 
-        session()->flash('message', 'Bukti pembayaran berhasil dikirim.');
-
-        $this->isRequested = true;
+            // Set status dan tampilkan pesan sukses
+            $this->isRequested = true;
+            session()->flash('message', 'Bukti berhasil dikirim.');
+        } catch (\Exception $e) {
+            // Tangani error
+            session()->flash('error', 'Terjadi kesalahan saat mengirim bukti');
+        }
     }
 }; ?>
-
 <div class="row">
     <div class="col-xl-8 mb-20">
-        <img src="{{ $paket->image ? asset('storage/' . $paket->image) : asset('assets/images/product/product-default.jpg') }}"
-            alt="{{ $paket->paket }}" class="w-100 h-auto max-h-400-px rounded mb-20">
-        <div class="row g-3">
-            @foreach ($paket->tryouts as $item)
-                @if ($item->status === 'active')
-                    <div class="col-xxl-3 col-md-4 col-sm-6">
-                        <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
-                            <div class="radius-16 overflow-hidden">
-                                <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('assets/images/product/product-default.jpg') }}"
-                                    alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
-                            </div>
-                            <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
-                                <div>
-                                    <span class="text-sm fw-semibold text-primary-600">{{ $item->batch?->nama }}</span>
-                                    <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
-                                        class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
-                                    <div
-                                        class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
-                                        <span class="text-sm text-secondary-light fw-medium">Harga:
-                                            @if ($item->harga && $item->harga > 0)
-                                                <span class="text-sm fw-semibold text-primary-600">Rp
-                                                    {{ number_format($item->harga, 0, ',', '.') }}</span>
-                                            @else
-                                                <span class="text-sm fw-semibold text-primary-600">
-                                                    Gratis
-                                                </span>
-                                            @endif
-                                        </span>
-                                    </div>
+        @if ($paket)
+            <img src="{{ $paket->image ? asset('storage/' . $paket->image) : asset('assets/images/product/product-default.jpg') }}"
+                alt="{{ $paket->paket }}" class="w-100 h-auto max-h-400-px rounded mb-20">
+            <div class="row g-3">
+                @forelse ($paket->tryouts as $item)
+                    @if ($item->status === 'active')
+                        <div class="col-xxl-3 col-md-4 col-sm-6">
+                            <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
+                                <div class="radius-16 overflow-hidden">
+                                    <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('assets/images/product/product-default.jpg') }}"
+                                        alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
                                 </div>
-                                <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
-                                    style="margin-top: auto;">
-                                    @if ($item->userTryouts[0]?->status->value == 'finished')
-                                        <a href="{{ route('tryouts.hasil.index', $item->id) }}" wire:navigate
-                                            class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
-                                        <a href="{{ route('tryouts.hasil.pembahasan', $item->id) }}" wire:navigate
-                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
-                                    @elseif ($item->userTryouts[0]?->status->value == 'started' || $item->userTryouts[0]?->status->value == 'paused')
-                                        <a href="{{ route('tryouts.show', ['id' => $item->id]) }}" wire:navigate
-                                            class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
-                                    @else
-                                        @if ($item->harga && $item->harga > 0)
-                                            <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
-                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                            <a href="{{ $item->url ?? '#' }}"
-                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
-                                                Sekarang</a>
+                                <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
+                                    <div>
+                                        <span
+                                            class="text-sm fw-semibold text-primary-600">{{ $item->batch?->nama }}</span>
+                                        <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
+                                            class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
+                                        <div
+                                            class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
+                                            <span class="text-sm text-secondary-light fw-medium">Harga:
+                                                @if ($item->harga && $item->harga > 0)
+                                                    <span class="text-sm fw-semibold text-primary-600">Rp
+                                                        {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                                @else
+                                                    <span class="text-sm fw-semibold text-primary-600">Gratis</span>
+                                                @endif
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10">
+                                        @if ($item->userTryouts->isNotEmpty())
+                                            @if ($item->userTryouts->first()->status->value == 'finished')
+                                                <a href="{{ route('tryouts.hasil.index', $item->id) }}" wire:navigate
+                                                    class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
+                                                <a href="{{ route('tryouts.hasil.pembahasan', $item->id) }}"
+                                                    wire:navigate
+                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
+                                            @elseif ($item->userTryouts?->status?->value == 'started' || $item->userTryouts?->status?->value == 'paused')
+                                                <a href="{{ route('tryouts.show', ['id' => $item->id]) }}" wire:navigate
+                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
+                                            @endif
                                         @else
-                                            <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
-                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                            <a href="{{ route('tryouts.show', ['id' => $item->id]) }}" wire:navigate
-                                                class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Mulai
-                                                Kerjakan</a>
+                                            @if ($item->harga && $item->harga > 0)
+                                                <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
+                                                    class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                                <a href="{{ $item->url ?? '#' }}"
+                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
+                                                    Sekarang</a>
+                                            @else
+                                                <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
+                                                    class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
+                                                <a href="{{ route('tryouts.show', ['id' => $item->id]) }}"
+                                                    wire:navigate
+                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Mulai
+                                                    Kerjakan</a>
+                                            @endif
                                         @endif
-                                    @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    @endif
+                @empty
+                    <div class="col-12">
+                        <p class="text-center text-secondary">Tidak ada tryout yang tersedia.</p>
                     </div>
-                @endif
-            @endforeach
-        </div>
+                @endforelse
+            </div>
+        @else
+            <div class="col-12">
+                <p class="text-center text-danger">Paket tidak ditemukan.</p>
+            </div>
+        @endif
     </div>
     <div class="col-xl-4 mb-20">
         <div class="sticky-top z-1" style="top: 80px;">
@@ -246,52 +268,41 @@ new class extends Component {
             </div>
         </div>
     </div>
-
 </div>
 @push('script')
     <script>
-        document.getElementById("file-upload-name").addEventListener("change", function(event) {
-            var fileInput = event.target;
-            var fileList = fileInput.files;
-            var ul = document.getElementById("uploaded-img-names");
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById("file-upload-name");
+            const ul = document.getElementById("uploaded-img-names");
 
-            // Add show-uploaded-img-name class to the ul element if not already added
-            ul.classList.add("show-uploaded-img-name");
+            if (fileInput && ul) {
+                fileInput.addEventListener("change", function(event) {
+                    const fileList = event.target.files;
 
-            // Append each uploaded file name as a list item with Font Awesome and Iconify icons
-            for (var i = 0; i < fileList.length; i++) {
-                var li = document.createElement("li");
-                li.classList.add("uploaded-image-name-list", "text-primary-600", "fw-semibold", "d-flex",
-                    "align-items-center", "gap-2");
+                    // Reset ul content
+                    ul.innerHTML = '';
 
-                // Create the Link Iconify icon element
-                var iconifyIcon = document.createElement("iconify-icon");
-                iconifyIcon.setAttribute("icon", "ph:link-break-light");
-                iconifyIcon.classList.add("text-xl", "text-secondary-light");
+                    // Add each file name to the list
+                    for (let i = 0; i < fileList.length; i++) {
+                        const li = document.createElement("li");
+                        li.classList.add("uploaded-image-name-list", "text-primary-600", "fw-semibold",
+                            "d-flex", "align-items-center", "gap-2");
 
-                // Create the Cross Iconify icon element
-                var crossIconifyIcon = document.createElement("iconify-icon");
-                crossIconifyIcon.setAttribute("icon", "radix-icons:cross-2");
-                crossIconifyIcon.classList.add("remove-image", "text-xl", "text-secondary-light",
-                    "text-hover-danger-600");
+                        // Add file name and remove icon
+                        li.innerHTML = `
+                    <iconify-icon icon="ph:link-break-light" class="text-xl text-secondary-light"></iconify-icon>
+                    ${fileList[i].name}
+                    <iconify-icon icon="radix-icons:cross-2" class="remove-image text-xl text-secondary-light text-hover-danger-600"></iconify-icon>
+                `;
 
-                // Add event listener to remove the image on click
-                crossIconifyIcon.addEventListener("click", (function(liToRemove) {
-                    return function() {
-                        ul.removeChild(liToRemove); // Remove the corresponding list item
-                    };
-                })(li)); // Pass the current list item as a parameter to the closure
+                        // Add remove functionality
+                        li.querySelector('.remove-image').addEventListener('click', () => {
+                            ul.removeChild(li);
+                        });
 
-                // Append both icons to the list item
-                li.appendChild(iconifyIcon);
-
-                // Append the file name text to the list item
-                li.appendChild(document.createTextNode(" " + fileList[i].name));
-
-                li.appendChild(crossIconifyIcon);
-
-                // Append the list item to the unordered list
-                ul.appendChild(li);
+                        ul.appendChild(li);
+                    }
+                });
             }
         });
     </script>
