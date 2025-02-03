@@ -25,6 +25,7 @@ class PaketTryout extends Model
         'deskripsi',
         'status',
         'image',
+        'detail',
     ];
 
     public function tryouts()
