@@ -18,7 +18,8 @@ new class extends Component {
             ->leftJoin('user_tryouts', function ($join) use ($userId) {
                 $join->on('tryouts.id', '=', 'user_tryouts.tryout_id')->where('user_tryouts.user_id', '=', $userId);
             })
-            ->select(['tryouts.id as tryout_id', 'tryouts.nama', 'tryouts.tanggal', 'tryouts.image', 'tryouts.batch_id', 'tryouts.waktu', 'tryouts.url', 'tryouts.harga', 'tryouts.status as status_tryout', 'user_tryouts.status', 'user_tryouts.nilai', DB::raw('(SELECT COUNT(*) FROM soal_tryouts WHERE soal_tryouts.tryout_id = tryouts.id) as question_count')])
+            ->leftJoin('batch_tryouts', 'tryouts.batch_id', '=', 'batch_tryouts.id')
+            ->select(['tryouts.id as tryout_id', 'tryouts.nama', 'tryouts.tanggal', 'tryouts.image', 'tryouts.batch_id', 'tryouts.waktu', 'tryouts.url', 'tryouts.harga', 'tryouts.status as status_tryout', 'batch_tryouts.nama as batch_name', 'user_tryouts.status', 'user_tryouts.nilai', DB::raw('(SELECT COUNT(*) FROM soal_tryouts WHERE soal_tryouts.tryout_id = tryouts.id) as question_count')])
             ->get()
             ->map(function ($item) {
                 return (object) [
@@ -28,6 +29,7 @@ new class extends Component {
                     'image' => $item->image,
                     'batch_id' => $item->batch_id,
                     'waktu' => $item->waktu,
+                    'batch_name' => $item->batch_name,
                     'url' => $item->url,
                     'harga' => $item->harga,
                     'status_tryout' => $item->status_tryout,
@@ -175,7 +177,7 @@ new class extends Component {
                                 <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
                                     <div>
                                         <span class="text-sm fw-semibold text-primary-600">
-                                            {{ $item->batch->nama ?? 'Satuan' }}
+                                            {{ $item->batch_name ?? 'Satuan' }}
                                         </span>
                                         <a href="{{ $item->url }}"
                                             class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>

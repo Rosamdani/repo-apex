@@ -20,11 +20,13 @@ new class extends Component {
     public $totalQuestions;
     public $isDoubtful = [];
     public $watermarkText;
+    public $categoryId;
     public $outputFilePath;
 
-    public function mount($tryoutId)
+    public function mount($tryoutId, $categoryId)
     {
         $this->tryoutId = $tryoutId;
+        $this->categoryId = $categoryId;
         $this->tryout = \App\Models\Tryouts::findOrFail($this->tryoutId);
 
         $this->userTryout = \App\Models\UserTryouts::firstOrCreate([
@@ -34,7 +36,7 @@ new class extends Component {
 
         $this->watermarkText = substr(auth()->user()->name, 0, 15);
 
-        $cacheKey = "tryout_{$this->userTryout->id}{auth()->id()}";
+        $cacheKey = "tryout_{$this->userTryout->id}{$categoryId}{auth()->id()}";
 
         if (Cache::has($cacheKey)) {
             $cacheData = Cache::get($cacheKey);
@@ -54,7 +56,7 @@ new class extends Component {
 
     public function initializeQuestionsAndAnswers()
     {
-        $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
+        $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->where('bidang_id', $this->categoryId)->get();
         $this->questions = $this->questions->sortBy(fn($question) => array_search($question->id, $this->userTryout->question_order))->values();
 
         $this->totalQuestions = $this->questions->count();

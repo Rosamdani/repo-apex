@@ -21,6 +21,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::middleware([CheckTryoutPermission::class])->get('/hasil/{id}', [App\Http\Controllers\TryoutHasilController::class, 'index'])->name('tryouts.hasil.index');
         Route::post('/downloadReportBidang', [App\Http\Controllers\PDFController::class, 'downloadReportBidang'])->name('tryout.downloadReportBidang');
         Route::middleware([CheckTryoutPermission::class])->get('/pembahasan/{id}', [App\Http\Controllers\TryoutHasilController::class, 'pembahasan'])->name('tryouts.hasil.pembahasan');
+        Route::middleware([CheckTryoutPermission::class])->get('/pembahasan-perbidang/{id}/{categoryId}', [App\Http\Controllers\TryoutHasilController::class, 'pembahasanByCategory'])->name('tryouts.hasil.pembahasanByCategory');
         Route::get('/ranking/{id}', [App\Http\Controllers\TryoutHasilController::class, 'ranking'])->name('tryouts.hasil.perangkingan');
     });
 });

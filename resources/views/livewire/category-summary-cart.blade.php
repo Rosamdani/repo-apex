@@ -36,7 +36,6 @@ new class extends Component {
                 'total_soal' => $totalSoal,
                 'benar' => $benar,
                 'salah' => $salah,
-                'salah' => $salah,
                 'tidak_dikerjakan' => $tidak_dikerjakan,
                 'persen_benar' => round($persenBenar, 2),
             ];
@@ -76,9 +75,11 @@ new class extends Component {
                         <ul class="d-flex flex-column gap-12 max-h-400-px overflow-y-auto">
                             @foreach (collect($this->bidang)->sortByDesc('persen_benar') as $bidang)
                                 <li>
-                                    <span class="text-lg">{{ $bidang['kategori'] }}: <span
-                                            class="text-{{ $bidang['persen_benar'] < 60 ? 'danger' : ($bidang['persen_benar'] < 80 ? 'warning' : 'success') }}-600 fw-semibold">{{ $bidang['persen_benar'] }}%</span>
-                                    </span>
+                                    <a
+                                        href="{{ route('tryouts.hasil.pembahasanByCategory', ['id' => $this->tryoutId, 'categoryId' => $bidang['bidang_id']]) }}">
+                                        <span class="text-lg">{{ $bidang['kategori'] }}: <span
+                                                class="text-{{ $bidang['persen_benar'] < 60 ? 'danger' : ($bidang['persen_benar'] < 80 ? 'warning' : 'success') }}-600 fw-semibold">{{ $bidang['persen_benar'] }}%</span>
+                                        </span></a>
                                 </li>
                             @endforeach
                         </ul>
@@ -103,7 +104,9 @@ new class extends Component {
                         <tbody>
                             @foreach ($this->bidang as $bidang)
                                 <tr>
-                                    <td>{{ $bidang['kategori'] }}</td>
+                                    <td><a href="{{ route('tryouts.hasil.pembahasanByCategory', ['id' => $this->tryoutId, 'categoryId' => $bidang['bidang_id']]) }}"
+                                            class="text-primary-600 fw-bold">{{ $bidang['kategori'] }}</a>
+                                    </td>
                                     <td>{{ $bidang['total_soal'] }}</td>
                                     <td>{{ $bidang['benar'] }}</td>
                                     <td>{{ $bidang['salah'] }}</td>
