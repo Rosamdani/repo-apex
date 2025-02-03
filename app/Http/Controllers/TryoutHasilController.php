@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BidangTryouts;
 use App\Models\SoalTryout;
+use App\Models\Tryouts;
 use App\Models\UserTryouts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,5 +48,12 @@ class TryoutHasilController extends Controller
     {
         $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
         return view('tryouts.pembahasan', compact('userTryout'));
+    }
+    public function pembahasanByCategory($id, $categoryId)
+    {
+        $tryout = Tryouts::find($id);
+        $userTryout = UserTryouts::where('tryout_id', $id)->where('bidang_id', $categoryId)->where('user_id', Auth::user()->id)->first();
+        $bidang = BidangTryouts::find($categoryId);
+        return view('tryouts.pembahasan-by-category', compact('userTryout', 'bidang', 'tryout'));
     }
 }

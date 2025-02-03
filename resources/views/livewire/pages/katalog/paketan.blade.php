@@ -136,7 +136,7 @@ new class extends Component {
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10">
-                                        @if ($item->userTryouts !== null)
+                                        @if ($item->userTryouts->count() > 0)
                                             @if ($item->userTryouts->first()->status == 'finished')
                                                 <a href="{{ route('tryouts.hasil.index', $item->id) }}" wire:navigate
                                                     class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
@@ -208,7 +208,7 @@ new class extends Component {
                         @endif
                     </li>
                 </ul>
-                @if ($requestStatus === 'accepted' || $paket->harga == null || $paket->harga == 0)
+                @if ($requestStatus === 'accepted')
                     <div class="d-flex flex-column">
                         <p class="mb-1 text-primary">Status: <span class="text-warning">Akses diterima</span></p>
                     </div>

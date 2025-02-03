@@ -14,6 +14,7 @@ new class extends Component {
         $this->tryoutId = $tryoutId;
         $this->leaderboard = UserTryouts::select(['user_id', 'tryout_id', 'nilai'])
             ->where('tryout_id', $this->tryoutId)
+            ->where('status', 'finished')
             ->with(['user:id,name,image_url,email', 'tryout:id,nama'])
             ->orderBy('nilai', 'desc')
             ->orderBy('created_at', 'asc')
