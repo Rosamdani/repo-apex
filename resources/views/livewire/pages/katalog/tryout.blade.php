@@ -38,6 +38,7 @@ new class extends Component {
                     'question_count' => $item->question_count,
                     'type' => 'satuan',
                     'created_at' => $item->created_at,
+                    'is_need_confirm' => $item->is_need_confirm,
                 ];
             });
 
@@ -61,6 +62,7 @@ new class extends Component {
                     'question_count' => $paket->tryouts->count(),
                     'type' => 'paket',
                     'created_at' => $paket->created_at,
+                    'is_need_confirm' => $paket->is_need_confirm,
                 ];
             });
 
@@ -78,6 +80,7 @@ new class extends Component {
             'tryouts.batch_id',
             'tryouts.url',
             'tryouts.harga',
+            'tryouts.is_need_confirm',
             'tryouts.waktu',
             'tryouts.status as status_tryout',
             'user_tryouts.status',
@@ -141,7 +144,7 @@ new class extends Component {
                                             wire:navigate
                                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
                                     @else
-                                        @if ($trending->harga && $trending->harga > 0)
+                                        @if ($trending->is_need_confirm)
                                             <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
                                                 class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
                                             <a href="{{ $trending->url ?? '#' }}"
