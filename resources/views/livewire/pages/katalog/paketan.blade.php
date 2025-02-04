@@ -10,6 +10,7 @@ use App\Models\UserTryouts;
 use Filament\Notifications\Notification;
 use Livewire\WithFileUploads;
 use App\Models\UserAccessPaket;
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
     use WithFileUploads;
@@ -19,16 +20,18 @@ new class extends Component {
     public $requestStatus;
     public $userTryout;
     public $userTryoutStatus;
-
+    public $user_id;
     public $image;
 
     public function mount($paketId)
     {
         $userId = auth()->id();
 
+        $this->user_id = $userId;
+
         // Ambil data paket dengan relasi tryouts dan userTryouts
         $this->paket = PaketTryout::where('id', $paketId)
-            ->select(['id', 'paket', 'image', 'harga', 'url'])
+            ->select(['id', 'paket', 'image', 'harga', 'url', 'is_need_confirm'])
             ->with([
                 'tryouts' => function ($query) use ($userId) {
                     $query->select(['id', 'nama', 'tanggal', 'waktu', 'status'])->with([
@@ -47,7 +50,7 @@ new class extends Component {
         }
 
         // Ambil testimoni yang aktif
-        $this->testimonials = Testimoni::where('paket_id', $paketId)->where('visibility', 'active')->get();
+        $this->testimonials = Testimoni::where('tryout_id', $paketId)->where('visibility', 'active')->get();
 
         // Cek status akses pengguna
         $request = UserAccessPaket::select('status')->where('user_id', $userId)->where('paket_id', $paketId)->first();
@@ -136,24 +139,22 @@ new class extends Component {
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10">
-                                        @if ($item->userTryouts->count() > 0)
-                                            @if ($item->userTryouts->first()->status == 'finished')
-                                                <a href="{{ route('tryouts.hasil.index', $item->id) }}" wire:navigate
-                                                    class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
-                                                <a href="{{ route('tryouts.hasil.pembahasan', $item->id) }}"
-                                                    wire:navigate
-                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
-                                            @elseif ($item->userTryouts->first()->status == 'started' || $item->userTryouts->first()->status == 'paused')
-                                                <a href="{{ route('tryouts.show', ['id' => $item->id]) }}" wire:navigate
-                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
-                                            @endif
-                                        @else
-                                            @if ($item->harga && $item->harga > 0)
-                                                <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
-                                                    class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
-                                                <a href="{{ $item->url ?? '#' }}"
-                                                    class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Beli
-                                                    Sekarang</a>
+                                        @if ($requestStatus === 'accepted')
+                                            @if ($item->userTryouts->count() > 0)
+                                                @if ($item->userTryouts->where('user_id', $user_id)->first()?->status->value == 'finished')
+                                                    <a href="{{ route('tryouts.hasil.index', $item->id) }}"
+                                                        wire:navigate
+                                                        class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
+                                                    <a href="{{ route('tryouts.hasil.pembahasan', $item->id) }}"
+                                                        wire:navigate
+                                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
+                                                @elseif (
+                                                    $item->userTryouts->where('user_id', $user_id)->first()?->status->value == 'started' ||
+                                                        $item->userTryouts->first()->status == 'paused')
+                                                    <a href="{{ route('tryouts.show', ['id' => $item->id]) }}"
+                                                        wire:navigate
+                                                        class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
+                                                @endif
                                             @else
                                                 <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
                                                     class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
@@ -218,14 +219,17 @@ new class extends Component {
                         <p class="mb-0 text-secondary">Menunggu konfirmasi admin...</p>
                     </div>
                 @else
-                    <a href="{{ $paket->url }}" target="_blank"
-                        class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
-                        Beli Sekarang
-                    </a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#konfirmasiAdminModal"
-                        class="btn border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">
-                        Konfirmasi Admin
-                    </a>
+                    @if ($paket->is_need_confirm)
+                        <a href="{{ $paket->url }}" target="_blank"
+                            class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
+                            Beli Sekarang
+                        </a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#konfirmasiAdminModal"
+                            class="btn border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">
+                            Konfirmasi Admin
+                        </a>
+                    @else
+                    @endif
                 @endif
 
             </div>
@@ -248,7 +252,7 @@ new class extends Component {
                     @endif
                     <p>{{ $paket->paket }}</p>
                     <div class="mb-3">
-                        <label for="file-upload-name">Upload Bukti Pembayaran </label>
+                        <label for="file-upload-name">Upload Bukti </label>
                         <input type="file" class="form-control w-auto mt-24 form-control-lg" id="file-upload-name"
                             wire:model="image" accept="image/*">
                         <ul id="uploaded-img-names"></ul>

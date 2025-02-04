@@ -37,6 +37,7 @@ new class extends Component {
                     'nilai' => $item->nilai,
                     'question_count' => $item->question_count,
                     'type' => 'satuan',
+                    'created_at' => $item->created_at,
                 ];
             });
 
@@ -47,7 +48,7 @@ new class extends Component {
             ->map(function ($paket) {
                 return (object) [
                     'tryout_id' => $paket->id,
-                    'nama' => $paket->nama,
+                    'nama' => $paket->paket,
                     'tanggal' => $paket->created_at,
                     'image' => $paket->image,
                     'batch_id' => null,
@@ -59,11 +60,15 @@ new class extends Component {
                     'nilai' => null,
                     'question_count' => $paket->tryouts->count(),
                     'type' => 'paket',
+                    'created_at' => $paket->created_at,
                 ];
             });
 
         // Gabungkan kedua koleksi
         $this->tryouts = $satuanTryouts->merge($paketTryouts);
+
+        // Urutkan tryouts berdasarkan created_at
+        $this->tryouts = $this->tryouts->sortByDesc('created_at');
 
         $this->trendingTryouts = Tryouts::select([
             'tryouts.id as tryout_id', // Kolom tryouts.id dengan alias
@@ -103,7 +108,7 @@ new class extends Component {
                                     alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
                             </div>
                             <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
-                                <div>
+                                <div class="d-flex flex-column">
                                     <span
                                         class="text-sm fw-semibold text-primary-600">{{ $trending->batch->nama }}</span>
                                     <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
@@ -175,11 +180,11 @@ new class extends Component {
                                         alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
                                 </div>
                                 <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
-                                    <div>
+                                    <div class="d-flex flex-column">
                                         <span class="text-sm fw-semibold text-primary-600">
                                             {{ $item->batch_name ?? 'Satuan' }}
                                         </span>
-                                        <a href="{{ $item->url }}"
+                                        <a href="{{ route('katalog.detail', ['id' => $item->tryout_id]) }}"
                                             class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
                                         <div
                                             class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
@@ -220,7 +225,7 @@ new class extends Component {
                                         alt="" class="w-100 h-100 max-h-194-px object-fit-cover">
                                 </div>
                                 <div class="p-10 d-flex flex-column justify-content-between flex-grow-1">
-                                    <div>
+                                    <div class="d-flex flex-column">
                                         <span class="text-sm fw-semibold text-primary-600">Paket Tryout</span>
                                         <a href="{{ route('katalog.paketan.detail', ['id' => $item->tryout_id]) }}"
                                             class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>

@@ -24,7 +24,7 @@ new class extends Component {
     {
         $this->tryout = Tryouts::where('id', $tryoutId)
             ->where('status', 'active')
-            ->select(['id', 'nama', 'image', 'waktu', 'harga', 'batch_id', 'url'])
+            ->select(['id', 'nama', 'image', 'waktu', 'harga', 'batch_id', 'url', 'is_need_confirm'])
             ->with(['batch'])
             ->first();
         if ($this->tryout == null) {
@@ -188,7 +188,7 @@ new class extends Component {
                     </li>
                 </ul>
 
-                @if ($requestStatus === 'accepted' || $tryout->harga == null || $tryout->harga == 0)
+                @if ($requestStatus === 'accepted' || !$tryout->is_need_confirm)
                     @if ($userTryout?->status?->value == 'finished')
                         <a href="{{ route('tryouts.hasil.index', $tryout->id) }}" wire:navigate
                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 mt-16">

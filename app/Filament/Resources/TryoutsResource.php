@@ -84,6 +84,23 @@ class TryoutsResource extends Resource
                             ->required()
                             ->default('nonaktif')
                             ->inline(),
+                        Forms\Components\ToggleButtons::make('is_need_confirm')
+                            ->label('Perlu Konfirmasi?')
+                            ->options([
+                                1 => 'Ya',
+                                0 => 'Tidak',
+                            ])
+                            ->colors([
+                                1 => 'success',
+                                0 => 'danger',
+                            ])
+                            ->inline()
+                            ->required()
+                            ->default(1)
+                            ->icons([
+                                1 => 'heroicon-o-check-circle',
+                                0 => 'heroicon-o-x-circle',
+                            ]),
                         Forms\Components\FileUpload::make('image')
                             ->label('Gambar')
                             ->image()
