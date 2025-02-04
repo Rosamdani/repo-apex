@@ -22,7 +22,7 @@ class CheckTryoutPermission
         if (!$tryout) {
             return redirect()->route('katalog.index')->with('error', 'Tryout tidak ditemukan.');
         } else {
-            if ($tryout->harga && $tryout->harga > 0) {
+            if ($tryout->is_need_confirm) {
                 $userAccessTryout = $user->userAccessTryouts()->where('tryout_id', $tryoutId)->first();
 
                 if (!$userAccessTryout) {
