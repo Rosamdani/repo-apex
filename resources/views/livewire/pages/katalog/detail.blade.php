@@ -219,11 +219,11 @@ new class extends Component {
                 @else
                     <a href="{{ $tryout->url }}" target="_blank"
                         class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
-                        Beli Sekarang
+                        Join Grup WA
                     </a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#konfirmasiAdminModal"
                         class="btn border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">
-                        Konfirmasi Admin
+                        Daftar Sekarang
                     </a>
                 @endif
 
