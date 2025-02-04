@@ -141,7 +141,7 @@ new class extends Component {
                                     <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10">
                                         @if ($requestStatus === 'accepted')
                                             @if ($item->userTryouts->count() > 0)
-                                                @if ($item->userTryouts->where('user_id', $user_id)->status == 'finished')
+                                                @if ($item->userTryouts->where('user_id', $user_id)->first()?->status->value == 'finished')
                                                     <a href="{{ route('tryouts.hasil.index', $item->id) }}"
                                                         wire:navigate
                                                         class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
@@ -149,7 +149,7 @@ new class extends Component {
                                                         wire:navigate
                                                         class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Pembahasan</a>
                                                 @elseif (
-                                                    $item->userTryouts->where('user_id', $user_id)->status == 'started' ||
+                                                    $item->userTryouts->where('user_id', $user_id)->first()?->status->value == 'started' ||
                                                         $item->userTryouts->first()->status == 'paused')
                                                     <a href="{{ route('tryouts.show', ['id' => $item->id]) }}"
                                                         wire:navigate
