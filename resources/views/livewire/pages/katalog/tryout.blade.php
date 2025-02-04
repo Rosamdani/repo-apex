@@ -144,7 +144,7 @@ new class extends Component {
                                             wire:navigate
                                             class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Lanjutkan</a>
                                     @else
-                                        @if ($trending->is_need_confirm)
+                                        @if ($trending->is_need_confirm == 1)
                                             <a href="{{ route('katalog.detail', ['id' => $trending->tryout_id]) }}"
                                                 class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
                                             <a href="{{ $trending->url ?? '#' }}"
