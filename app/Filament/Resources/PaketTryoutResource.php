@@ -48,6 +48,7 @@ class PaketTryoutResource extends Resource
                             ->preload()
                             ->required(),
                         Forms\Components\ToggleButtons::make('status')
+                            ->label('status')
                             ->options([
                                 'active' => 'Aktif',
                                 'nonaktif' => 'Non Aktif',
@@ -57,12 +58,28 @@ class PaketTryoutResource extends Resource
                                 'nonaktif' => 'danger',
                             ])
                             ->inline()
-                            ->label('Status')
                             ->required()
                             ->default('nonaktif')
                             ->icons([
                                 'active' => 'heroicon-o-check-circle',
                                 'nonaktif' => 'heroicon-o-x-circle',
+                            ]),
+                        Forms\Components\ToggleButtons::make('is_need_confirm')
+                            ->label('Perlu Konfirmasi?')
+                            ->options([
+                                1 => 'Ya',
+                                0 => 'Tidak',
+                            ])
+                            ->colors([
+                                1 => 'success',
+                                0 => 'danger',
+                            ])
+                            ->inline()
+                            ->required()
+                            ->default(1)
+                            ->icons([
+                                1 => 'heroicon-o-check-circle',
+                                0 => 'heroicon-o-x-circle',
                             ]),
                     ]),
                     Tabs\Tab::make('Detail')->schema([

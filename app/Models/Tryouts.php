@@ -32,6 +32,7 @@ class Tryouts extends Model
         'harga',
         'url',
         'file_pembahasan',
+        'is_need_confirm',
     ];
 
 

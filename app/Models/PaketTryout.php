@@ -26,6 +26,7 @@ class PaketTryout extends Model
         'status',
         'image',
         'detail',
+        'is_need_confirm',
     ];
 
     public function tryouts()
