@@ -137,6 +137,29 @@ class TryoutsResource extends Resource
                             ])
                             ->columnSpanFull(),
                     ]),
+                    Tabs\Tab::make('Extras')->schema([
+                        Forms\Components\TextInput::make('harga')
+                            ->label('Harga Produk')
+                            ->hint('Kosongkan jika gratis (free)')
+                            ->numeric()
+                            ->placeholder('Masukkan harga produk apabila pembelian secara satuan'),
+                        Forms\Components\TextInput::make('url')
+                            ->label('Link Pembelian')
+                            ->placeholder('https://shopee.co.id/.....')
+                            ->hint('Anda dapat memasukkan link pembelian produk seperti link shopee, tokopedia, dll.')
+                            ->url(),
+                        Forms\Components\FileUpload::make('file_pembahasan')
+                            ->label('Upload File')
+                            ->disk('local')
+                            ->downloadable()
+                            ->directory('pembahasan')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->hint('Upload file pdf pembahasan')
+                            ->validationMessages([
+                                'maxSize' => 'The :attribute max 100mb',
+                            ])
+                            ->columnSpanFull(),
+                    ]),
 
                 ]),
             ]);
