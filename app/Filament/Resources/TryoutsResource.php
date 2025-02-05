@@ -127,12 +127,14 @@ class TryoutsResource extends Resource
                             ->url(),
                         Forms\Components\FileUpload::make('file_pembahasan')
                             ->label('Upload File')
-                            ->disk('public')
+                            ->disk('local')
                             ->downloadable()
                             ->directory('pembahasan')
                             ->acceptedFileTypes(['application/pdf'])
-                            ->maxSize(1024000)
                             ->hint('Upload file pdf pembahasan')
+                            ->validationMessages([
+                                'maxSize' => 'The :attribute max 100mb',
+                            ])
                             ->columnSpanFull(),
                     ]),
 
