@@ -131,7 +131,7 @@ class TryoutsResource extends Resource
                             ->downloadable()
                             ->directory('pembahasan')
                             ->acceptedFileTypes(['application/pdf'])
-                            ->maxSize(20048)
+                            ->maxSize(1000048)
                             ->hint('Upload file pdf pembahasan')
                             ->columnSpanFull(),
                     ]),
