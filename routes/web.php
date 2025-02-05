@@ -32,6 +32,10 @@ Route::middleware([AuthMiddleware::class])->get('/profile/my-profile', function 
     return view('profile.view-profile');
 })->name('my-profile');
 
+Route::get('/infophp', function () {
+    phpinfo();
+});
+
 
 Route::middleware('guest')->get('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
 Route::middleware('auth')->post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
