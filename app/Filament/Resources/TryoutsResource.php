@@ -127,7 +127,7 @@ class TryoutsResource extends Resource
                             ->url(),
                         Forms\Components\FileUpload::make('file_pembahasan')
                             ->label('Upload File')
-                            ->disk('local')
+                            ->disk('public')
                             ->downloadable()
                             ->directory('pembahasan')
                             ->acceptedFileTypes(['application/pdf'])
