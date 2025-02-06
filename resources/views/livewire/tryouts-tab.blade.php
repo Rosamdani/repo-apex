@@ -92,10 +92,7 @@
                                             class="text-xl fw-bold text-primary-light">{{ $tryout->nama }}</a>
                                         <div
                                             class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
-                                            <span class="text-sm text-secondary-light fw-medium">Harga:
-                                                <span class="text-sm fw-semibold text-primary-600">Rp
-                                                    {{ number_format($tryout->harga, 0, ',', '.') }}</span>
-                                            </span>
+
                                             <span class="text-sm text-secondary-light fw-medium">Total Tryouts:
                                                 {{ $tryout->question_count }}</span>
                                         </div>

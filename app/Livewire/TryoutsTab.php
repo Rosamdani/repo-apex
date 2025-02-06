@@ -80,8 +80,8 @@ class TryoutsTab extends Component
                 'tanggal' => $tryout->tanggal,
                 'image' => $tryout->image,
                 'batch_id' => $tryout->batch_id,
-                'waktu' => $tryout->waktu,
                 'status' => $tryout->status,
+                'waktu' => $tryout->waktu,
                 'status_tryout' => $tryout->status_tryout,
                 'nilai' => $tryout->nilai,
                 'type' => 'satuan',
@@ -129,20 +129,18 @@ class TryoutsTab extends Component
         $paketTryouts = $paketTryouts->map(function ($paket) {
             return (object) [
                 'tryout_id' => $paket->id ?? null,
+                'batch' =>  null,
                 'nama' => $paket->paket ?? '',
-                'tanggal' => $paket->created_at ?? null,
+                'tanggal' => null,
                 'image' => $paket->image ?? '',
                 'batch_id' => null,
-                'waktu' => null,
-                'url' => $paket->url ?? '#',
-                'harga' => $paket->harga ?? 0,
-                'status_tryout' => $paket->status ?? null,
                 'status' => null,
+                'waktu' => null,
+                'status_tryout' => $paket->status ?? null,
                 'nilai' => null,
-                'question_count' => $paket->tryouts ? $paket->tryouts->count() : 0,
                 'type' => 'paket',
-                'created_at' => $paket->created_at ?? null,
                 'is_need_confirm' => $paket->is_need_confirm ?? false,
+                'question_count' => $paket->tryouts ? $paket->tryouts->count() : 0,
             ];
         });
 
