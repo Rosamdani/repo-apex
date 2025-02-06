@@ -14,9 +14,11 @@ class UserAccessPaketObserver
             $tryouts = $userAccessPaket->paket->tryouts;
 
             foreach ($tryouts as $tryout) {
-                $userAccessTryout = $tryout->userAccess()->where('user_id', $userAccessPaket->user_id)->first();
+                $userAccessTryout = $tryout->userAccess()->firstOrCreate(
+                    ['user_id' => $userAccessPaket->user_id],
+                    ['status' => $newStatus]
+                );
                 if ($userAccessTryout) {
-                    // Update status user access tryout sesuai dengan status baru
                     $userAccessTryout->update(['status' => $newStatus]);
                 }
             }
