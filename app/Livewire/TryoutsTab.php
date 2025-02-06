@@ -73,7 +73,7 @@ class TryoutsTab extends Component
         });
 
         $this->tryouts = $this->tryouts->map(function ($tryout) {
-            return (object) [
+            return [
                 'tryout_id' => $tryout->tryout_id,
                 'batch' => $tryout->batch->nama,
                 'nama' => $tryout->nama,
@@ -127,9 +127,9 @@ class TryoutsTab extends Component
         });
 
         $paketTryouts = $paketTryouts->map(function ($paket) {
-            return (object) [
+            return [
                 'tryout_id' => $paket->id ?? null,
-                'batch' =>  null,
+                'batch' => null,
                 'nama' => $paket->paket ?? '',
                 'tanggal' => null,
                 'image' => $paket->image ?? '',
@@ -145,7 +145,7 @@ class TryoutsTab extends Component
         });
 
 
-        $this->tryouts = $this->tryouts->merge(collect($paketTryouts));
+        $this->tryouts = $this->tryouts->concat($paketTryouts);
 
         return view('livewire.tryouts-tab');
     }
