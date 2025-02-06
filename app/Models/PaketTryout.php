@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Observers\UserAccessPaketObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+#[ObservedBy([UserAccessPaketObserver::class])]
 class PaketTryout extends Model
 {
     protected $keyType = 'string';
