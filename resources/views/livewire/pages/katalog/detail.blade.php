@@ -21,7 +21,7 @@ new class extends Component {
 
     public $image;
 
-    public function mount($tryoutId)
+    public function mount($tryoutId, $paketId = null)
     {
         $this->tryout = Tryouts::where('id', $tryoutId)
             ->where('status', 'active')
@@ -39,12 +39,18 @@ new class extends Component {
         $this->testimonials = Testimoni::where('tryout_id', $tryoutId)->where('visibility', 'active')->get();
 
         if ($this->tryout->tryoutHasPakets) {
-            $request = UserAccessPaket::select('status')
-                ->where('user_id', auth()->id())
-                ->where('paket_id', $this->tryout->paketTryout->id)
-                ->first();
-            if ($request) {
-                $this->requestStatus = $request->status;
+            $paketId = request('paket_id') ?? $this->selectedPaketId;
+
+            if ($paketId) {
+                $request = UserAccessPaket::select('status')
+                    ->where('user_id', auth()->id())
+                    ->where('paket_id', $paketId) // Gunakan paket yang sedang dilihat
+                    ->first();
+
+                $this->requestStatus = $request ? $request->status : null;
+            } else {
+                // Paket ID tidak ditemukan, berikan nilai default
+                $this->requestStatus = null;
             }
         } else {
             $request = UserAccessTryouts::select('status')
