@@ -125,7 +125,6 @@ new class extends Component {
             <div class="row g-3">
                 <h5 class="col-12">Tryout</h5>
                 @forelse ($paket->tryouts as $item)
-                    @dd($item)
                     @if ($item->status === 'active')
                         <div class="col-xxl-3 col-md-4 col-sm-6">
                             <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
