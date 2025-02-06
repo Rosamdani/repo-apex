@@ -145,7 +145,7 @@ class TryoutsTab extends Component
         });
 
 
-        $this->tryouts = $this->tryouts->merge($paketTryouts);
+        $this->tryouts = $this->tryouts->merge(collect($paketTryouts));
 
         return view('livewire.tryouts-tab');
     }
