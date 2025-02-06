@@ -113,7 +113,7 @@ new class extends Component {
                 alt="{{ $paket->paket }}" class="w-100 h-auto max-h-400-px rounded mb-20">
             <div class="card" style="margin: 20px 0;">
                 <div class="card-body">
-                    @if ($paket->deskripsi)
+                    @if ($paket->deskripsi !== null || $paket->deskripsi !== '')
                         <h5 class="fw-semibold">Deskripsi</h5>
                         <p class="mt-10 text-secondary-light" style="text-align: justify;">
                             {!! $paket->deskripsi !!}
