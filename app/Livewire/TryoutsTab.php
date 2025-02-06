@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\PaketTryout;
 use App\Models\Tryouts;
 use App\Models\UserTryouts;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,12 @@ class TryoutsTab extends Component
 
         $userId = Auth::id();
 
-        $this->tryouts = Tryouts::with('batch') // Memuat relasi questions
+        $this->tryouts = Tryouts::with('batch')
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('tryout_has_pakets')
+                    ->whereColumn('tryouts.id', '=', 'tryout_has_pakets.tryout_id');
+            })
             ->leftJoin('user_tryouts', function ($join) use ($userId) {
                 $join->on('tryouts.id', '=', 'user_tryouts.tryout_id')
                     ->where('user_tryouts.user_id', '=', $userId);
@@ -40,6 +46,7 @@ class TryoutsTab extends Component
                 'tryouts.status as status_tryout',
                 'user_tryouts.status',
                 'user_tryouts.nilai',
+                'tryouts.is_need_confirm',
                 DB::raw('(SELECT COUNT(*) FROM soal_tryouts WHERE soal_tryouts.tryout_id = tryouts.id) as question_count') // Hitung jumlah questions
             ])
             ->get()
@@ -54,6 +61,93 @@ class TryoutsTab extends Component
                 }
             });
 
+        $this->tryouts = $this->tryouts->filter(function ($tryout) use ($userId) {
+            if ($tryout->is_need_confirm) {
+                $access = \App\Models\UserAccessTryouts::where('user_id', $userId)
+                    ->where('tryout_id', $tryout->tryout_id)
+                    ->first();
+                return $access && $access->status === 'accepted';
+            } else {
+                return true;
+            }
+        });
+
+        $this->tryouts = $this->tryouts->map(function ($tryout) {
+            return (object) [
+                'tryout_id' => $tryout->tryout_id,
+                'batch' => $tryout->batch->nama,
+                'nama' => $tryout->nama,
+                'tanggal' => $tryout->tanggal,
+                'image' => $tryout->image,
+                'batch_id' => $tryout->batch_id,
+                'waktu' => $tryout->waktu,
+                'status' => $tryout->status,
+                'status_tryout' => $tryout->status_tryout,
+                'nilai' => $tryout->nilai,
+                'type' => 'satuan',
+                'is_need_confirm' => $tryout->is_need_confirm,
+                'question_count' => $tryout->question_count,
+            ];
+        });
+
+        $paketTryouts = PaketTryout::with(['tryouts.userTryouts' => function ($query) use ($userId) {
+            $query->where('user_id', $userId); // Ambil hanya user_tryouts milik user tertentu
+        }])
+            ->where('status', 'active')
+            ->get();
+
+        // Filter berdasarkan kebutuhan konfirmasi
+        $paketTryouts = $paketTryouts->filter(function ($paket) use ($userId) {
+            if ($paket->is_need_confirm) {
+                $access = \App\Models\UserAccessPaket::where('user_id', $userId)
+                    ->where('paket_id', $paket->id)
+                    ->first();
+                return $access && $access->status === 'accepted';
+            } else {
+                return true;
+            }
+        });
+
+        // Filter berdasarkan tab
+        $paketTryouts = $paketTryouts->filter(function ($paket) {
+            $userTryoutStatuses = $paket->tryouts->flatMap(function ($tryout) {
+                return $tryout->userTryouts->pluck('status.value'); // Ambil nilai dari enum status
+            })->unique();
+
+            if ($this->tab === 'finished') {
+                // Semua tryout dalam paket harus selesai
+                return $userTryoutStatuses->every(fn($status) => $status === 'finished');
+            } elseif ($this->tab === 'started') {
+                // Salah satu tryout dalam paket sedang dikerjakan
+                return $userTryoutStatuses->contains('started') || $userTryoutStatuses->contains('paused');
+            } else {
+                // Semua tryout dalam paket belum dimulai
+                return $userTryoutStatuses->every(fn($status) => $status === null || $status === 'not_started');
+            }
+        });
+
+        $paketTryouts = $paketTryouts->map(function ($paket) {
+            return (object) [
+                'tryout_id' => $paket->id,
+                'nama' => $paket->paket,
+                'tanggal' => $paket->created_at,
+                'image' => $paket->image,
+                'batch_id' => null,
+                'waktu' => null,
+                'url' => $paket->url ?? '#',
+                'harga' => $paket->harga,
+                'status_tryout' => $paket->status,
+                'status' => null,
+                'nilai' => null,
+                'question_count' => $paket->tryouts->count(),
+                'type' => 'paket',
+                'created_at' => $paket->created_at,
+                'is_need_confirm' => $paket->is_need_confirm,
+            ];
+        });
+
+
+        $this->tryouts = $this->tryouts->merge($paketTryouts);
 
         return view('livewire.tryouts-tab');
     }
