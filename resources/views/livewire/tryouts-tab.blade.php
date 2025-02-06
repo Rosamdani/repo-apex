@@ -2,7 +2,6 @@
     role="tabpanel" aria-labelledby="pills-button-{{ $tab }}-tab" tabindex="0">
     <div class="row g-3">
         @if (!$tryouts->isEmpty())
-            @dd($tryouts)
             @foreach ($tryouts as $tryout)
                 @if ($tryout['status_tryout'] == 'active')
                     @if ($tryout['type'] === 'satuan')
