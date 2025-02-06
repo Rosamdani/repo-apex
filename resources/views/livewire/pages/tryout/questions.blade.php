@@ -34,7 +34,6 @@ new class extends Component {
 
         if (Cache::has($cacheKey)) {
             $cacheData = Cache::get($cacheKey);
-            dd($cacheData);
             $this->questions = $cacheData['questions'];
             $this->selectedAnswer = $cacheData['selectedAnswer'];
             $this->questionStatus = $cacheData['questionStatus'];
