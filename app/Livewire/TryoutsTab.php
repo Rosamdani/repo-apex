@@ -110,8 +110,8 @@ class TryoutsTab extends Component
 
         // Filter berdasarkan tab
         $paketTryouts = $paketTryouts->filter(function ($paket) {
-            $userTryoutStatuses = $paket->tryouts->flatMap(function ($tryout) {
-                return $tryout->userTryouts->pluck('status.value'); // Ambil nilai dari enum status
+            $userTryoutStatuses = collect($paket->tryouts)->flatMap(function ($tryout) {
+                return collect($tryout->userTryouts)->pluck('status.value');
             })->unique();
 
             if ($this->tab === 'finished') {
