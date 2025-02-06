@@ -163,8 +163,8 @@
                         </ul>
                     </div>
                     <div class="tab-content" id="pills-tab-threeContent">
-                        <livewire:tryouts-tab :tab="'started'" />
                         <livewire:tryouts-tab :tab="'not_started'" />
+                        <livewire:tryouts-tab :tab="'started'" />
                         <livewire:tryouts-tab :tab="'finished'" />
                     </div>
 
