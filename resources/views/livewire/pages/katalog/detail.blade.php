@@ -38,7 +38,8 @@ new class extends Component {
 
         $this->testimonials = Testimoni::where('tryout_id', $tryoutId)->where('visibility', 'active')->get();
 
-        if ($this->tryout->paketTryout) {
+        if ($this->tryout->tryoutHasPakets) {
+            dd($this->tryout->tryoutHasPakets);
             $request = UserAccessPaket::select('status')
                 ->where('user_id', auth()->id())
                 ->where('paket_id', $this->tryout->paketTryout->id)
