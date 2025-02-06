@@ -31,6 +31,9 @@ class UserAccessTryoutsResource extends Resource
             ->schema([
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
+                    ->searchable(['name', 'email'])
+                    ->native(false)
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
                     ->required(),
                 Forms\Components\Select::make('tryout_id')
                     ->relationship('tryouts', 'nama')
