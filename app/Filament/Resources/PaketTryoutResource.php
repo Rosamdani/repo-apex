@@ -83,7 +83,7 @@ class PaketTryoutResource extends Resource
                             ]),
                     ]),
                     Tabs\Tab::make('Detail')->schema([
-                        Forms\Components\RichEditor::make('detail'),
+                        Forms\Components\RichEditor::make('deskripsi'),
                         Forms\Components\TextInput::make('url')->url()->label('Link Pembelian')->placeholder('https://link_pembelian.com'),
                     ])
                 ])->columnSpanFull(),

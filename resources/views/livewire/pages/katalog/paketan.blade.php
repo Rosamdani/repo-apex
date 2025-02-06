@@ -31,7 +31,7 @@ new class extends Component {
 
         // Ambil data paket dengan relasi tryouts dan userTryouts
         $this->paket = PaketTryout::where('id', $paketId)
-            ->select(['id', 'paket', 'image', 'harga', 'url', 'is_need_confirm'])
+            ->select(['id', 'paket', 'image', 'harga', 'url', 'is_need_confirm', 'deskripsi'])
             ->with([
                 'tryouts' => function ($query) use ($userId) {
                     $query->select(['id', 'nama', 'tanggal', 'waktu', 'status'])->with([
@@ -111,7 +111,19 @@ new class extends Component {
         @if ($paket)
             <img src="{{ $paket->image ? asset('storage/' . $paket->image) : asset('assets/images/product/product-default.jpg') }}"
                 alt="{{ $paket->paket }}" class="w-100 h-auto max-h-400-px rounded mb-20">
+            <div class="card" style="margin: 20px 0;">
+                <div class="card-body">
+                    @if ($paket->deskripsi)
+                        <h5 class="fw-semibold">Deskripsi</h5>
+                        <p class="mt-10 text-secondary-light" style="text-align: justify;">
+                            {!! $paket->deskripsi !!}
+                        </p>
+                    @endif
+
+                </div>
+            </div>
             <div class="row g-3">
+                <h5 class="col-12">Tryout</h5>
                 @forelse ($paket->tryouts as $item)
                     @if ($item->status === 'active')
                         <div class="col-xxl-3 col-md-4 col-sm-6">
