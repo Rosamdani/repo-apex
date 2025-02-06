@@ -12,7 +12,7 @@ class UserAccessPaketObserver
             $newStatus = $userAccessPaket->status;
 
             $tryouts = $userAccessPaket->paket->tryouts;
-
+            dd($tryouts);
             foreach ($tryouts as $tryout) {
                 $userAccessTryout = $tryout->userAccess()->firstOrCreate(
                     ['user_id' => $userAccessPaket->user_id],
