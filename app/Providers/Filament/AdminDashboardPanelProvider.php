@@ -50,6 +50,8 @@ class AdminDashboardPanelProvider extends PanelProvider
                     ->pages([
                         \App\Filament\Pages\Settings\Settings::class,
                     ]),
+
+
                 \FilipFonal\FilamentLogManager\FilamentLogManager::make(),
             ])
             ->middleware([
