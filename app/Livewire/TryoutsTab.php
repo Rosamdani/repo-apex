@@ -145,7 +145,6 @@ class TryoutsTab extends Component
         });
 
         $this->tryouts = $this->tryouts->concat($paketTryouts);
-        dd($this->tryouts);
 
         return view('livewire.tryouts-tab');
     }
