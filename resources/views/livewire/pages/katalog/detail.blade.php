@@ -24,7 +24,7 @@ new class extends Component {
     {
         $this->tryout = Tryouts::where('id', $tryoutId)
             ->where('status', 'active')
-            ->select(['id', 'nama', 'image', 'waktu', 'harga', 'batch_id', 'url', 'is_need_confirm'])
+            ->select(['id', 'nama', 'image', 'waktu', 'harga', 'batch_id', 'url', 'is_need_confirm', 'is_configurable'])
             ->with(['batch'])
             ->first();
         if ($this->tryout == null) {
@@ -51,13 +51,21 @@ new class extends Component {
         ];
     }
 
+    public function configurableText()
+    {
+        if ($this->tryout->is_configurable) {
+            return 'Bukti Syarat Pendaftaran';
+        }
+        return 'Bukti Pembayaran';
+    }
+
     public function messages()
     {
         return [
-            'image.required' => 'Bukti pembayaran harus diunggah.',
-            'image.image' => 'Bukti pembayaran harus berupa gambar.',
-            'image.mimes' => 'Bukti pembayaran harus dalam format JPEG, PNG, JPG, GIF, atau SVG.',
-            'image.max' => 'Bukti pembayaran tidak boleh lebih besar dari 2 MB.',
+            'image.required' => 'Bukti ' . $this->configurableText() . ' harus diunggah.',
+            'image.image' => 'Bukti ' . $this->configurableText() . ' harus berupa gambar.',
+            'image.mimes' => 'Bukti ' . $this->configurableText() . ' harus dalam format JPEG, PNG, JPG, GIF, atau SVG.',
+            'image.max' => 'Bukti ' . $this->configurableText() . ' tidak boleh lebih besar dari 2 MB.',
         ];
     }
 
@@ -246,7 +254,7 @@ new class extends Component {
                     @endif
                     <p>{{ $tryout->nama }}?</p>
                     <div class="mb-3">
-                        <label for="file-upload-name">Upload Bukti Pembayaran </label>
+                        <label for="file-upload-name">Upload {{ $this->configurableText() }} </label>
                         <input type="file" class="form-control w-auto mt-24 form-control-lg" id="file-upload-name"
                             wire:model="image" accept="image/*">
                         <ul id="uploaded-img-names"></ul>
