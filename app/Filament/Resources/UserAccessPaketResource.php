@@ -29,6 +29,9 @@ class UserAccessPaketResource extends Resource
                     Forms\Components\Select::make('user_id')
                         ->label('Nama Peserta')
                         ->relationship('user', 'name')
+                        ->searchable(['name', 'email'])
+                        ->native(false)
+                        ->getOptionLabelFromRecordUsing(fn($record) => "{$record->name} ({$record->email})")
                         ->required(),
                     Forms\Components\Select::make('paket_id')
                         ->relationship('paket', 'paket')
