@@ -111,17 +111,17 @@ new class extends Component {
         @if ($paket)
             <img src="{{ $paket->image ? asset('storage/' . $paket->image) : asset('assets/images/product/product-default.jpg') }}"
                 alt="{{ $paket->paket }}" class="w-100 h-auto max-h-400-px rounded mb-20">
-            <div class="card" style="margin: 20px 0;">
-                <div class="card-body">
-                    @if ($paket->deskripsi !== null || $paket->deskripsi !== '')
+            @if ($paket->deskripsi)
+                <div class="card" style="margin: 20px 0;">
+                    <div class="card-body">
                         <h5 class="fw-semibold">Deskripsi</h5>
                         <p class="mt-10 text-secondary-light" style="text-align: justify;">
                             {!! $paket->deskripsi !!}
                         </p>
-                    @endif
 
+                    </div>
                 </div>
-            </div>
+            @endif
             <div class="row g-3">
                 <h5 class="col-12">Tryout</h5>
                 @forelse ($paket->tryouts as $item)
