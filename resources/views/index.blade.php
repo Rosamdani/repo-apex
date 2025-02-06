@@ -146,20 +146,6 @@
                                     aria-controls="pills-button-finished" aria-selected="false"
                                     tabindex="-1">Selesai</button>
                             </li>
-                            {{-- <li class="nav-item" role="presentation">
-                            <button
-                                class="nav-link fw-semibold text-secondary-light rounded-pill px-20 py-6 border border-neutral-300"
-                                id="pills-button-utility-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-button-utility" type="button" role="tab"
-                                aria-controls="pills-button-utility" aria-selected="true">Utility</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button
-                                class="nav-link fw-semibold text-secondary-light rounded-pill px-20 py-6 border border-neutral-300"
-                                id="pills-button-fashion-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-button-fashion" type="button" role="tab"
-                                aria-controls="pills-button-fashion" aria-selected="true">Fashion</button>
-                        </li> --}}
                         </ul>
                     </div>
                     <div class="tab-content" id="pills-tab-threeContent">
