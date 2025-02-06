@@ -6,9 +6,12 @@ use App\Filament\Resources\TryoutsResource\Pages;
 use App\Filament\Resources\TryoutsResource\RelationManagers;
 use App\Models\BatchTryouts;
 use App\Models\Tryouts;
+use Filament\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action as ActionsAction;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -138,27 +141,76 @@ class TryoutsResource extends Resource
                             ->columnSpanFull(),
                     ]),
                     Tabs\Tab::make('Extras')->schema([
-                        Forms\Components\TextInput::make('harga')
-                            ->label('Harga Produk')
-                            ->hint('Kosongkan jika gratis (free)')
-                            ->numeric()
-                            ->placeholder('Masukkan harga produk apabila pembelian secara satuan'),
-                        Forms\Components\TextInput::make('url')
-                            ->label('Link Pembelian')
-                            ->placeholder('https://shopee.co.id/.....')
-                            ->hint('Anda dapat memasukkan link pembelian produk seperti link shopee, tokopedia, dll.')
-                            ->url(),
-                        Forms\Components\FileUpload::make('file_pembahasan')
-                            ->label('Upload File')
-                            ->disk('local')
-                            ->downloadable()
-                            ->directory('pembahasan')
-                            ->acceptedFileTypes(['application/pdf'])
-                            ->hint('Upload file pdf pembahasan')
-                            ->validationMessages([
-                                'maxSize' => 'The :attribute max 100mb',
+                        Forms\Components\Repeater::make('extra items')
+                            ->relationship('extras')
+                            ->schema([
+                                Forms\Components\Select::make('type')->required()
+                                    ->label('Tipe')
+                                    ->options([
+                                        'poster' => 'Poster',
+                                        'button' => 'Tombol',
+                                    ])
+                                    ->live(),
+                                Forms\Components\FileUpload::make('poster_data')
+                                    ->label('Gambar Poster')
+                                    ->visible(fn(Get $get): bool => $get('type') === 'poster')
+                                    ->disabled(fn(Get $get): bool => $get('type') !== 'poster')
+                                    ->required(),
+                                Forms\Components\TextInput::make('button_data') // Berikan nama yang berbeda
+                                    ->visible(fn(Get $get): bool => $get('type') === 'button')
+                                    ->disabled(fn(Get $get): bool => $get('type') !== 'button')
+                                    ->label('URL Tombol')
+                                    ->url()
+                                    ->hint('Link Join Grup WhatsApp')
+                                    ->placeholder('https://chat.whatsapp.com/...')
+                                    ->required(),
+                                Forms\Components\TextInput::make('title')
+                                    ->label('Text')
+                                    ->visible(fn(Get $get): bool => $get('type') === 'button')
+                                    ->placeholder('Join Grup WhatsApp')
+                                    ->required(),
+                                Forms\Components\Select::make('display_on')
+                                    ->suffixAction( // Tambahkan tombol di samping input
+                                        ActionsAction::make('bantuan')
+                                            ->form([
+                                                Forms\Components\Placeholder::make('Tampilkan Tryout
+                                                '),
+                                                Forms\Components\Placeholder::make('Halaman Hasil Tryout: Tampilkan Tryout di halaman hasil Tryout'),
+                                                Forms\Components\Placeholder::make('Ketika Menyelesaikan Tryout: Tampilkan Tryout ketika User menyelesaikan Tryout'),
+                                                Forms\Components\Placeholder::make('Halaman Detail Tryout: Tampilkan Tryout di halaman detail Tryout'),
+                                            ])
+                                            ->icon('heroicon-o-question-mark-circle')
+                                            ->tooltip('Klik untuk informasi lebih lanjut')
+                                    )
+                                    ->multiple()
+                                    ->required()
+                                    ->options([
+                                        'result' => 'Halaman Hasil Tryout',
+                                        'finished_tryout' => 'Ketika Menyelesaikan Tryout',
+                                        'detail_tryout' => 'Halaman Detail Tryout',
+                                    ]),
+
                             ])
-                            ->columnSpanFull(),
+                            ->mutateRelationshipDataBeforeFillUsing(function (array $data): array {
+                                if ($data['type'] === 'poster') {
+                                    $data['poster_data'] = $data['data'];
+                                } else if ($data['type'] === 'button') {
+                                    $data['button_data'] = $data['data'];
+                                }
+
+                                return $data;
+                            })
+                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
+                                $data['data'] = $data['poster_data'] ?? $data['button_data'] ?? null;
+
+                                return $data;
+                            })
+                            ->columns(1),
+
+                        Forms\Components\Toggle::make('is_configurable')
+                            ->label('Bersyarat?')
+                            ->hint('Aktifkan jika perlu upload syarat pendaftaran, nonaktifkan jika perlu upload pembayaran')
+                            ->default(false),
                     ]),
 
                 ]),

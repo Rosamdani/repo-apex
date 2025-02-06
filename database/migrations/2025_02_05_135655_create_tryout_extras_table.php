@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('tryout_extras', function (Blueprint $table) {
             $table->id();
-            $table->string('tryout_id', 36);
-            $table->foreign('tryout_id')->references('id')->on('tryouts')->onDelete('cascade');
+            $table->morphs('extraable');
+            $table->string('type');
+            $table->string('title')->nullable();
+            $table->string('data');
+            $table->json('display_on')->nullable();
             $table->timestamps();
         });
     }

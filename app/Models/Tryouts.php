@@ -33,6 +33,7 @@ class Tryouts extends Model
         'url',
         'file_pembahasan',
         'is_need_confirm',
+        'is_configurable',
     ];
 
 
@@ -65,5 +66,10 @@ class Tryouts extends Model
     public function tryoutHasPakets()
     {
         return $this->belongsToMany(PaketTryout::class, 'tryout_has_pakets', 'tryout_id', 'paket_id');
+    }
+
+    public function extras()
+    {
+        return $this->morphMany(TryoutExtra::class, 'extraable');
     }
 }
