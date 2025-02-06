@@ -73,7 +73,7 @@ class TryoutsTab extends Component
         });
 
         $this->tryouts = $this->tryouts->map(function ($tryout) {
-            return [
+            return (object) [
                 'tryout_id' => $tryout->tryout_id,
                 'batch' => $tryout->batch->nama,
                 'nama' => $tryout->nama,
@@ -127,9 +127,9 @@ class TryoutsTab extends Component
         });
 
         $paketTryouts = $paketTryouts->map(function ($paket) {
-            return [
+            return (object) [
                 'tryout_id' => $paket->id ?? null,
-                'batch' => null,
+                'batch' =>  null,
                 'nama' => $paket->paket ?? '',
                 'tanggal' => null,
                 'image' => $paket->image ?? '',
@@ -143,6 +143,7 @@ class TryoutsTab extends Component
                 'question_count' => $paket->tryouts ? $paket->tryouts->count() : 0,
             ];
         });
+
 
         $this->tryouts = $this->tryouts->concat($paketTryouts);
 
