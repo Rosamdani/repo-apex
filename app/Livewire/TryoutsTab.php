@@ -143,9 +143,9 @@ class TryoutsTab extends Component
                 'question_count' => $paket->tryouts ? $paket->tryouts->count() : 0,
             ];
         });
-        dd($paketTryouts, $this->tryouts);
 
         $this->tryouts = $this->tryouts->concat($paketTryouts);
+        dd($this->tryouts);
 
         return view('livewire.tryouts-tab');
     }
