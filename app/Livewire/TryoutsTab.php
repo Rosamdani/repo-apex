@@ -37,7 +37,7 @@ class TryoutsTab extends Component
                     ->where('user_tryouts.user_id', '=', $userId);
             })
             ->select([
-                'tryouts.id as tryout_id',
+                'tryouts.id',
                 'tryouts.nama',
                 'tryouts.tanggal',
                 'tryouts.image',
@@ -62,7 +62,7 @@ class TryoutsTab extends Component
             ->filter(function ($tryout) use ($userId) {
                 if ($tryout->is_need_confirm) {
                     $access = \App\Models\UserAccessTryouts::where('user_id', $userId)
-                        ->where('tryout_id', $tryout->tryout_id)
+                        ->where('tryout_id', $tryout->id)
                         ->first();
                     return $access && $access->status === 'accepted';
                 }
@@ -70,7 +70,7 @@ class TryoutsTab extends Component
             })
             ->map(function ($tryout) {
                 return (object) [
-                    'tryout_id' => $tryout->tryout_id,
+                    'tryout_id' => $tryout->id,
                     'batch' => optional($tryout->batch)->nama,
                     'nama' => $tryout->nama,
                     'tanggal' => $tryout->tanggal,
@@ -86,7 +86,6 @@ class TryoutsTab extends Component
                 ];
             });
 
-        // Ambil data paket tryouts
         $paketTryouts = PaketTryout::with(['tryouts.userTryouts' => function ($query) use ($userId) {
             $query->where('user_id', $userId);
         }])
@@ -131,7 +130,6 @@ class TryoutsTab extends Component
                 ];
             });
 
-        // Gabungkan kedua koleksi
         $this->tryouts = $satuanTryouts->merge($paketTryouts);
 
         return view('livewire.tryouts-tab');
