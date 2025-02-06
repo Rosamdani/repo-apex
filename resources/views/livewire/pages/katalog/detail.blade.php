@@ -9,6 +9,7 @@ use App\Models\UserAccessTryouts;
 use App\Models\UserTryouts;
 use Filament\Notifications\Notification;
 use Livewire\WithFileUploads;
+use App\Models\UserAccessPaket;
 
 new class extends Component {
     use WithFileUploads;
@@ -37,11 +38,21 @@ new class extends Component {
 
         $this->testimonials = Testimoni::where('tryout_id', $tryoutId)->where('visibility', 'active')->get();
 
-        $request = UserAccessTryouts::select('status')
-            ->where('user_id', auth()->id())
-            ->where('tryout_id', $tryoutId)
-            ->first();
-        $this->requestStatus = $request ? $request->status : null;
+        if ($this->tryout->paketTryout) {
+            $request = UserAccessPaket::select('status')
+                ->where('user_id', auth()->id())
+                ->where('paket_id', $this->tryout->paketTryout->id)
+                ->first();
+            if ($request) {
+                $this->requestStatus = $request->status;
+            }
+        } else {
+            $request = UserAccessTryouts::select('status')
+                ->where('user_id', auth()->id())
+                ->where('tryout_id', $tryoutId)
+                ->first();
+            $this->requestStatus = $request ? $request->status : null;
+        }
     }
 
     public function rules()
@@ -218,7 +229,10 @@ new class extends Component {
                         </a>
                     @endif
                 @elseif ($requestStatus === 'denied')
-
+                    <div class="d-flex flex-column">
+                        <p class="mb-1 text-primary">Status: <span class="text-danger">Ditolak!</span></p>
+                        <p class="mb-0 text-secondary">Akses ditolak</p>
+                    </div>
                 @elseif ($requestStatus === 'requested')
                     <div class="d-flex flex-column">
                         <p class="mb-1 text-primary">Status: <span class="text-warning">Sudah dibeli</span></p>
