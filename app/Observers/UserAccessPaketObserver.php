@@ -12,13 +12,15 @@ class UserAccessPaketObserver
             $newStatus = $userAccessPaket->status;
 
             $tryouts = $userAccessPaket->paket->tryouts;
-            foreach ($tryouts as $tryout) {
-                $userAccessTryout = $tryout->userAccess()->firstOrCreate(
-                    ['user_id' => $userAccessPaket->user_id],
-                    ['status' => $newStatus]
-                );
-                if ($userAccessTryout) {
-                    $userAccessTryout->update(['status' => $newStatus]);
+            if ($newStatus !== 'requested') {
+                foreach ($tryouts as $tryout) {
+                    $userAccessTryout = $tryout->userAccess()->firstOrCreate(
+                        ['user_id' => $userAccessPaket->user_id],
+                        ['status' => $newStatus]
+                    );
+                    if ($userAccessTryout) {
+                        $userAccessTryout->update(['status' => $newStatus]);
+                    }
                 }
             }
         }
