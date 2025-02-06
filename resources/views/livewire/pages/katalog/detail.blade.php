@@ -18,11 +18,16 @@ new class extends Component {
     public $isRequested = false;
     public $requestStatus;
     public $userTryout;
+    public $selectedPaketId;
 
     public $image;
 
-    public function mount($tryoutId, $paketId = null)
+    public function mount($tryoutId)
     {
+        if (session()->has('paket_id')) {
+            $this->selectedPaketId = session('paket_id');
+            session()->forget('paket_id');
+        }
         $this->tryout = Tryouts::where('id', $tryoutId)
             ->where('status', 'active')
             ->select(['id', 'nama', 'image', 'waktu', 'harga', 'batch_id', 'url', 'is_need_confirm', 'is_configurable', 'deskripsi'])

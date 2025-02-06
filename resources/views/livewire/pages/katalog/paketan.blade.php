@@ -44,6 +44,8 @@ new class extends Component {
             ])
             ->first();
 
+        session()->put('paket_id', $paketId);
+
         // Redirect jika paket tidak ditemukan
         if (!$this->paket) {
             return redirect()->route('katalog')->with('error', 'Paket tidak ditemukan.');
