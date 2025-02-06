@@ -128,21 +128,21 @@ class TryoutsTab extends Component
 
         $paketTryouts = $paketTryouts->map(function ($paket) {
             return (object) [
-                'tryout_id' => $paket->id,
-                'nama' => $paket->paket,
-                'tanggal' => $paket->created_at,
-                'image' => $paket->image,
+                'tryout_id' => $paket->id ?? null,
+                'nama' => $paket->paket ?? '',
+                'tanggal' => $paket->created_at ?? null,
+                'image' => $paket->image ?? '',
                 'batch_id' => null,
                 'waktu' => null,
                 'url' => $paket->url ?? '#',
-                'harga' => $paket->harga,
-                'status_tryout' => $paket->status,
+                'harga' => $paket->harga ?? 0,
+                'status_tryout' => $paket->status ?? null,
                 'status' => null,
                 'nilai' => null,
-                'question_count' => $paket->tryouts->count(),
+                'question_count' => $paket->tryouts ? $paket->tryouts->count() : 0,
                 'type' => 'paket',
-                'created_at' => $paket->created_at,
-                'is_need_confirm' => $paket->is_need_confirm,
+                'created_at' => $paket->created_at ?? null,
+                'is_need_confirm' => $paket->is_need_confirm ?? false,
             ];
         });
 
