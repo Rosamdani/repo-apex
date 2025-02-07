@@ -33,7 +33,7 @@ new class extends Component {
             'tryout_id' => $this->tryoutId,
         ]);
 
-        if ($this->userTryout->status->value == 'finished') {
+        if ($this->userTryout->status == TryoutStatus::FINISHED) {
             $this->checkExtrass();
         }
 

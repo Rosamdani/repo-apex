@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\TryoutStatus;
 use App\Helpers\ApiResponse;
 use App\Models\BatchTryouts;
 use App\Models\PaketTryout;
@@ -49,15 +50,23 @@ class TryoutController extends Controller
     {
         try {
             $tryout = Tryouts::where('status', 'active')->where('id', $id)->firstOrFail();
-            UserTryouts::updateOrCreate(
-                [
+
+            $userTryout = UserTryouts::where('tryout_id', $tryout->id)
+                ->where('user_id', Auth::user()->id)
+                ->first();
+
+            if (!$userTryout) {
+                UserTryouts::create([
                     'tryout_id' => $tryout->id,
-                    'user_id' => Auth::user()->id
-                ],
-                [
-                    'status' => 'started'
-                ]
-            );
+                    'user_id' => Auth::user()->id,
+                    'status' => 'started',
+                ]);
+            } elseif ($userTryout->status !== TryoutStatus::FINISHED) {
+                $userTryout->update([
+                    'status' => 'started',
+                ]);
+            }
+
 
             return view('tryouts.ujian', compact('tryout'));
         } catch (\Exception $e) {
