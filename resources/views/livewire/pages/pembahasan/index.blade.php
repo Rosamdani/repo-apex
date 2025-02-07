@@ -63,23 +63,23 @@ new class extends Component {
             ->whereIn('soal_id', $this->questions->pluck('id'))
             ->get();
 
-        foreach ($this->questions as $question) {
-            $answer = $answers->where('soal_id', $question->id)->first();
-            $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
-            $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
+        // foreach ($this->questions as $question) {
+        //     $answer = $answers->where('soal_id', $question->id)->first();
+        //     $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
+        //     $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
 
-            if ($answer) {
-                $this->questionStatus[$question->id] = match (true) {
-                    $answer->status === 'ragu-ragu' && $answer->jawaban !== $question->jawaban => 'salah',
-                    $answer->status === 'ragu-ragu' => 'ragu-ragu',
-                    $answer->jawaban === null => 'tidak dijawab',
-                    $answer->jawaban === $question->jawaban => 'benar',
-                    default => 'salah',
-                };
-            } else {
-                $this->questionStatus[$question->id] = 'tidak dijawab';
-            }
-        }
+        //     if ($answer) {
+        //         $this->questionStatus[$question->id] = match (true) {
+        //             $answer->status === 'ragu-ragu' && $answer->jawaban !== $question->jawaban => 'salah',
+        //             $answer->status === 'ragu-ragu' => 'ragu-ragu',
+        //             $answer->jawaban === null => 'tidak dijawab',
+        //             $answer->jawaban === $question->jawaban => 'benar',
+        //             default => 'salah',
+        //         };
+        //     } else {
+        //         $this->questionStatus[$question->id] = 'tidak dijawab';
+        //     }
+        // }
     }
 
     public function cacheData()
@@ -182,7 +182,7 @@ new class extends Component {
                 <p class="question-text fw-medium text-justify">{!! $questions[$currentQuestionIndex]->soal !!}</p>
                 <ul class="list-unstyled d-flex flex-column gap-2">
                     <!-- Pilihan Jawaban -->
-                    {{-- @foreach (['a', 'b', 'c', 'd', 'e'] as $option)
+                    @foreach (['a', 'b', 'c', 'd', 'e'] as $option)
                         <li>
                             <div
                                 class="form-check d-flex align-items-center gap-2 {{ $questions[$currentQuestionIndex]->jawaban === $option ? 'bg-success-200' : '' }} {{ $selectedAnswer[$questions[$currentQuestionIndex]->id] === $option ? ($questionStatus[$questions[$currentQuestionIndex]->id] === 'salah' ? ($isDoubtful[$questions[$currentQuestionIndex]->id] ? 'bg-warning-200' : 'bg-danger-200') : '') : 'bg-transparent' }}">
@@ -198,7 +198,7 @@ new class extends Component {
                                 </label>
                             </div>
                         </li>
-                    @endforeach --}}
+                    @endforeach
                 </ul>
 
                 <!-- Navigasi Soal -->
