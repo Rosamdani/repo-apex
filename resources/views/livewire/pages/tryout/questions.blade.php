@@ -274,13 +274,17 @@ new class extends Component {
                 </ul>
 
                 <!-- Navigasi Soal -->
-                <div class="d-flex justify-content-between mt-20 align-items-center">
-                    <button class="btn btn-secondary btn-sm d-flex align-items-center" wire:click="prevQuestion"
-                        {{ $currentQuestionIndex == 0 ? 'disabled' : '' }}>
-                        <iconify-icon icon="eva:arrow-ios-forward-fill" class="icon text-xl"
-                            style="transform: rotate(-180deg);"></iconify-icon>
-                        Sebelumnya
-                    </button>
+                <div class="d-flex justify-content-between mt-20 align-items-end">
+                    <div class="d-flex flex-column gap-4">
+                        <a type="button" class="text-primary-400" data-bs-toggle="modal"
+                            data-bs-target="#open-modal-nilai-normal" href="#">Nilai Normal</a>
+                        <button class="btn btn-secondary btn-sm d-flex align-items-center" wire:click="prevQuestion"
+                            {{ $currentQuestionIndex == 0 ? 'disabled' : '' }}>
+                            <iconify-icon icon="eva:arrow-ios-forward-fill" class="icon text-xl"
+                                style="transform: rotate(-180deg);"></iconify-icon>
+                            Sebelumnya
+                        </button>
+                    </div>
                     <div class="form-check d-flex align-items-center gap-2">
                         <input type="checkbox" id="raguRagu_{{ $questions[$currentQuestionIndex]->id }}"
                             wire:click="toggleDoubtful('{{ $questions[$currentQuestionIndex]->id }}')"
@@ -473,6 +477,29 @@ new class extends Component {
             </div>
         </div>
     </div>
+
+    <div class="modal fade modal-xl" x-show="showModalData" id="open-modal-nilai-normal" tabindex="-1"
+        role="dialog" aria-labelledby="open-modal-nilai-normal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nilai Normal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body overflow-y-auto">
+                    <img src="{{ asset('assets/images/nilai-normal.jpg') }}" class="img-fluid" alt="nilai normal">
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 @push('style')
     <style>
