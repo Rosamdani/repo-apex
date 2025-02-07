@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tryout_extras', function (Blueprint $table) {
             $table->id();
-            $table->morphs('extraable');
+            $table->uuidMorphs('extraable');
             $table->string('type');
             $table->string('title')->nullable();
             $table->string('data');
