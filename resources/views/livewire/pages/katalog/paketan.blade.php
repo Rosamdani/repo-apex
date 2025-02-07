@@ -102,6 +102,8 @@ new class extends Component {
             // Set status dan tampilkan pesan sukses
             $this->isRequested = true;
             session()->flash('message', 'Bukti berhasil dikirim.');
+            // Refresh halaman
+            return redirect()->refresh();
         } catch (\Exception $e) {
             // Tangani error
             session()->flash('error', 'Terjadi kesalahan saat mengirim bukti');

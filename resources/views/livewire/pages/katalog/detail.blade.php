@@ -112,6 +112,8 @@ new class extends Component {
         session()->flash('message', 'Bukti pembayaran berhasil dikirim.');
 
         $this->isRequested = true;
+
+        return redirect()->refresh();
     }
 }; ?>
 
