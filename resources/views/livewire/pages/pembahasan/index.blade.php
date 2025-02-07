@@ -54,7 +54,6 @@ new class extends Component {
 
     public function initializeQuestionsAndAnswers()
     {
-        dd($this->userTryout->question_order);
         $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
         $this->questions = $this->questions->sortBy(fn($question) => array_search($question->id, $this->userTryout->question_order))->values();
 
@@ -63,6 +62,8 @@ new class extends Component {
         $answers = \App\Models\UserAnswer::where('user_id', auth()->id())
             ->whereIn('soal_id', $this->questions->pluck('id'))
             ->get();
+
+        dd($this->questions);
 
         foreach ($this->questions as $question) {
             $answer = $answers->where('soal_id', $question->id)->first();
