@@ -78,7 +78,6 @@ class TryoutsTab extends Component
             }
         });
 
-        dd($this->paketTryout);
 
         // Filter berdasarkan tab
         $this->paketTryout = $this->paketTryout->filter(function ($paket) {
@@ -97,6 +96,8 @@ class TryoutsTab extends Component
                 return $userTryoutStatuses->every(fn($status) => $status === null || $status === 'not_started');
             }
         });
+
+        dd($this->paketTryout);
 
 
         return view('livewire.tryouts-tab');
