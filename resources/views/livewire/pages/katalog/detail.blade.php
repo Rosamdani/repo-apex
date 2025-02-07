@@ -19,6 +19,7 @@ new class extends Component {
     public $requestStatus;
     public $userTryout;
     public $selectedPaketId;
+    public $tryoutIsPaket = false;
 
     public $image;
 
@@ -44,6 +45,7 @@ new class extends Component {
         $this->testimonials = Testimoni::where('tryout_id', $tryoutId)->where('visibility', 'active')->get();
 
         if ($this->tryout->tryoutHasPakets->count() > 0) {
+            $this->tryoutIsPaket = true;
             $paketId = request('paket_id') ?? $this->selectedPaketId;
 
             if ($paketId) {
@@ -249,14 +251,16 @@ new class extends Component {
                         <p class="mb-0 text-secondary">Menunggu konfirmasi admin...</p>
                     </div>
                 @else
-                    <a href="{{ $tryout->url }}" target="_blank"
-                        class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
-                        Join Grup WA
-                    </a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#konfirmasiAdminModal"
-                        class="btn border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">
-                        Daftar Sekarang
-                    </a>
+                    @if (!$tryoutIsPaket)
+                        <a href="{{ $tryout->url }}" target="_blank"
+                            class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
+                            Join Grup WA
+                        </a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#konfirmasiAdminModal"
+                            class="btn border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">
+                            Daftar Sekarang
+                        </a>
+                    @endif
                 @endif
 
             </div>
