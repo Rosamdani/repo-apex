@@ -333,7 +333,7 @@ new class extends Component {
                         @endphp
                         <button class="col btn mb-1 shadow-sm min-w-50-px {{ $buttonClass }}"
                             wire:click="jumpToQuestion({{ $index }})">
-                            {{ $loop->iteration }}
+                            {{ array_search($questions[$index]->id, $userTryout->question_order) + 1 }}
                         </button>
                     @endforeach
                 </div>
