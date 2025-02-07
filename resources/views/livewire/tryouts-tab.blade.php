@@ -92,7 +92,7 @@
                                 <div class="d-flex flex-column">
                                     <span class="text-sm fw-semibold text-primary-600">Paket Tryout</span>
                                     <a href="{{ route('katalog.paketan.detail', ['id' => $item->id]) }}"
-                                        class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
+                                        class="text-xl fw-bold text-primary-light">{{ $item->paket }}</a>
                                     <div
                                         class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
                                         <span class="text-sm text-secondary-light fw-medium">Harga:
