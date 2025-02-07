@@ -61,7 +61,6 @@ class TryoutsTab extends Component
                 }
             });
 
-        dd($this->tryouts);
         $this->paketTryout = PaketTryout::with(['tryouts.userTryouts' => function ($query) use ($userId) {
             $query->where('user_id', $userId); // Ambil hanya user_tryouts milik user tertentu
         }])
@@ -78,6 +77,8 @@ class TryoutsTab extends Component
                 return true;
             }
         });
+
+        dd($this->paketTryout);
 
         // Filter berdasarkan tab
         $this->paketTryout = $this->paketTryout->filter(function ($paket) {
