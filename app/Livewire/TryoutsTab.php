@@ -26,6 +26,11 @@ class TryoutsTab extends Component
         $userId = Auth::id();
 
         $this->tryouts = Tryouts::with('batch') // Memuat relasi questions
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('tryout_has_pakets')
+                    ->whereColumn('tryouts.id', '=', 'tryout_has_pakets.tryout_id');
+            })
             ->leftJoin('user_tryouts', function ($join) use ($userId) {
                 $join->on('tryouts.id', '=', 'user_tryouts.tryout_id')
                     ->where('user_tryouts.user_id', '=', $userId);
