@@ -97,6 +97,21 @@ class TryoutsTab extends Component
             }
         });
 
+        $this->paketTryout = $this->paketTryout->filter(function ($paket) use ($userId) {
+            return \App\Models\UserAccessPaket::where('user_id', $userId)
+                ->where('paket_id', $paket->id)
+                ->where('status', 'accepted')
+                ->exists();
+        });
+
+        $this->tryouts = $this->tryouts->filter(function ($tryout) use ($userId) {
+            return \App\Models\UserAccessTryouts::where('user_id', $userId)
+                ->where('tryout_id', $tryout->tryout_id)
+                ->where('status', 'accepted')
+                ->exists();
+        });
+
+
         return view('livewire.tryouts-tab');
     }
 }
