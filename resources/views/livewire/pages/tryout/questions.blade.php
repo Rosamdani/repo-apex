@@ -520,7 +520,7 @@ new class extends Component {
     @if (count($extras) > 0)
         <div class="modal-backdrop fade show"></div>
         <!-- Modal -->
-        <div class="modal fade show" id="extrasModal" tabindex="-1" aria-labelledby="extrasModalLabel"
+        <div class="modal fade show modal-xl" id="extrasModal" tabindex="-1" aria-labelledby="extrasModalLabel"
             aria-modal="true" role="dialog" style="display: block;">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -530,7 +530,7 @@ new class extends Component {
                         <div class="mb-4">
                             @foreach ($extras as $extra)
                                 @if ($extra['type'] === 'poster')
-                                    <img src="{{ asset($extra['data']) }}" alt="Poster"
+                                    <img src="{{ asset('storage/' . $extra['data']) }}" alt="Poster"
                                         class="img-fluid rounded mb-3">
                                 @endif
                             @endforeach
