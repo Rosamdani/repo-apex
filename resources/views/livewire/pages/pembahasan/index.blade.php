@@ -32,9 +32,7 @@ new class extends Component {
             'tryout_id' => $this->tryoutId,
         ]);
 
-        $this->watermarkText = substr(auth()->user()->name, 0, 15);
-
-        $cacheKey = "tryout_{$this->userTryout->id}{auth()->id()}";
+        $cacheKey = "tryout_{$this->userTryout->id}";
 
         if (Cache::has($cacheKey)) {
             $cacheData = Cache::get($cacheKey);
@@ -63,23 +61,23 @@ new class extends Component {
             ->whereIn('soal_id', $this->questions->pluck('id'))
             ->get();
 
-        // foreach ($this->questions as $question) {
-        //     $answer = $answers->where('soal_id', $question->id)->first();
-        //     $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
-        //     $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
+        foreach ($this->questions as $question) {
+            $answer = $answers->where('soal_id', $question->id)->first();
+            $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
+            $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
 
-        //     if ($answer) {
-        //         $this->questionStatus[$question->id] = match (true) {
-        //             $answer->status === 'ragu-ragu' && $answer->jawaban !== $question->jawaban => 'salah',
-        //             $answer->status === 'ragu-ragu' => 'ragu-ragu',
-        //             $answer->jawaban === null => 'tidak dijawab',
-        //             $answer->jawaban === $question->jawaban => 'benar',
-        //             default => 'salah',
-        //         };
-        //     } else {
-        //         $this->questionStatus[$question->id] = 'tidak dijawab';
-        //     }
-        // }
+            if ($answer) {
+                $this->questionStatus[$question->id] = match (true) {
+                    $answer->status === 'ragu-ragu' && $answer->jawaban !== $question->jawaban => 'salah',
+                    $answer->status === 'ragu-ragu' => 'ragu-ragu',
+                    $answer->jawaban === null => 'tidak dijawab',
+                    $answer->jawaban === $question->jawaban => 'benar',
+                    default => 'salah',
+                };
+            } else {
+                $this->questionStatus[$question->id] = 'tidak dijawab';
+            }
+        }
     }
 
     public function cacheData()
