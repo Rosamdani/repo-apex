@@ -112,8 +112,6 @@ new class extends Component {
         session()->flash('message', 'Bukti pembayaran berhasil dikirim.');
 
         $this->isRequested = true;
-
-        return redirect()->refresh();
     }
 }; ?>
 
@@ -246,7 +244,7 @@ new class extends Component {
                         <p class="mb-1 text-primary">Status: <span class="text-danger">Ditolak!</span></p>
                         <p class="mb-0 text-secondary">Akses ditolak</p>
                     </div>
-                @elseif ($requestStatus === 'requested')
+                @elseif ($requestStatus === 'requested' || $isRequested)
                     <div class="d-flex flex-column">
                         <p class="mb-1 text-primary">Status: <span class="text-warning">Sudah dibeli</span></p>
                         <p class="mb-0 text-secondary">Menunggu konfirmasi admin...</p>

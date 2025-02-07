@@ -103,7 +103,7 @@ new class extends Component {
             $this->isRequested = true;
             session()->flash('message', 'Bukti berhasil dikirim.');
             // Refresh halaman
-            return redirect()->refresh();
+            $this->requestStatus = true;
         } catch (\Exception $e) {
             // Tangani error
             session()->flash('error', 'Terjadi kesalahan saat mengirim bukti');
@@ -229,7 +229,7 @@ new class extends Component {
                     <div class="d-flex flex-column">
                         <p class="mb-1 text-primary">Status: <span class="text-warning">Akses diterima</span></p>
                     </div>
-                @elseif ($requestStatus === 'requested')
+                @elseif ($requestStatus === 'requested' || $isRequested)
                     <div class="d-flex flex-column">
                         <p class="mb-1 text-primary">Status: <span class="text-warning">Sudah dibeli</span></p>
                         <p class="mb-0 text-secondary">Menunggu konfirmasi admin...</p>
