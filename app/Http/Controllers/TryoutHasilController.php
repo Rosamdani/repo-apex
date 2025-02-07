@@ -52,7 +52,7 @@ class TryoutHasilController extends Controller
     public function pembahasanByCategory($id, $categoryId)
     {
         $tryout = Tryouts::find($id);
-        $userTryout = UserTryouts::where('tryout_id', $id)->where('bidang_id', $categoryId)->where('user_id', Auth::user()->id)->first();
+        $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
         $bidang = BidangTryouts::find($categoryId);
         return view('tryouts.pembahasan-by-category', compact('userTryout', 'bidang', 'tryout'));
     }
