@@ -180,19 +180,21 @@ new class extends Component {
                         </div>
                         <span class="text-xl">{{ $tryout->waktu }} Menit</span>
                     </li>
-                    <li
-                        class="d-flex align-items-center flex-wrap justify-content-between text-sm text-secondary-light mb-1 border-start-0 border-end-0 border-bottom-0 border py-10">
-                        <div class="d-flex align-items-center flex-nowrap gap-1">
-                            <iconify-icon icon="mdi:currency-usd"
-                                class="text-primary-600 icon me-1 text-xl"></iconify-icon>
-                            <span class="text-xl">Harga:</span>
-                        </div>
-                        @if ($tryout->harga && $tryout->harga > 0)
-                            <span class="text-xl">Rp. {{ number_format($tryout->harga, 0, ',', '.') }}</span>
-                        @else
-                            <span class="text-xl">Gratis</span>
-                        @endif
-                    </li>
+                    @if (!$tryoutIsPaket)
+                        <li
+                            class="d-flex align-items-center flex-wrap justify-content-between text-sm text-secondary-light mb-1 border-start-0 border-end-0 border-bottom-0 border py-10">
+                            <div class="d-flex align-items-center flex-nowrap gap-1">
+                                <iconify-icon icon="mdi:currency-usd"
+                                    class="text-primary-600 icon me-1 text-xl"></iconify-icon>
+                                <span class="text-xl">Harga:</span>
+                            </div>
+                            @if ($tryout->harga && $tryout->harga > 0)
+                                <span class="text-xl">Rp. {{ number_format($tryout->harga, 0, ',', '.') }}</span>
+                            @else
+                                <span class="text-xl">Gratis</span>
+                            @endif
+                        </li>
+                    @endif
                     <li
                         class="d-flex align-items-center flex-wrap justify-content-between text-sm text-secondary-light mb-1 border-start-0 border-end-0 border-bottom-0 border py-10">
                         <div class="d-flex align-items-center flex-nowrap gap-1">
