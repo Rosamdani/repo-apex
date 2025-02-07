@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\PaketTryout;
 use App\Models\Tryouts;
 use App\Models\UserTryouts;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ class TryoutsTab extends Component
     public $tab;
     public $tryouts;
     public $activeTab;
+    public $paketTryout;
 
     public function mount($tab)
     {
@@ -36,7 +38,7 @@ class TryoutsTab extends Component
                     ->where('user_tryouts.user_id', '=', $userId);
             })
             ->select([
-                'tryouts.id as tryout_id',    // Kolom tryouts.id dengan alias
+                'tryouts.id as tryout_id',
                 'tryouts.nama',
                 'tryouts.tanggal',
                 'tryouts.image',
@@ -58,6 +60,42 @@ class TryoutsTab extends Component
                     return $tryout->status === 'finished';
                 }
             });
+
+        $this->paketTryout = PaketTryout::with(['tryouts.userTryouts' => function ($query) use ($userId) {
+            $query->where('user_id', $userId); // Ambil hanya user_tryouts milik user tertentu
+        }])
+            ->where('status', 'active')
+            ->get();
+
+        // Filter berdasarkan kebutuhan konfirmasi
+        $this->paketTryout = $this->paketTryout->filter(function ($paket) use ($userId) {
+            if ($paket->is_need_confirm) {
+                $access = \App\Models\UserAccessPaket::where('user_id', $userId)
+                    ->where('paket_id', $paket->id)
+                    ->first();
+                return $access && $access->status === 'accepted';
+            } else {
+                return true;
+            }
+        });
+
+        // Filter berdasarkan tab
+        $this->paketTryout = $this->paketTryout->filter(function ($paket) {
+            $userTryoutStatuses = collect($paket->tryouts)->flatMap(function ($tryout) {
+                return collect($tryout->userTryouts)->pluck('status.value');
+            })->unique();
+
+            if ($this->tab === 'finished') {
+                // Semua tryout dalam paket harus selesai
+                return $userTryoutStatuses->every(fn($status) => $status === 'finished');
+            } elseif ($this->tab === 'started') {
+                // Salah satu tryout dalam paket sedang dikerjakan
+                return $userTryoutStatuses->contains('started') || $userTryoutStatuses->contains('paused');
+            } else {
+                // Semua tryout dalam paket belum dimulai
+                return $userTryoutStatuses->every(fn($status) => $status === null || $status === 'not_started');
+            }
+        });
 
 
         return view('livewire.tryouts-tab');

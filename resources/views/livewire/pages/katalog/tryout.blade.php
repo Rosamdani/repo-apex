@@ -100,7 +100,7 @@ new class extends Component {
 }; ?>
 
 <div class="row">
-    <div class="col-12 mb-36">
+    {{-- <div class="col-12 mb-36">
         <div class="mb-16 mt-8 d-flex flex-wrap justify-content-between gap-16">
             <h6 class="mb-0">{{ __('Trending Saat Ini') }}</h6>
         </div>
@@ -169,7 +169,7 @@ new class extends Component {
                 @endif
             @endforeach
         </div>
-    </div>
+    </div> --}}
     <div class="col-12 mb-36">
         <div class="mb-16 mt-8 d-flex flex-wrap justify-content-between gap-16">
             <h6 class="mb-0">{{ __('Semua Tryout') }}</h6>
@@ -207,8 +207,7 @@ new class extends Component {
                                     <div class="d-flex align-items-center flex-column align-items-stretch gap-8 mt-10"
                                         style="margin-top: auto;">
                                         @if ($item->status == 'finished')
-                                            <a href="{{ route('tryouts.hasil.index', $item->tryout_id) }}"
-                                                wire:navigate
+                                            <a href="{{ route('tryouts.hasil.index', $item->tryout_id) }}" wire:navigate
                                                 class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Hasil</a>
                                             <a href="{{ route('tryouts.hasil.pembahasan', $item->tryout_id) }}"
                                                 wire:navigate
