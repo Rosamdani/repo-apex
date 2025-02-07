@@ -233,7 +233,7 @@ new class extends Component {
                                     <!-- Modal Body -->
                                     <div
                                         class="modal-body max-h-612-px overflow-auto d-flex flex-column align-items-center">
-                                        @forelse ($questions[$currentQuestionIndex]->image_pembahasan as $image)
+                                        @forelse ($questions[$currentQuestionIndex]->image_pembahasan ?? [] as $image)
                                             <img src="{{ route('private.image', ['path' => $image]) }}"
                                                 class="img-fluid mb-2" alt="Pembahasan Soal">
                                         @empty
