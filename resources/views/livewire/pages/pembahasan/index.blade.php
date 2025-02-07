@@ -317,7 +317,6 @@ new class extends Component {
         <div class="card radius-8 border-0 mb-3">
             <div class="card-body">
                 <div class="grid justify-content-center grid-cols-1 g-2 mb-2">
-                    @dd($questions)
                     @foreach ($questions as $index => $question)
                         @php
                             $buttonClass =
