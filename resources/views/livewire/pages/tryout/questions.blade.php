@@ -18,6 +18,7 @@ new class extends Component {
     public $tanpaRagu = 0;
     public $masihRagu = 0;
     public $dijawab = 0;
+    public $extras = [];
 
     public function mount($tryoutId)
     {
@@ -29,6 +30,10 @@ new class extends Component {
             'user_id' => auth()->id(),
             'tryout_id' => $this->tryoutId,
         ]);
+
+        if ($this->userTryout->status->value == 'finished') {
+            $this->checkExtrass();
+        }
 
         $cacheKey = "tryout_{$this->userTryout->id}";
 
@@ -183,7 +188,7 @@ new class extends Component {
     {
         $this->saveToDatabase();
         $this->userTryout->update(['status' => 'paused']);
-        return redirect()->route('index')->with('success', 'Tryout dijeda!');
+        $this->returnBack();
     }
 
     #[On('end')]
@@ -191,7 +196,20 @@ new class extends Component {
     {
         $this->saveToDatabase();
         $this->userTryout->update(['status' => 'finished']);
+        $this->checkExtrass();
+    }
+
+    public function returnBack()
+    {
         return redirect()->route('index')->with('success', 'Tryout selesai!');
+    }
+
+    public function checkExtrass()
+    {
+        $this->extras = $this->tryout->extras->filter(fn($extra) => in_array('finished_tryout', $extra->display_on));
+        if ($this->extras->count() === 0) {
+            $this->returnBack();
+        }
     }
 
     public function saveToDatabase()
@@ -478,8 +496,8 @@ new class extends Component {
         </div>
     </div>
 
-    <div class="modal fade modal-xl" x-show="showModalData" id="open-modal-nilai-normal" tabindex="-1"
-        role="dialog" aria-labelledby="open-modal-nilai-normal" aria-hidden="true">
+    <div class="modal fade modal-xl" id="open-modal-nilai-normal" tabindex="-1" role="dialog"
+        aria-labelledby="open-modal-nilai-normal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -498,6 +516,48 @@ new class extends Component {
             </div>
         </div>
     </div>
+
+    @if (count($extras) > 0)
+        <div class="modal-backdrop fade show"></div>
+        <!-- Modal -->
+        <div class="modal fade show" id="extrasModal" tabindex="-1" aria-labelledby="extrasModalLabel"
+            aria-modal="true" role="dialog" style="display: block;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <!-- Display posters -->
+                        <div class="mb-4">
+                            @foreach ($extras as $extra)
+                                @if ($extra['type'] === 'poster')
+                                    <img src="{{ asset($extra['data']) }}" alt="Poster"
+                                        class="img-fluid rounded mb-3">
+                                @endif
+                            @endforeach
+                        </div>
+
+                        <!-- Display buttons -->
+                        <div class="d-flex">
+                            @foreach ($extras as $extra)
+                                @if ($extra['type'] === 'button')
+                                    <a href="{{ $extra['data'] }}" target="_blank" class="btn btn-primary me-2">
+                                        {{ $extra['title'] }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" wire:click="returnBack"
+                            data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
 
 
 </div>

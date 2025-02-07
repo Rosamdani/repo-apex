@@ -46,7 +46,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
             var informasiModal = new bootstrap.Modal(document.getElementById('informasiModal'));
             informasiModal.show();
         });
