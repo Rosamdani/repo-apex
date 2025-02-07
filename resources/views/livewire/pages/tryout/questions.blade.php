@@ -520,12 +520,12 @@ new class extends Component {
     @if (count($extras) > 0)
         <div class="modal-backdrop fade show"></div>
         <!-- Modal -->
-        <div class="modal fade show modal-xl" id="extrasModal" tabindex="-1" aria-labelledby="extrasModalLabel"
-            aria-modal="true" role="dialog" style="display: block;">
+        <div class="modal fade show modal-lg max-h-400-px" id="extrasModal" tabindex="-1"
+            aria-labelledby="extrasModalLabel" aria-modal="true" role="dialog" style="display: block;">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <!-- Modal Body -->
-                    <div class="modal-body">
+                    <div class="modal-body overflow-y-auto">
                         <!-- Display posters -->
                         <div class="mb-4">
                             @foreach ($extras as $extra)
@@ -536,6 +536,11 @@ new class extends Component {
                             @endforeach
                         </div>
 
+
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer d-flex justify-content-between">
                         <!-- Display buttons -->
                         <div class="d-flex">
                             @foreach ($extras as $extra)
@@ -546,10 +551,6 @@ new class extends Component {
                                 @endif
                             @endforeach
                         </div>
-                    </div>
-
-                    <!-- Modal Footer -->
-                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" wire:click="returnBack"
                             data-bs-dismiss="modal">Tutup</button>
                     </div>
