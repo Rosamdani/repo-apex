@@ -104,7 +104,6 @@ new class extends Component {
             'image' => $filePath,
             'catatan' => 'Menunggu konfirmasi',
         ]);
-        dd($userAccessTryout);
 
         auth()
             ->user()
@@ -218,7 +217,7 @@ new class extends Component {
                         <span class="text-xl">{{ $tryout->userTryouts->count() }}</span>
                     </li>
                 </ul>
-
+                @dd($requestStatus)
                 @if ($requestStatus === 'accepted' || !$tryout->is_need_confirm)
                     @if ($userTryout?->status?->value == 'finished')
                         <a href="{{ route('tryouts.hasil.index', $tryout->id) }}" wire:navigate
