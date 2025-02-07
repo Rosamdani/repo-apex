@@ -153,6 +153,7 @@ class TryoutsResource extends Resource
                                     ->live(),
                                 Forms\Components\FileUpload::make('poster_data')
                                     ->label('Gambar Poster')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg'])
                                     ->visible(fn(Get $get): bool => $get('type') === 'poster')
                                     ->disabled(fn(Get $get): bool => $get('type') !== 'poster')
                                     ->required(),
@@ -198,11 +199,13 @@ class TryoutsResource extends Resource
                                     $data['button_data'] = $data['data'];
                                 }
 
+
                                 return $data;
                             })
                             ->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
                                 $data['data'] = $data['poster_data'] ?? $data['button_data'] ?? null;
 
+                                dd($data);
                                 return $data;
                             })
                             ->columns(1),
