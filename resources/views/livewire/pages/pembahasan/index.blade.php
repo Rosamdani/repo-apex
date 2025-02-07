@@ -313,7 +313,7 @@ new class extends Component {
         </div>
     </div>
 
-    <div class="col-12">
+    {{-- <div class="col-12">
         <div class="card radius-8 border-0 mb-3">
             <div class="card-body">
                 <div class="grid justify-content-center grid-cols-1 g-2 mb-2">
@@ -360,7 +360,7 @@ new class extends Component {
 
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 @push('style')
     <style>
