@@ -97,7 +97,6 @@ class TryoutsTab extends Component
             }
         });
 
-        dd($this->paketTryout);
 
 
         return view('livewire.tryouts-tab');
