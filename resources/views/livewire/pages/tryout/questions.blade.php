@@ -527,7 +527,7 @@ new class extends Component {
                     <!-- Modal Body -->
                     <div class="modal-body">
                         <!-- Display posters -->
-                        <div class="mb-4 max-h-612-px overflow-y-auto">
+                        <div class="mb-4 overflow-y-auto" style="max-height: 80vh;">
                             @foreach ($extras as $extra)
                                 @if ($extra['type'] === 'poster')
                                     <img src="{{ asset('storage/' . $extra['data']) }}" alt="Poster"
