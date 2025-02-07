@@ -239,7 +239,7 @@ new class extends Component {
                     </div>
                 @else
                     @if ($paket->is_need_confirm)
-                        <a href="{{ $paket->url }}" target="_blank"
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#beliSekarang"
                             class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
                             Beli Sekarang
                         </a>
@@ -293,6 +293,48 @@ new class extends Component {
             </div>
         </div>
     @endif
+
+    <div wire:ignore.self class="modal fade modal-lg" id="beliSekarang" tabindex="-1"
+        aria-labelledby="beliSekarangLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="beliSekarangLabel">Cara pembelian</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ol class="list-decimal pl-6 space-y-4">
+                        <li>
+                            <p class="font-semibold">Lakukan Transfer Pembayaran</p>
+                            <p>Kirim pembayaran ke rekening berikut:</p>
+                            <div class="mt-2 bg-gray-100 p-4 rounded-lg">
+                                <p>Bank: <strong class="font-semibold">BCA</strong></p>
+                                <p>No. Rekening: <strong class="font-semibold">3090701168</strong></p>
+                                <p>Atas Nama: <strong class="font-semibold">APEX MEDIKA EDUKASI CV
+                                    </strong></p>
+                            </div>
+                        </li>
+
+                        <li>
+                            <p class="font-semibold">Konfirmasi ke Admin</p>
+                            <p>Setelah transfer, klik tombol <strong>konfigurasi admin</strong></p>
+
+                        </li>
+
+                        <li>
+                            <p class="font-semibold">Upload Bukti Pembayaran</p>
+                            <p>Lampirkan bukti transfer melalui konfirmasi</p>
+                        </li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 @push('script')
     <script>
