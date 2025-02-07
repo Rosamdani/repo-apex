@@ -12,6 +12,7 @@ class SoalTryout extends Model
 {
     use HasFactory;
     protected $keyType = 'string';
+    protected $table = 'soal_tryouts';
     public $incrementing = false;
 
     protected static function boot()
