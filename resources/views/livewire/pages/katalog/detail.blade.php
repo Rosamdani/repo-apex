@@ -43,9 +43,9 @@ new class extends Component {
 
         $this->testimonials = Testimoni::where('tryout_id', $tryoutId)->where('visibility', 'active')->get();
 
+        dd($this->tryout->tryoutHasPakets);
         if ($this->tryout->tryoutHasPakets) {
             $paketId = request('paket_id') ?? $this->selectedPaketId;
-            dd($paketId);
 
             if ($paketId) {
                 $request = UserAccessPaket::select('status')
