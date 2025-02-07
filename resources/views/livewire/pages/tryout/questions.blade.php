@@ -299,7 +299,7 @@ new class extends Component {
                 </ul>
 
                 <!-- Navigasi Soal -->
-                <div class="d-flex justify-content-between mt-20 align-items-end">
+                <div class="d-flex justify-content-between flex-wrapmt-20 align-items-end">
                     <div class="d-flex flex-column gap-4">
                         <a type="button" class="text-primary-400" data-bs-toggle="modal"
                             data-bs-target="#open-modal-nilai-normal" href="#">Nilai Normal</a>

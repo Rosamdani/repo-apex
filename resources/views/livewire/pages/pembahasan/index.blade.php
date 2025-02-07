@@ -202,7 +202,7 @@ new class extends Component {
                 </ul>
 
                 <!-- Navigasi Soal -->
-                <div class="d-flex justify-content-between mt-20 align-items-center">
+                <div class="d-flex justify-content-between flex-wrap mt-20 align-items-center">
                     <button class="btn btn-secondary btn-sm d-flex align-items-center" wire:click="prevQuestion"
                         {{ $currentQuestionIndex == 0 ? 'disabled' : '' }}>
                         <iconify-icon icon="eva:arrow-ios-forward-fill" class="icon text-xl"
