@@ -43,8 +43,7 @@ new class extends Component {
 
         $this->testimonials = Testimoni::where('tryout_id', $tryoutId)->where('visibility', 'active')->get();
 
-        dd($this->tryout->tryoutHasPakets->count());
-        if ($this->tryout->tryoutHasPakets) {
+        if ($this->tryout->tryoutHasPakets->count() > 0) {
             $paketId = request('paket_id') ?? $this->selectedPaketId;
 
             if ($paketId) {
