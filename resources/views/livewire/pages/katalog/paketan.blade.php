@@ -34,7 +34,7 @@ new class extends Component {
             ->select(['id', 'paket', 'image', 'harga', 'url', 'is_need_confirm', 'deskripsi'])
             ->with([
                 'tryouts' => function ($query) use ($userId) {
-                    $query->select(['id', 'nama', 'tanggal', 'waktu', 'status'])->with([
+                    $query->select(['id', 'nama', 'tanggal', 'waktu', 'status', 'image'])->with([
                         'batch:id,nama',
                         'userTryouts' => function ($subQuery) use ($userId) {
                             $subQuery->where('user_id', $userId)->select(['id', 'user_id', 'tryout_id', 'status']);
@@ -144,13 +144,16 @@ new class extends Component {
                                             class="text-xl fw-bold text-primary-light">{{ $item->nama }}</a>
                                         <div
                                             class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
-                                            <span class="text-sm text-secondary-light fw-medium">Harga:
-                                                @if ($item->harga && $item->harga > 0)
-                                                    <span class="text-sm fw-semibold text-primary-600">Rp
-                                                        {{ number_format($item->harga, 0, ',', '.') }}</span>
-                                                @else
-                                                    <span class="text-sm fw-semibold text-primary-600">Gratis</span>
-                                                @endif
+                                            <span class="text-sm text-secondary-light fw-medium">Durasi:
+                                                <span
+                                                    class="text-sm fw-semibold text-primary-600">{{ $item->waktu }}</span>
+                                            </span>
+                                        </div>
+                                        <div
+                                            class="mt-10 d-flex align-items-center justify-content-between gap-8 flex-wrap">
+                                            <span class="text-sm text-secondary-light fw-medium">Jumlah Soal:
+                                                <span
+                                                    class="text-sm fw-semibold text-primary-600">{{ $item->questions->count() }}</span>
                                             </span>
                                         </div>
                                     </div>
