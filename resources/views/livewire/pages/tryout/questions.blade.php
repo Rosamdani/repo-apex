@@ -1,6 +1,7 @@
 <?php
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Cache;
+use App\Enum\TryoutStatus;
 
 new class extends Component {
     protected $listeners = ['saveTime', 'handleKeyPress', 'pauseTryout', 'endTryout'];
@@ -190,7 +191,8 @@ new class extends Component {
     public function pauseTryout()
     {
         $this->saveToDatabase();
-        $this->userTryout->update(['status' => 'paused']);
+        $this->userTryout->status = TryoutStatus::PAUSED;
+        $this->userTryout->save();
         $this->returnBack();
     }
 
@@ -198,7 +200,8 @@ new class extends Component {
     public function endTryout()
     {
         $this->saveToDatabase();
-        \App\Models\UserTryouts::where('id', $this->userTryout->id)->update(['status' => 'finished']);
+        $this->userTryout->status = TryoutStatus::FINISHED;
+        $this->userTryout->save();
         $this->checkExtrass();
     }
 
