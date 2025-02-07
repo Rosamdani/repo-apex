@@ -202,10 +202,9 @@ class TryoutsResource extends Resource
 
                                 return $data;
                             })
-                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
+                            ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
                                 $data['data'] = $data['poster_data'] ?? $data['button_data'] ?? null;
 
-                                dd($data);
                                 return $data;
                             })
                             ->columns(1),
