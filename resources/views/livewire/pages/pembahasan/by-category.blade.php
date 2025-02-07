@@ -204,7 +204,7 @@ new class extends Component {
                 </ul>
 
                 <!-- Navigasi Soal -->
-                <div class="d-flex justify-content-between mt-20 align-items-center">
+                <div class="d-flex justify-content-between flex-wrap gap-2 mt-20 align-items-center">
                     <button class="btn btn-secondary btn-sm d-flex align-items-center" wire:click="prevQuestion"
                         {{ $currentQuestionIndex == 0 ? 'disabled' : '' }}>
                         <iconify-icon icon="eva:arrow-ios-forward-fill" class="icon text-xl"
@@ -337,7 +337,7 @@ new class extends Component {
                         </button>
                     @endforeach
                 </div>
-                <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+                <div class="d-flex justify-content-center flex-wrap align-items-center gap-2 mt-3">
                     <div class="d-flex align-items-center gap-2">
                         <span class="w-12-px h-8-px rounded-pill bg-success-400"></span>
                         <span class="text-sm fw-semibold text-neutral-800">Benar</span>
