@@ -85,6 +85,7 @@
             @if (!$paketTryout->isEmpty())
                 @foreach ($paketTryout as $item)
                     @if ($item->status == 'active')
+                        @dd($item)
                         <div class="col-xxl-3 col-md-4 col-sm-6">
                             <div class="nft-card h-100 bg-base radius-16 overflow-hidden d-flex flex-column">
                                 <div class="radius-16 overflow-hidden">
