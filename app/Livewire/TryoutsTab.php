@@ -61,13 +61,13 @@ class TryoutsTab extends Component
                 }
             });
 
+        dd($this->tryouts);
         $this->paketTryout = PaketTryout::with(['tryouts.userTryouts' => function ($query) use ($userId) {
             $query->where('user_id', $userId); // Ambil hanya user_tryouts milik user tertentu
         }])
             ->where('status', 'active')
             ->get();
 
-        // Filter berdasarkan kebutuhan konfirmasi
         $this->paketTryout = $this->paketTryout->filter(function ($paket) use ($userId) {
             if ($paket->is_need_confirm) {
                 $access = \App\Models\UserAccessPaket::where('user_id', $userId)
