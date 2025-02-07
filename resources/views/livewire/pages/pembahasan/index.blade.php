@@ -63,8 +63,6 @@ new class extends Component {
             ->whereIn('soal_id', $this->questions->pluck('id'))
             ->get();
 
-        dd($this->questions);
-
         foreach ($this->questions as $question) {
             $answer = $answers->where('soal_id', $question->id)->first();
             $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
@@ -319,6 +317,7 @@ new class extends Component {
         <div class="card radius-8 border-0 mb-3">
             <div class="card-body">
                 <div class="grid justify-content-center grid-cols-1 g-2 mb-2">
+                    @dd($questions)
                     @foreach ($questions as $index => $question)
                         @php
                             $buttonClass =
