@@ -54,6 +54,7 @@ new class extends Component {
 
     public function initializeQuestionsAndAnswers()
     {
+        dd($this->userTryout->question_order);
         $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
         $this->questions = $this->questions->sortBy(fn($question) => array_search($question->id, $this->userTryout->question_order))->values();
 
