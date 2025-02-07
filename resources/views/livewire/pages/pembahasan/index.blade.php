@@ -182,7 +182,7 @@ new class extends Component {
                 <p class="question-text fw-medium text-justify">{!! $questions[$currentQuestionIndex]->soal !!}</p>
                 <ul class="list-unstyled d-flex flex-column gap-2">
                     <!-- Pilihan Jawaban -->
-                    @foreach (['a', 'b', 'c', 'd', 'e'] as $option)
+                    {{-- @foreach (['a', 'b', 'c', 'd', 'e'] as $option)
                         <li>
                             <div
                                 class="form-check d-flex align-items-center gap-2 {{ $questions[$currentQuestionIndex]->jawaban === $option ? 'bg-success-200' : '' }} {{ $selectedAnswer[$questions[$currentQuestionIndex]->id] === $option ? ($questionStatus[$questions[$currentQuestionIndex]->id] === 'salah' ? ($isDoubtful[$questions[$currentQuestionIndex]->id] ? 'bg-warning-200' : 'bg-danger-200') : '') : 'bg-transparent' }}">
@@ -198,7 +198,7 @@ new class extends Component {
                                 </label>
                             </div>
                         </li>
-                    @endforeach
+                    @endforeach --}}
                 </ul>
 
                 <!-- Navigasi Soal -->
@@ -313,7 +313,7 @@ new class extends Component {
         </div>
     </div>
 
-    {{-- <div class="col-12">
+    <div class="col-12">
         <div class="card radius-8 border-0 mb-3">
             <div class="card-body">
                 <div class="grid justify-content-center grid-cols-1 g-2 mb-2">
@@ -360,7 +360,7 @@ new class extends Component {
 
             </div>
         </div>
-    </div> --}}
+    </div>
 </div>
 @push('style')
     <style>
