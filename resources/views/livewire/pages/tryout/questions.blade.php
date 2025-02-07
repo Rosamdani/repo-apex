@@ -19,6 +19,7 @@ new class extends Component {
     public $masihRagu = 0;
     public $dijawab = 0;
     public $extras = [];
+    public $isEnd = false;
 
     public function mount($tryoutId)
     {
@@ -177,10 +178,12 @@ new class extends Component {
     #[On('saveTime')]
     public function saveTime($remainingMinutes)
     {
-        $cacheKey = "tryout_{$this->userTryout->id}";
-        $cacheData = Cache::get($cacheKey);
-        $cacheData['timeLeft'] = $remainingMinutes;
-        Cache::put($cacheKey, $cacheData, now()->addMinutes(60));
+        if (!$this->isEnd) {
+            $cacheKey = "tryout_{$this->userTryout->id}";
+            $cacheData = Cache::get($cacheKey);
+            $cacheData['timeLeft'] = $remainingMinutes;
+            Cache::put($cacheKey, $cacheData, now()->addMinutes(60));
+        }
     }
 
     #[On('pause')]
@@ -195,7 +198,7 @@ new class extends Component {
     public function endTryout()
     {
         $this->saveToDatabase();
-        $this->userTryout->update(['status' => 'finished']);
+        \App\Models\UserTryouts::where('id', $this->userTryout->id)->update(['status' => 'finished']);
         $this->checkExtrass();
     }
 
@@ -206,6 +209,7 @@ new class extends Component {
 
     public function checkExtrass()
     {
+        $this->isEnd = true;
         $this->extras = $this->tryout->extras->filter(fn($extra) => in_array('finished_tryout', $extra->display_on));
         if ($this->extras->count() === 0) {
             $this->returnBack();
