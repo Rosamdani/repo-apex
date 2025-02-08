@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\TryoutStatus;
 use App\Models\BidangTryouts;
 use App\Models\SoalTryout;
 use App\Models\Tryouts;
@@ -16,8 +17,8 @@ class TryoutHasilController extends Controller
     {
         try {
             $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
-            if ($userTryout->status->value != 'finished') {
-                return redirect()->back();
+            if ($userTryout && $userTryout->status !== TryoutStatus::FINISHED) {
+                return redirect()->back()->with('error', 'Tryout belum selesai.');
             }
 
             $totalUser = UserTryouts::where('tryout_id', $id)->where('status', 'finished')->count();
