@@ -31,6 +31,8 @@
                 </div>
                 <form action="{{ route('password.update') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="token" value="{{ request()->token }}">
+                    <input type="hidden" name="email" value="{{ request()->email }}">
                     <div class="position-relative mb-20">
                         <div class="icon-field">
                             <span class="icon top-50 translate-middle-y">
