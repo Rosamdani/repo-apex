@@ -48,12 +48,18 @@ class TryoutHasilController extends Controller
     public function pembahasan($id)
     {
         $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
+        if ($userTryout && $userTryout->status !== TryoutStatus::FINISHED) {
+            return redirect()->back()->with('error', 'Tryout belum selesai.');
+        }
         return view('tryouts.pembahasan', compact('userTryout'));
     }
     public function pembahasanByCategory($id, $categoryId)
     {
         $tryout = Tryouts::find($id);
         $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
+        if ($userTryout && $userTryout->status !== TryoutStatus::FINISHED) {
+            return redirect()->back()->with('error', 'Tryout belum selesai.');
+        }
         $bidang = BidangTryouts::find($categoryId);
         return view('tryouts.pembahasan-by-category', compact('userTryout', 'bidang', 'tryout'));
     }
