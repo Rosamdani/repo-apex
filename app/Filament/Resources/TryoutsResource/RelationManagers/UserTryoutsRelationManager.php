@@ -34,6 +34,7 @@ class UserTryoutsRelationManager extends RelationManager
                     ->options([
                         'not_started' => 'Belum Mulai',
                         'started' => 'Sedang Mulai atau Dihentikan Sementara',
+                        'paused' => 'Dihentikan Sementara',
                         'finished' => 'Selesai',
                     ])
                     ->searchable()
@@ -60,6 +61,7 @@ class UserTryoutsRelationManager extends RelationManager
                             TryoutStatus::FINISHED => 'Selesai',
                             TryoutStatus::STARTED => 'Sedang Berlangsung',
                             TryoutStatus::NOT_STARTED => 'Belum Dimulai',
+                            TryoutStatus::PAUSED => 'Dihentikan Sementara',
                             default => 'Tidak Diketahui',
                         };
                     })
