@@ -184,6 +184,9 @@ new class extends Component {
                                                     class="btn rounded-pill btn-primary-600 radius-8 px-12 py-6 flex-grow-1">Mulai
                                                     Kerjakan</a>
                                             @endif
+                                        @else
+                                            <a href="{{ route('katalog.detail', ['id' => $item->id]) }}"
+                                                class="btn rounded-pill border text-neutral-500 border-neutral-500 radius-8 px-12 py-6 bg-hover-neutral-500 text-hover-white flex-grow-1">Detail</a>
                                         @endif
                                     </div>
                                 </div>
