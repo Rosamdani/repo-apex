@@ -7,8 +7,10 @@ use App\Filament\Resources\PaketTryoutResource\Pages;
 use App\Filament\Resources\PaketTryoutResource\RelationManagers;
 use App\Models\PaketTryout;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -85,7 +87,67 @@ class PaketTryoutResource extends Resource
                     Tabs\Tab::make('Detail')->schema([
                         Forms\Components\RichEditor::make('deskripsi'),
                         Forms\Components\TextInput::make('url')->url()->label('Link Pembelian')->placeholder('https://link_pembelian.com'),
-                    ])
+                    ]),
+                    Tabs\Tab::make('Extras')->schema([
+                        Forms\Components\Repeater::make('extra_items')
+                            ->relationship('extras')
+                            ->schema([
+                                Forms\Components\Select::make('type')->required()
+                                    ->label('Tipe')
+                                    ->options([
+                                        'button' => 'Tombol',
+                                    ])
+                                    ->live(),
+                                Forms\Components\TextInput::make('button_data') // Berikan nama yang berbeda
+                                    ->visible(fn(Get $get): bool => $get('type') === 'button')
+                                    ->disabled(fn(Get $get): bool => $get('type') !== 'button')
+                                    ->label('URL Tombol')
+                                    ->url()
+                                    ->hint('Link Join Grup WhatsApp')
+                                    ->placeholder('https://chat.whatsapp.com/...')
+                                    ->required(),
+                                Forms\Components\TextInput::make('title')
+                                    ->label('Text')
+                                    ->visible(fn(Get $get): bool => $get('type') === 'button')
+                                    ->placeholder('Join Grup WhatsApp')
+                                    ->required(),
+                                Forms\Components\Select::make('display_on')
+                                    ->suffixAction( // Tambahkan tombol di samping input
+                                        Action::make('bantuan')
+                                            ->form([
+                                                Forms\Components\Placeholder::make('Tampilkan Tryout
+                                                '),
+                                                Forms\Components\Placeholder::make('Halaman Detail Paket (Setelah Konfirmasi): ditampilkan di halaman detail Paket setelah pengguna di konfirmasi'),
+                                                Forms\Components\Placeholder::make('Halaman Detail Paket (Sebelum Konfirmasi): ditampilkan di halaman detail Paket sebelum pengguna di konfirmasi'),
+                                            ])
+                                            ->icon('heroicon-o-question-mark-circle')
+                                            ->tooltip('Klik untuk informasi lebih lanjut')
+                                    )
+                                    ->multiple()
+                                    ->required()
+                                    ->options([
+                                        'detail_paket_after_confirm' => 'Halaman Detail Paket (Setelah di konfirmasi)',
+                                        'detail_paket_before_confirm' => 'Halaman Detail Paket (Sebelum di konfirmasi)',
+                                    ]),
+
+                            ])
+                            ->mutateRelationshipDataBeforeFillUsing(function (array $data): array {
+                                if ($data['type'] === 'poster') {
+                                    $data['poster_data'] = $data['data'];
+                                } else if ($data['type'] === 'button') {
+                                    $data['button_data'] = $data['data'];
+                                }
+
+
+                                return $data;
+                            })
+                            ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                                $data['data'] = $data['poster_data'] ?? $data['button_data'] ?? null;
+
+                                return $data;
+                            })
+                            ->columns(1),
+                    ]),
                 ])->columnSpanFull(),
             ]);
     }

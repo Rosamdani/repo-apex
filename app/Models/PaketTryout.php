@@ -36,4 +36,9 @@ class PaketTryout extends Model
     {
         return $this->belongsToMany(Tryouts::class, 'tryout_has_pakets', 'paket_id', 'tryout_id');
     }
+
+    public function extras()
+    {
+        return $this->morphMany(TryoutExtra::class, 'extraable');
+    }
 }

@@ -22,6 +22,7 @@ new class extends Component {
     public $userTryoutStatus;
     public $user_id;
     public $image;
+    public $extras = [];
 
     public function mount($paketId)
     {
@@ -45,6 +46,7 @@ new class extends Component {
             ->first();
 
         session()->put('paket_id', $paketId);
+        $this->extras = $this->paket->extras;
 
         // Redirect jika paket tidak ditemukan
         if (!$this->paket) {
@@ -229,6 +231,15 @@ new class extends Component {
                     </li>
                 </ul>
                 @if ($requestStatus === 'accepted')
+                    @if (count($extras) > 0)
+                        @foreach ($extras as $extra)
+                            @if (in_array('detail_paket_after_confirm', $extra['display_on']) && $extra['type'] === 'button')
+                                <a href="{{ $extra['data'] }}" class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
+                                    {{ $extra['title'] }}
+                                </a>
+                            @endif
+                        @endforeach
+                    @endif
                     <div class="d-flex flex-column">
                         <p class="mb-1 text-primary">Status: <span class="text-warning">Akses diterima</span></p>
                     </div>
@@ -239,6 +250,16 @@ new class extends Component {
                     </div>
                 @else
                     @if ($paket->is_need_confirm)
+                        @if (count($extras) > 0)
+                            @foreach ($extras as $extra)
+                                @if (in_array('detail_paket_before_confirm', $extra['display_on']) && $extra['type'] === 'button')
+                                    <a href="{{ $extra['data'] }}"
+                                        class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
+                                        {{ $extra['title'] }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        @endif
                         <a href="#" data-bs-toggle="modal" data-bs-target="#beliSekarang"
                             class="btn btn-primary-600 radius-8 px-12 py-6 mt-16">
                             Beli Sekarang
