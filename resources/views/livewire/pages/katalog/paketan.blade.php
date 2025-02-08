@@ -333,12 +333,13 @@ new class extends Component {
                                 <p>No. Rekening: <strong class="font-semibold">3090701168</strong></p>
                                 <p>Atas Nama: <strong class="font-semibold">APEX MEDIKA EDUKASI CV
                                     </strong></p>
+                                <p>Keterangan transfer: <strong>Apex Academy</strong> </p>
                             </div>
                         </li>
 
                         <li>
                             <p class="font-semibold">Konfirmasi ke Admin</p>
-                            <p>Setelah transfer, klik tombol <strong>konfigurasi admin</strong></p>
+                            <p>Setelah transfer, klik tombol <strong>konfirmasi admin</strong></p>
 
                         </li>
 
