@@ -39,7 +39,11 @@ new class extends Component {
 
         $cacheKey = "tryout_{$this->userTryout->id}";
 
-        if (Cache::has($cacheKey)) {
+        if ($this->userTryout->status === TryoutStatus::PAUSED || $this->userTryout->status === TryoutStatus::STARTED) {
+            Cache::forget($cacheKey);
+            $this->loadDataFromDatabase();
+            $this->cacheData();
+        } elseif (Cache::has($cacheKey)) {
             $cacheData = Cache::get($cacheKey);
             $this->questions = $cacheData['questions'];
             $this->selectedAnswer = $cacheData['selectedAnswer'];
@@ -87,6 +91,30 @@ new class extends Component {
         $this->setBelumDijawabCount();
         $this->setMasihRaguCount();
         $this->setTanpaRaguCount();
+    }
+
+    protected function loadDataFromDatabase()
+    {
+        $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
+        $this->questions = $this->questions
+            ->sortBy(function ($question) {
+                return array_search($question->id, $this->userTryout->question_order);
+            })
+            ->values();
+
+        $this->totalQuestions = $this->questions->count();
+        $this->timeLeft = $this->userTryout->waktu ?? $this->tryout->waktu;
+
+        $answers = \App\Models\UserAnswer::where('user_id', auth()->id())
+            ->whereIn('soal_id', $this->questions->pluck('id'))
+            ->get();
+
+        foreach ($this->questions as $question) {
+            $answer = $answers->where('soal_id', $question->id)->first();
+            $this->selectedAnswer[$question->id] = $answer->jawaban ?? null;
+            $this->isDoubtful[$question->id] = $answer && $answer->status === 'ragu-ragu';
+            $this->questionStatus[$question->id] = $answer ? ($answer->status === 'ragu-ragu' ? 'ragu-ragu' : ($answer->jawaban ? 'sudah dijawab' : 'belum dijawab')) : 'belum dijawab';
+        }
     }
 
     public function cacheData()
