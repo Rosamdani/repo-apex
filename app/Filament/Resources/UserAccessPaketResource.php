@@ -58,6 +58,7 @@ class UserAccessPaketResource extends Resource
                         ->required(),
                     Forms\Components\Textarea::make('catatan'),
                     Forms\Components\FileUpload::make('image')
+                        ->downloadable()
                         ->label('Bukti Pembayaran')
                         ->disk('public')
                         ->directory('pembayaran/paket')
