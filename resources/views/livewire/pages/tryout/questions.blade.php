@@ -94,6 +94,7 @@ new class extends Component {
         $this->selectedAnswer = [];
         $this->questionStatus = [];
         $this->isDoubtful = [];
+
         $this->questions = \App\Models\SoalTryout::whereIn('id', $this->userTryout->question_order)->get();
         $this->questions = $this->questions
             ->sortBy(function ($question) {
@@ -158,7 +159,9 @@ new class extends Component {
 
     public function setDijawabCount()
     {
-        $this->dijawab = collect($this->questionStatus)->filter(fn($status) => $status === 'sudah dijawab')->count();
+        $this->dijawab = collect($this->questionStatus ?? [])
+            ->filter(fn($status) => $status === 'sudah dijawab')
+            ->count();
     }
 
     public function jumpToQuestion($index)
