@@ -69,8 +69,8 @@
                     <div class="">
                         <div class="d-flex justify-content-between gap-2">
                             <div class="form-check style-check d-flex align-items-center">
-                                <input class="form-check-input border border-neutral-300" type="checkbox" value=""
-                                    id="remeber" {{ old('remember') ? 'checked' : '' }}>
+                                <input class="form-check-input border border-neutral-300" type="checkbox"
+                                    name="remember" id="remeber" {{ old('remember') ? 'checked' : '' }}>
                                 <label class="form-check-label" for="remeber">Ingat saya </label>
                             </div>
                             <a href="{{ route('password.request') }}" class="text-primary-600 fw-medium">Lupa

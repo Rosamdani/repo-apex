@@ -26,10 +26,11 @@ class AuthController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
+        $remember = $request->has('remember');
 
         $credentials = $request->only('username', 'password');
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
             if (session()->has(key: 'sessions')) {
                 session()->forget('sessions');
