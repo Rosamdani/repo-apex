@@ -56,7 +56,7 @@ class UserAccessPaketResource extends Resource
                             'requested' => 'heroicon-o-clock',
                         ])
                         ->required(),
-                    Forms\Components\TextArea::make('catatan'),
+                    Forms\Components\Textarea::make('catatan'),
                     Forms\Components\FileUpload::make('image')
                         ->label('Bukti Pembayaran')
                         ->disk('public')
