@@ -87,6 +87,11 @@ new class extends Component {
 
             $this->cacheData();
         }
+
+        $this->setBelumDijawabCount();
+        $this->setTanpaRaguCount();
+        $this->setMasihRaguCount();
+        $this->setDijawabCount();
     }
 
     protected function loadDataFromDatabase()
