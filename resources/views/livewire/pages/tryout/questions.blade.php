@@ -39,7 +39,7 @@ new class extends Component {
 
         $cacheKey = "tryout_{$this->userTryout->id}";
 
-        if ($this->userTryout->status === TryoutStatus::PAUSED || $this->userTryout->status === TryoutStatus::STARTED) {
+        if ($this->userTryout->status === TryoutStatus::PAUSED) {
             Cache::forget($cacheKey);
             $this->loadDataFromDatabase();
             $this->cacheData();
@@ -51,7 +51,7 @@ new class extends Component {
             $this->isDoubtful = $cacheData['isDoubtful'];
             $this->timeLeft = $cacheData['timeLeft'];
             $this->totalQuestions = $this->questions->count();
-        } else {
+        } elseif ($this->userTryout->status === TryoutStatus::STARTED) {
             if (!$this->userTryout->question_order) {
                 $questions = \App\Models\SoalTryout::select(['id', 'soal', 'pilihan_a', 'pilihan_b', 'pilihan_c', 'pilihan_d', 'tryout_id'])
                     ->where('tryout_id', $tryoutId)
@@ -229,9 +229,9 @@ new class extends Component {
     #[On('pause')]
     public function pauseTryout()
     {
-        $this->saveToDatabase();
         $this->userTryout->status = TryoutStatus::PAUSED;
         $this->userTryout->save();
+        $this->saveToDatabase();
         $this->returnBack();
     }
 
