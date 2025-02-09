@@ -96,6 +96,13 @@ class Settings extends BaseSettings
                                 ->disk('public')
                                 ->hint('(Ukuran gambar 917x917)')
                                 ->directory('/asset/image/auth'),
+                            Section::make('Email SMTP')->description('Digunakan untuk layanan fitur lupa password')->collapsed()->schema([
+                                TextInput::make('auth.email_host')
+                                    ->label('email'),
+                                TextInput::make('auth.app_password')
+                                    ->password()
+                                    ->label('password'),
+                            ]),
                         ]),
                     Tabs\Tab::make('Pengerjaan Soal')
                         ->schema([
