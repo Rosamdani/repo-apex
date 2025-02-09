@@ -114,7 +114,7 @@ class AuthController extends Controller
     {
         Auth::logout();
 
-        $session = Session::findOrFail(session('session_id'));
+        $session = Session::find(session('session_id'));
 
         $session->delete();
 
