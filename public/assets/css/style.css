@@ -12614,7 +12614,6 @@ textarea:active {
 
 .form-check .form-check-input {
     border: 1px solid var(--text-secondary-light);
-    background: transparent;
     width: 18px;
     height: 18px;
     position: relative;
