@@ -67,7 +67,15 @@ class UserTryoutsRelationManager extends RelationManager
                     })
                     ->searchable(),
             ])
-            ->filters([])
+            ->filters([
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'not_started' => 'Belum Mulai',
+                        'started' => 'Sedang Mulai atau Dihentikan Sementara',
+                        'paused' => 'Dihentikan Sementara',
+                        'finished' => 'Selesai',
+                    ]),
+            ])
             ->headerActions([])
             ->actions([
                 Tables\Actions\ViewAction::make(),

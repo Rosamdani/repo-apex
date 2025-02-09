@@ -86,13 +86,10 @@ class TryoutsTab extends Component
             })->unique();
 
             if ($this->tab === 'finished') {
-                // Semua tryout dalam paket harus selesai
                 return $userTryoutStatuses->every(fn($status) => $status === 'finished');
             } elseif ($this->tab === 'started') {
-                // Salah satu tryout dalam paket sedang dikerjakan
                 return $userTryoutStatuses->contains('started') || $userTryoutStatuses->contains('paused');
             } else {
-                // Semua tryout dalam paket belum dimulai
                 return $userTryoutStatuses->every(fn($status) => $status === null || $status === 'not_started');
             }
         });
