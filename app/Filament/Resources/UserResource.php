@@ -70,20 +70,16 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('userAcademy.universitas')
                     ->label('Universitas')
-                    ->searchable()
-                    ->visible(fn(?User $record) => $record && $record->hasRole('user')),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('userAcademy.tahun_masuk')
                     ->label('Tahun Masuk')
-                    ->searchable()
-                    ->visible(fn(?User $record) => $record && $record->hasRole('user')),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('userAcademy.status_pendidikan')
                     ->label('Status Pendidikan')
-                    ->searchable()
-                    ->visible(fn(?User $record) => $record && $record->hasRole('user')),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('userAcademy.semester')
                     ->label('Semester')
-                    ->searchable()
-                    ->visible(fn(?User $record) => $record && $record->hasRole('user')),
+                    ->searchable(),
             ])
             ->filters([
                 //
