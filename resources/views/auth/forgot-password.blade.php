@@ -22,7 +22,11 @@
                 @endif
 
                 @if ($errors->has('email'))
-                    <span class="text-red-500">{{ $errors->first('email') }}</span>
+                    <ul class="list-disc list-inside text-red-500">
+                        @foreach ($errors->get('email') as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 @endif
 
                 <div>
