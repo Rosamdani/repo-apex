@@ -3,6 +3,7 @@
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Middleware\AnotherDeviceMiddleware;
 use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\CheckTryoutDeadline;
 use App\Http\Middleware\CheckTryoutPermission;
 use App\Models\Tryouts;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ Route::middleware([AuthMiddleware::class])->get('/katalog/paketan/{id}', [App\Ht
 
 Route::middleware([AuthMiddleware::class])->group(function () {
     Route::prefix('/tryout')->group(function () {
-        Route::middleware([CheckTryoutPermission::class])->get('/show/{id}', [App\Http\Controllers\TryoutController::class, 'show'])->name('tryouts.show');
+        Route::middleware([CheckTryoutPermission::class, CheckTryoutDeadline::class])->get('/show/{id}', [App\Http\Controllers\TryoutController::class, 'show'])->name('tryouts.show');
         Route::middleware([CheckTryoutPermission::class])->get('/hasil/{id}', [App\Http\Controllers\TryoutHasilController::class, 'index'])->name('tryouts.hasil.index');
         Route::post('/downloadReportBidang', [App\Http\Controllers\PDFController::class, 'downloadReportBidang'])->name('tryout.downloadReportBidang');
         Route::middleware([CheckTryoutPermission::class])->get('/pembahasan/{id}', [App\Http\Controllers\TryoutHasilController::class, 'pembahasan'])->name('tryouts.hasil.pembahasan');

@@ -17,8 +17,8 @@ class TryoutHasilController extends Controller
     {
         try {
             $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
-            if ($userTryout && $userTryout->status !== TryoutStatus::FINISHED) {
-                return redirect()->back()->with('error', 'Tryout belum selesai.');
+            if (!$userTryout || $userTryout->status !== TryoutStatus::FINISHED) {
+                return redirect()->route('index')->with('error', 'Anda belum menyelesaikan tryout ini');
             }
 
             $totalUser = UserTryouts::where('tryout_id', $id)->where('status', 'finished')->count();
@@ -36,7 +36,7 @@ class TryoutHasilController extends Controller
             $status_lulus = $userTryout->nilai >= $nilai_minimal ? 'Lulus' : 'Belum Lulus';
             return view('result', compact('userTryout', 'status_lulus', 'totalUser', 'userTryoutRank'));
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan disini ' . $e->getMessage()]);
+            return response()->json(['status' => 'error', 'message' => 'Terjadi kesalahan ']);
         }
     }
 
@@ -48,8 +48,8 @@ class TryoutHasilController extends Controller
     public function pembahasan($id)
     {
         $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
-        if ($userTryout && $userTryout->status !== TryoutStatus::FINISHED) {
-            return redirect()->back()->with('error', 'Tryout belum selesai.');
+        if (!$userTryout || $userTryout->status !== TryoutStatus::FINISHED) {
+            return redirect()->route('index')->with('error', 'Anda belum menyelesaikan tryout ini');
         }
         return view('tryouts.pembahasan', compact('userTryout'));
     }
@@ -57,8 +57,8 @@ class TryoutHasilController extends Controller
     {
         $tryout = Tryouts::find($id);
         $userTryout = UserTryouts::where('tryout_id', $id)->where('user_id', Auth::user()->id)->first();
-        if ($userTryout && $userTryout->status !== TryoutStatus::FINISHED) {
-            return redirect()->back()->with('error', 'Tryout belum selesai.');
+        if (!$userTryout || $userTryout->status !== TryoutStatus::FINISHED) {
+            return redirect()->route('index')->with('error', 'Anda belum menyelesaikan tryout ini');
         }
         $bidang = BidangTryouts::find($categoryId);
         return view('tryouts.pembahasan-by-category', compact('userTryout', 'bidang', 'tryout'));

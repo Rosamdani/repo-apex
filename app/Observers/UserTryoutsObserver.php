@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Tryouts;
+use App\Enum\TryoutStatus;
 use App\Models\UserAnswer;
 use App\Models\UserTryouts;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,7 @@ class UserTryoutsObserver
     public function updated(UserTryouts $userTryouts): void
     {
         // Periksa apakah status berubah menjadi 'finished'
-        if ($userTryouts->isDirty('status') && $userTryouts->status->value === 'finished') {
+        if ($userTryouts->isDirty('status') && $userTryouts->status === TryoutStatus::FINISHED) {
             try {
                 // Ambil soal dan jawaban yang diperlukan saja
                 $questions = Tryouts::where('id', $userTryouts->tryout_id)

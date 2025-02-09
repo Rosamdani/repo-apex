@@ -12628,6 +12628,10 @@ textarea:active {
     border-color: var(--primary-600);
 }
 
+.tambahan {
+    color: white;
+}
+
 .form-check .form-check-input:checked::before {
     transform: translate(-50%, -50%) scale(1);
     visibility: visible;

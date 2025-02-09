@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+#[ObservedBy([UserTryoutsObserver::class])]
 class UserTryouts extends Model
 {
 
@@ -31,6 +32,7 @@ class UserTryouts extends Model
         'status',
         'waktu',
         'catatan',
+        'question_order',
     ];
 
 

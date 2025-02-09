@@ -213,6 +213,13 @@ class TryoutsResource extends Resource
                             ->label('Bersyarat?')
                             ->hint('Aktifkan jika perlu upload syarat pendaftaran, nonaktifkan jika perlu upload pembayaran')
                             ->default(false),
+                        Forms\Components\DateTimePicker::make('end_time')
+                            ->minDate(now())
+                            ->timezone('Asia/Jakarta')
+                            ->locale('id')
+                            ->label('Batas akhir pengerjaan')
+                            ->displayFormat('Y-m-d H:i:s')
+                            ->hint('Isi jika tryout memiliki batas akhir pengerjaan'),
                     ]),
 
                 ]),

@@ -34,6 +34,7 @@ class Tryouts extends Model
         'file_pembahasan',
         'is_need_confirm',
         'is_configurable',
+        'end_time',
     ];
 
 
