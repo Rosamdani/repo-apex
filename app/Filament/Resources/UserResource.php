@@ -33,7 +33,7 @@ class UserResource extends Resource
                     ->tel(),
                 Forms\Components\TextInput::make('email')
                     ->email()
-                    ->readonly(fn(?User $record) => $record && !$record->hasRole('admin'))
+                    // ->readonly(fn(?User $record) => $record && !$record->hasRole('admin'))
                     ->required(),
                 Forms\Components\TextInput::make('password')
                     ->password()
