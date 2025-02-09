@@ -22,11 +22,14 @@
                 @endif
 
                 @if ($errors->has('email'))
-                    <ul class="list-disc list-inside text-red-500">
-                        @foreach ($errors->get('email') as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <ul class="list-disc list-inside mb-0">
+                            @foreach ($errors->get('email') as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 @endif
 
                 <div>
