@@ -136,9 +136,16 @@
                                         <span class="icon top-50 translate-middle-y">
                                             <iconify-icon icon="mdi:calendar-blank"></iconify-icon>
                                         </span>
-                                        <input type="number" name="tahun_masuk" value="{{ old('tahun_masuk') }}"
-                                            class="form-control h-56-px bg-neutral-50 radius-12 {{ $errors->has('tahun_masuk') ? 'is-invalid' : '' }}"
-                                            placeholder="Tahun masuk">
+                                        <select name="tahun_masuk" id="tahun_masuk"
+                                            class="form-control form-select h-56-px bg-neutral-50 radius-12 {{ $errors->has('tahun_masuk') ? 'is-invalid' : '' }}">
+                                            <option value="">--Pilih Tahun Masuk FK--</option>
+                                            @for ($i = date('Y'); $i >= date('Y') - 5; $i--)
+                                                <option value="{{ $i }}"
+                                                    {{ old('tahun_masuk') == $i ? 'selected' : '' }}>
+                                                    {{ $i }}
+                                                </option>
+                                            @endfor
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="position-relative d-flex align-items-center mb-16">
