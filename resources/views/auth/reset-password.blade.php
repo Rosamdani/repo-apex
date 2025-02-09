@@ -20,8 +20,14 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                @if ($errors->has('email'))
-                    <span class="text-red-500">{{ $errors->first('email') }}</span>
+                @if ($errors->any())
+                    <div class="text-red-500">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endif
                 <div>
                     <h4 class="mb-12">Ubah Password</h4>
