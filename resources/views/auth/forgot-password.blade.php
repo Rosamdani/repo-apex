@@ -36,8 +36,8 @@
                             class="form-control @error('email') is-invalid @enderror  h-56-px bg-neutral-50 radius-12"
                             placeholder="Masukkan Email">
                     </div>
-                    <button type="submit" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32"
-                        data-bs-toggle="modal" data-bs-target="#exampleModal">Lanjutkan</button>
+                    <button type="submit"
+                        class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mt-32">Lanjutkan</button>
 
                     <div class="mt-120 text-center text-sm">
                         <p class="mb-0">Sudah Punya Akun? <a href="{{ route('login') }}"
