@@ -20,10 +20,8 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                @if (session('email'))
-                    <div class="alert alert-success mb-16">
-                        {{ session('email') }}
-                    </div>
+                @if ($errors->has('email'))
+                    <span class="text-red-500">{{ $errors->first('email') }}</span>
                 @endif
                 <div>
                     <h4 class="mb-12">Ubah Password</h4>
