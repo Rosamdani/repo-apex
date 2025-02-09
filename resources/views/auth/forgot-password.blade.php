@@ -21,6 +21,10 @@
                     </div>
                 @endif
 
+                @if ($errors->has('email'))
+                    <span class="text-red-500">{{ $errors->first('email') }}</span>
+                @endif
+
                 <div>
                     <h4 class="mb-12">Lupa Password</h4>
                     <p class="mb-32 text-secondary-light text-lg">Masukkan alamat email yang terkait dengan akun Anda
