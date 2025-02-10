@@ -5,7 +5,7 @@
 <x-head :title="'Login'" />
 <style>
     .checked-blue:checked {
-        backgound-color: var(--info-600);
+        backgound-color: var(--info-600) !important;
     }
 </style>
 
