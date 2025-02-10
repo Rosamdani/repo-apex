@@ -31,23 +31,14 @@
                     <table class="table bordered-table sm-table mb-0">
                         <thead>
                             <tr>
+                                <th scope="col">Aksi</th>
                                 <th scope="col">Perangkat </th>
                                 <th scope="col">Terakhir dilihat</th>
-                                <th scope="col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($sessions as $session)
                                 <tr>
-                                    <td class=""
-                                        style="white-space: nowrap; overflow: scroll; scrollbar-width: none; text-overflow: ellipsis;">
-                                        <p>{{ $session->browser }} - {{ $session->device }} - {{ $session->os }}
-                                            {{ $session->os_version }}</p>
-                                    </td>
-                                    <td>{{ \Carbon\Carbon::parse($session->last_activity)->locale('id_ID')->translatedFormat('l,
-                                                                                                                                                F
-                                                                                                                                                j Y') }}
-                                    </td>
                                     <td class="text-center">
                                         <form action="{{ route('logoutSession') }}" method="post" class="d-inline">
                                             @csrf
@@ -55,6 +46,15 @@
                                             <button type="submit"
                                                 class="btn btn-outline-primary btn-sm">Logout</button>
                                         </form>
+                                    </td>
+                                    <td class=""
+                                        style="white-space: nowrap; overflow: scroll; scrollbar-width: none; text-overflow: ellipsis;">
+                                        <p>{{ $session->browser }} - {{ $session->device }} - {{ $session->os }}
+                                            {{ $session->os_version }}</p>
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($session->last_activity)->locale('id_ID')->translatedFormat('l,
+                                                                                                                                                                                    F
+                                                                                                                                                                                    j Y') }}
                                     </td>
                                 </tr>
                             @endforeach

@@ -3,6 +3,11 @@
 <html lang="en" data-theme="light">
 
 <x-head :title="'Login'" />
+<style>
+    .checked-blue:checked {
+        backgound-color: var(--info-600);
+    }
+</style>
 
 <body>
 
@@ -68,7 +73,7 @@
                     </div>
                     <div class="">
                         <div class="d-flex justify-content-between gap-2">
-                            <div class="form-check style-check d-flex align-items-center">
+                            <div class="form-check style-check checked-blue d-flex align-items-center">
                                 <input class="form-check-input border border-neutral-300 tex-primary-600"
                                     type="checkbox" name="remember" id="remeber"
                                     {{ old('remember') ? 'checked' : '' }}>
