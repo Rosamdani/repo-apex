@@ -74,7 +74,7 @@
                     <div class="">
                         <div class="d-flex justify-content-between gap-2">
                             <div class="form-check style-check d-flex align-items-center">
-                                <input class="form-check-input checked-blue border border-neutral-300 tex-primary-600"
+                                <input class="form-check-input checked-blue border border-neutral-300 text-primary-600"
                                     type="checkbox" name="remember" id="remeber"
                                     {{ old('remember') ? 'checked' : '' }}>
                                 <label class="form-check-label" for="remeber">Ingat saya </label>
