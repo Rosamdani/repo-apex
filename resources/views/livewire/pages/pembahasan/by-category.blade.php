@@ -86,7 +86,7 @@ new class extends Component {
 
     public function cacheData()
     {
-        $cacheKey = "tryout_{$this->userTryout->id}";
+        $cacheKey = "tryout_{$this->userTryout->id}{$this->categoryId}{auth()->id()}";
         Cache::put(
             $cacheKey,
             [
